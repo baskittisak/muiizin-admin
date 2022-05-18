@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import Login from "../components/Login";
 import ProductList from "../components/ProductList";
 
 const PageRoutes = () => {
