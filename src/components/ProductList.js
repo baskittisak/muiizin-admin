@@ -1,7 +1,12 @@
 import { memo } from "react";
+import Typography from "../center_components/Typography";
 
 const ProductList = () => {
-  return <>Product List</>;
+  return (
+    <>
+      <Typography>Product List</Typography>
+    </>
+  );
 };
 
 export default memo(ProductList);
