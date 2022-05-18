@@ -27,6 +27,12 @@ const TypoContainer = styled(Typo)`
       line-height: ${`${height}px`};
     `};
 
+  ${({ underline }) =>
+    underline &&
+    css`
+      text-decoration: underline;
+    `};
+
   ${({ onClick }) =>
     onClick &&
     css`
@@ -39,6 +45,7 @@ const Typography = ({
   fontSize = 16,
   fontWeight = 400,
   lineHeight,
+  underline,
   children,
   onClick,
 }) => {
@@ -48,6 +55,7 @@ const Typography = ({
       size={fontSize}
       weight={fontWeight}
       height={lineHeight}
+      underline={underline ? 1 : 0}
       onClick={onClick}
     >
       {children}
