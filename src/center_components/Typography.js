@@ -37,7 +37,7 @@ const TypoContainer = styled(Typo)`
 const Typography = ({
   color,
   fontSize = 16,
-  fontWeight,
+  fontWeight = 400,
   lineHeight,
   children,
   onClick,
