@@ -14,11 +14,15 @@ const FilterProduct = ({ search, category, status, onFilters }) => {
       },
       {
         key: "2",
-        label: "2nd menu item",
+        label: "กระเป๋า",
       },
       {
         key: "3",
-        label: "3rd menu item",
+        label: "หมอน",
+      },
+      {
+        key: "4",
+        label: "หมวก",
       },
     ],
     []
@@ -32,11 +36,11 @@ const FilterProduct = ({ search, category, status, onFilters }) => {
       },
       {
         key: "2",
-        label: "2nd menu item",
+        label: "พร้อมส่ง",
       },
       {
         key: "3",
-        label: "3rd menu item",
+        label: "พรีออเดอร์",
       },
     ],
     []
