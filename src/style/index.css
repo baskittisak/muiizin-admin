@@ -30,7 +30,8 @@ a {
   margin-bottom: 0 !important;
 }
 
-.ant-input {
+.ant-input,
+.ant-input-affix-wrapper {
   border-radius: 5px;
 }
 
