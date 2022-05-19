@@ -24,11 +24,22 @@ const IconContainer = styled.div`
     css`
       margin: ${margin};
     `};
+
+  ${({ onClick }) =>
+    onClick &&
+    css`
+      cursor: pointer;
+    `};
 `;
 
-const IconSvg = ({ src, fontSize, color, margin }) => {
+const IconSvg = ({ src, fontSize, color, margin, onClick }) => {
   return (
-    <IconContainer font_size={fontSize} color={color} margin={margin}>
+    <IconContainer
+      font_size={fontSize}
+      color={color}
+      margin={margin}
+      onClick={onClick}
+    >
       <Icon component={src} />
     </IconContainer>
   );
