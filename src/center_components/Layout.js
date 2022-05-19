@@ -37,7 +37,7 @@ const LayoutContainer = styled.div`
 
   .ant-menu {
     color: #8aa399;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
   }
 
@@ -67,6 +67,10 @@ const LayoutContainer = styled.div`
     margin-left: 16px;
   }
 
+  .ant-menu-item > div:first-child {
+    margin-bottom: 9px;
+  }
+
   :hover {
     .ant-menu-item.ant-menu-item-active {
       color: #8aa399;
@@ -93,7 +97,7 @@ const LayoutContainer = styled.div`
 `;
 
 const Logo = styled(Box)`
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 
   ${({ collapsed }) =>
     collapsed &&
@@ -149,17 +153,27 @@ const Layout = ({ children }) => {
     () => [
       {
         key: "1",
-        icon: <IconSvg src={product_icon} color={colorActive("1")} />,
+        icon: (
+          <IconSvg src={product_icon} color={colorActive("1")} fontSize={23} />
+        ),
         label: "รายการสินค้า",
       },
       {
         key: "2",
-        icon: <IconSvg src={categories_icon} color={colorActive("2")} />,
+        icon: (
+          <IconSvg
+            src={categories_icon}
+            color={colorActive("2")}
+            fontSize={23}
+          />
+        ),
         label: "หมวดหมู่สินค้า",
       },
       {
         key: "3",
-        icon: <IconSvg src={banner_icon} color={colorActive("3")} />,
+        icon: (
+          <IconSvg src={banner_icon} color={colorActive("3")} fontSize={23} />
+        ),
         label: "แบนเนอร์",
       },
     ],
