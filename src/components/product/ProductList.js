@@ -9,6 +9,7 @@ import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { Space } from "antd";
 import { Box } from "../../style/common";
+import { useNavigate } from "react-router-dom";
 
 const Name = styled.div`
   text-align: left;
@@ -23,12 +24,13 @@ const Action = styled(Box)`
 `;
 
 const ProductList = () => {
+  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
     search: "",
     category: "1",
     status: "1",
   });
-  const [page, setPage] = useState(1);
 
   const onFilters = useCallback((type, value) => {
     setFilters((prevState) => ({
@@ -148,7 +150,12 @@ const ProductList = () => {
     <Frame
       label="รายการสินค้า"
       extra={
-        <BaseButton bgColor="#044700" color="#FFFFFF" fontSize={16}>
+        <BaseButton
+          bgColor="#044700"
+          color="#FFFFFF"
+          fontSize={16}
+          onClick={() => navigate("/product")}
+        >
           เพิ่มสินค้าใหม่
         </BaseButton>
       }
