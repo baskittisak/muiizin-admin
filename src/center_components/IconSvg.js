@@ -6,6 +6,7 @@ const IconContainer = styled.div`
   ${({ font_size }) =>
     font_size &&
     css`
+      height: ${`${font_size}px`};
       .anticon svg {
         font-size: ${`${font_size}px`};
       }

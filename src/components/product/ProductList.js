@@ -1,10 +1,18 @@
 import { memo } from "react";
-import Typography from "../../center_components/Typography";
+import Frame from "../../center_components/Frame";
+import BaseButton from "../../center_components/BaseButton";
 
 const ProductList = () => {
   return (
     <>
-      <Typography>Product List</Typography>
+      <Frame
+        label="รายการสินค้า"
+        extra={
+          <BaseButton bgColor="#044700" color="#FFFFFF" fontSize={16}>
+            เพิ่มสินค้าใหม่
+          </BaseButton>
+        }
+      ></Frame>
     </>
   );
 };
