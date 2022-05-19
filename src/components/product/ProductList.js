@@ -1,5 +1,5 @@
 import { memo } from "react";
-import Typography from "../center_components/Typography";
+import Typography from "../../center_components/Typography";
 
 const ProductList = () => {
   return (
