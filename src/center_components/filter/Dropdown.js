@@ -20,7 +20,7 @@ const DropdownFilter = ({ label, menuItems, value, onChange }) => {
       <Menu
         selectedKeys={[value]}
         items={menuItems}
-        onClick={(e) => onChange(e.key)}
+        onClick={(e) => onChange && onChange(e.key)}
       />
     ),
     [value, menuItems, onChange]
