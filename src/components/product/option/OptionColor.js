@@ -73,10 +73,10 @@ const OptionColor = () => {
           </TabsLanguage>
           <SpaceContainer direction="vertical" size={5}>
             <Space size={0}>
-              <Typography fontSize={16} lineHeight={17} color="#828282">
+              <Typography lineHeight={17} color="#828282">
                 รหัสสี
               </Typography>
-              <Typography fontSize={16} lineHeight={17} color="#F9414C">
+              <Typography lineHeight={17} color="#F9414C">
                 *
               </Typography>
             </Space>

@@ -10,6 +10,7 @@ import BaseButton from "../../center_components/BaseButton";
 import StepsProduct from "./StepsProduct";
 import ProductInfo from "./ProductInfo";
 import ProductOption from "./option/ProductOption";
+import ProductDetail from "./ProductDetail";
 
 const Body = styled.div`
   margin-bottom: 24px;
@@ -70,6 +71,8 @@ const Product = () => {
         );
       case 1:
         return <ProductOption />;
+      case 2:
+        return <ProductDetail />;
       default:
         return null;
     }
