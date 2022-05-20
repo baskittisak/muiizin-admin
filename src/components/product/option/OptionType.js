@@ -4,6 +4,7 @@ import { Space } from "antd";
 import { Box, SpaceContainer } from "../../../style/common";
 import Typography from "../../../center_components/Typography";
 import IconSvg from "../../../center_components/IconSvg";
+import OptionSize from "./OptionSize";
 import { ReactComponent as checked_icon } from "../../../assets/icons/check.svg";
 
 const Option = styled(Space)`
@@ -35,6 +36,13 @@ const Square = styled(Box)`
     `};
 `;
 
+const ContentOption = styled.div`
+  padding: 0 14px 18px;
+  border: 1px solid #044700;
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+`;
+
 const OptionType = ({ sizeEnable, colorEnable, onSetEnble }) => {
   return (
     <SpaceContainer direction="vertical" size={10}>
@@ -47,42 +55,52 @@ const OptionType = ({ sizeEnable, colorEnable, onSetEnble }) => {
             *
           </Typography>
         </Space>
-        <Option
-          size={10}
-          active={sizeEnable ? 1 : 0}
-          onClick={() => onSetEnble("size", !sizeEnable)}
-        >
-          <Square justify="center" align="center" active={sizeEnable}>
-            {sizeEnable && (
-              <IconSvg src={checked_icon} fontSize={10} heightable={false} />
-            )}
-          </Square>
-          <Typography
-            fontSize={18}
-            lineHeight={20}
-            color={sizeEnable ? "#044700" : "#4F4F4F"}
+        <SpaceContainer direction="vertical" size={0}>
+          <Option
+            size={10}
+            active={sizeEnable ? 1 : 0}
+            onClick={() => onSetEnble("size", !sizeEnable)}
           >
-            Size
-          </Typography>
-        </Option>
-        <Option
-          size={10}
-          active={colorEnable ? 1 : 0}
-          onClick={() => onSetEnble("color", !colorEnable)}
-        >
-          <Square justify="center" align="center" active={colorEnable}>
-            {colorEnable && (
-              <IconSvg src={checked_icon} fontSize={10} heightable={false} />
-            )}
-          </Square>
-          <Typography
-            fontSize={18}
-            lineHeight={20}
-            color={colorEnable ? "#044700" : "#4F4F4F"}
+            <Square justify="center" align="center" active={sizeEnable}>
+              {sizeEnable && (
+                <IconSvg src={checked_icon} fontSize={10} heightable={false} />
+              )}
+            </Square>
+            <Typography
+              fontSize={18}
+              lineHeight={20}
+              color={sizeEnable ? "#044700" : "#4F4F4F"}
+            >
+              Size
+            </Typography>
+          </Option>
+          {sizeEnable && (
+            <ContentOption>
+              <OptionSize />
+            </ContentOption>
+          )}
+        </SpaceContainer>
+        <SpaceContainer direction="vertical" size={0}>
+          <Option
+            size={10}
+            active={colorEnable ? 1 : 0}
+            onClick={() => onSetEnble("color", !colorEnable)}
           >
-            Color
-          </Typography>
-        </Option>
+            <Square justify="center" align="center" active={colorEnable}>
+              {colorEnable && (
+                <IconSvg src={checked_icon} fontSize={10} heightable={false} />
+              )}
+            </Square>
+            <Typography
+              fontSize={18}
+              lineHeight={20}
+              color={colorEnable ? "#044700" : "#4F4F4F"}
+            >
+              Color
+            </Typography>
+          </Option>
+          {colorEnable && <ContentOption>Option Color</ContentOption>}
+        </SpaceContainer>
       </SpaceContainer>
     </SpaceContainer>
   );

@@ -40,35 +40,37 @@ const Input = ({
 }) => {
   return (
     <SpaceContainer direction="vertical" size={5}>
-      <Box justify="space-between">
-        <Space size={0}>
-          <Typography
-            fontSize={fontSize}
-            lineHeight={lineHeight}
-            color="#828282"
-          >
-            {label}
-          </Typography>
-          {isRequired && (
+      {(label || maxLength) && (
+        <Box justify="space-between">
+          <Space size={0}>
             <Typography
               fontSize={fontSize}
               lineHeight={lineHeight}
-              color="#F9414C"
+              color="#828282"
             >
-              *
+              {label}
+            </Typography>
+            {isRequired && (
+              <Typography
+                fontSize={fontSize}
+                lineHeight={lineHeight}
+                color="#F9414C"
+              >
+                *
+              </Typography>
+            )}
+          </Space>
+          {maxLength && (
+            <Typography
+              fontSize={fontSize}
+              lineHeight={lineHeight}
+              color="#828282"
+            >
+              {value?.length || 0}/{maxLength}
             </Typography>
           )}
-        </Space>
-        {maxLength && (
-          <Typography
-            fontSize={fontSize}
-            lineHeight={lineHeight}
-            color="#828282"
-          >
-            {value?.length || 0}/{maxLength}
-          </Typography>
-        )}
-      </Box>
+        </Box>
+      )}
       <InputContainer
         type={type}
         value={value}
