@@ -73,6 +73,8 @@ const Product = () => {
         return <ProductOption />;
       case 2:
         return <ProductDetail />;
+      case 3:
+        return <>Product Review</>;
       default:
         return null;
     }
@@ -143,6 +145,17 @@ const Product = () => {
           <>
             {prevButton}
             {nextButton}
+          </>
+        );
+      case 3:
+        return (
+          <>
+            <BaseButton width="90px" bgColor="#D9E3D9" color="#044700">
+              แก้ไข
+            </BaseButton>
+            <BaseButton width="90px" bgColor="#044700" color="#fff">
+              ยืนยัน
+            </BaseButton>
           </>
         );
       default:
