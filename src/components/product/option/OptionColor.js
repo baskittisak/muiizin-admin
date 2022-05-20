@@ -3,6 +3,7 @@ import styled from "styled-components";
 import TabsLanguage from "../../../center_components/form/TabsLanguage";
 import InputContainer from "../../../center_components/form/Input";
 import Typography from "../../../center_components/Typography";
+import UploadImage from "../../../center_components/UploadImage";
 import { Box, SpaceContainer } from "../../../style/common";
 import { Input, Space } from "antd";
 
@@ -96,6 +97,13 @@ const OptionColor = () => {
               </Space>
             </InputWrapper>
           </SpaceContainer>
+          <UploadImage
+            label="อัปโหลดรูปภาพสินค้า"
+            labelDescription="(สามารถอัปโหลดได้มากกว่า 1 รูป)"
+            isRequired
+            fontSize={16}
+            lineHeight={17}
+          />
         </Body>
       </SpaceContainer>
       <Box justify="center">
