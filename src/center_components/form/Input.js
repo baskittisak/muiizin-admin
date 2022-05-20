@@ -12,6 +12,7 @@ const SpaceContainer = styled(Space)`
 const InputContainer = styled(InputAntd)`
   width: 100%;
   height: ${({ height }) => `${height}px`};
+  font-size: ${({ font_size }) => `${font_size}px`};
 
   .ant-input {
     font-size: ${({ font_size }) => `${font_size}px`};
