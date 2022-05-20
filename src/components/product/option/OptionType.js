@@ -47,15 +47,15 @@ const ContentOption = styled.div`
 const OptionType = ({ sizeEnable, colorEnable, onSetEnble }) => {
   return (
     <SpaceContainer direction="vertical" size={10}>
+      <Space size={0}>
+        <Typography fontSize={18} lineHeight={20} color="#828282">
+          ประเภทตัวเลือก
+        </Typography>
+        <Typography fontSize={18} lineHeight={20} color="#F9414C">
+          *
+        </Typography>
+      </Space>
       <SpaceContainer direction="vertical" size={20}>
-        <Space size={0}>
-          <Typography fontSize={18} lineHeight={20} color="#828282">
-            ประเภทตัวเลือก
-          </Typography>
-          <Typography fontSize={18} lineHeight={20} color="#F9414C">
-            *
-          </Typography>
-        </Space>
         <SpaceContainer direction="vertical" size={0}>
           <Option
             size={10}
