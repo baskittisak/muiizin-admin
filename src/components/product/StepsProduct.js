@@ -5,6 +5,8 @@ import styled from "styled-components";
 const { Step } = Steps;
 
 const StepsContainer = styled(Steps)`
+  margin-bottom: 24px;
+
   .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon {
     background: #fff4d6;
     border-color: #fff4d6;
