@@ -3,11 +3,7 @@ import styled from "styled-components";
 import InputAntd from "antd/lib/input";
 import Space from "antd/lib/space";
 import Typography from "../Typography";
-import { Box } from "../../style/common";
-
-const SpaceContainer = styled(Space)`
-  width: 100%;
-`;
+import { Box, SpaceContainer } from "../../style/common";
 
 const InputContainer = styled(InputAntd)`
   width: 100%;

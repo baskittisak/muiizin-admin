@@ -1,13 +1,8 @@
 import { memo, useCallback, useMemo, useState } from "react";
-import styled from "styled-components";
 import Dropdown from "../../center_components/form/Dropdown";
 import Input from "../../center_components/form/Input";
 import TabsLanguage from "../../center_components/form/TabsLanguage";
-import { Space } from "antd";
-
-const SpaceContainer = styled(Space)`
-  width: 100%;
-`;
+import { SpaceContainer } from "../../style/common";
 
 const ProductInfo = ({ productInfo, setProductInfo }) => {
   const [language, setLanguage] = useState({
@@ -22,22 +17,25 @@ const ProductInfo = ({ productInfo, setProductInfo }) => {
     }));
   }, []);
 
-  const onSetProductInfo = useCallback((type, value, language) => {
-    if (language) {
-      setProductInfo((prevState) => ({
-        ...prevState,
-        [type]: {
-          ...prevState[type],
-          [language]: value,
-        },
-      }));
-    } else {
-      setProductInfo((prevState) => ({
-        ...prevState,
-        [type]: value,
-      }));
-    }
-  }, [setProductInfo]);
+  const onSetProductInfo = useCallback(
+    (type, value, language) => {
+      if (language) {
+        setProductInfo((prevState) => ({
+          ...prevState,
+          [type]: {
+            ...prevState[type],
+            [language]: value,
+          },
+        }));
+      } else {
+        setProductInfo((prevState) => ({
+          ...prevState,
+          [type]: value,
+        }));
+      }
+    },
+    [setProductInfo]
+  );
 
   const categoriesItems = useMemo(
     () => [

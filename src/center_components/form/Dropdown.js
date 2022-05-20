@@ -4,11 +4,7 @@ import Typography from "../Typography";
 import IconSvg from "../IconSvg";
 import { ReactComponent as arrow_icon } from "../../assets/icons/arrow_down.svg";
 import { Space, Menu, Dropdown } from "antd";
-import { Box } from "../../style/common";
-
-const SpaceContainer = styled(Space)`
-  width: 100%;
-`;
+import { Box, SpaceContainer } from "../../style/common";
 
 const DropdownContainer = styled(Dropdown)`
   cursor: pointer;
