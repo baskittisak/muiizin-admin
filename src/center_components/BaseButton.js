@@ -46,6 +46,7 @@ const BaseButton = ({
   lineHeight = 20,
   bgColor,
   color,
+  disabled,
   children,
   onClick
 }) => {
@@ -57,6 +58,7 @@ const BaseButton = ({
       width={width}
       bg_color={bgColor}
       color={color}
+      disabled={disabled}
       onClick={onClick}
     >
       {children}

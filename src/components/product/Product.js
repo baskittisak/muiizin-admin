@@ -1,11 +1,12 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { Box } from "../../style/common";
+import { Space } from "antd";
+import { objValuesArr } from "../../utils/utils";
 import FormWrapper from "../../center_components/FormWrapper";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
-import { Box } from "../../style/common";
-import { Space } from "antd";
 import ProductInfo from "./ProductInfo";
 import StepsProduct from "./StepsProduct";
 
@@ -35,6 +36,19 @@ const Footer = styled(Box)`
 const Product = () => {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
+  const [productInfo, setProductInfo] = useState({
+    name: {
+      th: "",
+      en: "",
+    },
+    owner: {
+      th: "",
+      en: "",
+    },
+    category: "",
+    price: "",
+    status: "",
+  });
 
   const onNext = useCallback(() => {
     setCurrent((prev) => prev + 1);
@@ -47,20 +61,60 @@ const Product = () => {
   const displayStep = useMemo(() => {
     switch (current) {
       case 0:
-        return <ProductInfo />;
+        return (
+          <ProductInfo
+            productInfo={productInfo}
+            setProductInfo={setProductInfo}
+          />
+        );
       default:
         return null;
     }
-  }, [current]);
+  }, [current, productInfo]);
 
-  const displayButton = useMemo(() => {
-    const nextButton = (
-      <BaseButton width="90px" bgColor="#044700" color="#fff" onClick={onNext}>
+  const isProductNull = useMemo(() => {
+    const values = [
+      ...objValuesArr(productInfo.name),
+      ...objValuesArr(productInfo.owner),
+      productInfo.category,
+      productInfo.price,
+      productInfo.status,
+    ];
+    return values.includes("");
+  }, [
+    productInfo.category,
+    productInfo.name,
+    productInfo.owner,
+    productInfo.price,
+    productInfo.status,
+  ]);
+
+  const isDisabled = useMemo(() => {
+    switch (current) {
+      case 0:
+        return isProductNull;
+      default:
+        return false;
+    }
+  }, [current, isProductNull]);
+
+  const nextButton = useMemo(
+    () => (
+      <BaseButton
+        width="90px"
+        bgColor="#044700"
+        color="#fff"
+        onClick={onNext}
+        disabled={isDisabled}
+      >
         ถัดไป
       </BaseButton>
-    );
+    ),
+    [isDisabled, onNext]
+  );
 
-    const prevButton = (
+  const prevButton = useMemo(
+    () => (
       <BaseButton
         width="90px"
         bgColor="#D9E3D9"
@@ -69,8 +123,11 @@ const Product = () => {
       >
         ย้อนกลับ
       </BaseButton>
-    );
+    ),
+    [onPrev]
+  );
 
+  const displayButton = useMemo(() => {
     switch (current) {
       case 0:
         return nextButton;
@@ -85,7 +142,7 @@ const Product = () => {
       default:
         return null;
     }
-  }, [current, onNext, onPrev]);
+  }, [current, nextButton, prevButton]);
 
   return (
     <Frame label="เพิ่มสินค้าใหม่" onBack={() => navigate("/")}>
