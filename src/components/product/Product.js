@@ -7,8 +7,9 @@ import { objValuesArr } from "../../utils/utils";
 import FormWrapper from "../../center_components/FormWrapper";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
-import ProductInfo from "./ProductInfo";
 import StepsProduct from "./StepsProduct";
+import ProductInfo from "./ProductInfo";
+import ProductOption from "./option/ProductOption";
 
 const Body = styled.div`
   margin-bottom: 24px;
@@ -35,7 +36,7 @@ const Footer = styled(Box)`
 
 const Product = () => {
   const navigate = useNavigate();
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(1);
   const [productInfo, setProductInfo] = useState({
     name: {
       th: "",
@@ -67,6 +68,8 @@ const Product = () => {
             setProductInfo={setProductInfo}
           />
         );
+      case 1:
+        return <ProductOption />;
       default:
         return null;
     }
