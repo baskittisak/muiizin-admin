@@ -1,6 +1,7 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import { SpaceContainer } from "../../../style/common";
 import Options from "./Options";
+import OptionImage from "./OptionImage";
 import OptionType from "./OptionType";
 
 const ProductOption = () => {
@@ -27,7 +28,7 @@ const ProductOption = () => {
         />
       );
     } else {
-      return <>Image</>;
+      return <OptionImage />;
     }
   }, [option, optionEnable.color, optionEnable.size, onSetOptionEnable]);
 
