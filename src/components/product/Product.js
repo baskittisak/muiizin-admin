@@ -10,8 +10,8 @@ import ProductInfo from "./ProductInfo";
 import StepsProduct from "./StepsProduct";
 
 const Body = styled.div`
-  height: 400px;
   margin-bottom: 24px;
+  /* height: 400px;
   overflow-y: scroll;
   overflow-x: hidden;
 
@@ -23,7 +23,7 @@ const Body = styled.div`
   ::-webkit-scrollbar-thumb {
     background: #8aa399;
     border-radius: 5px;
-  }
+  } */
 `;
 
 const Footer = styled(Box)`
