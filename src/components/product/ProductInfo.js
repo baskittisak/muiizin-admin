@@ -73,9 +73,7 @@ const ProductInfo = ({ productInfo, setProductInfo }) => {
     <SpaceContainer direction="vertical" size={30}>
       <TabsLanguage onChange={(key) => onSetLanguage("name", key)}>
         <Input
-          label={`ชื่อสินค้า${
-            language.name === "th" ? "ภาษาไทย" : "ภาษาอังกฤษ"
-          }`}
+          label={`ชื่อสินค้าภาษา${language.name === "th" ? "ไทย" : "อังกฤษ"}`}
           value={productInfo.name[language.name]}
           isRequired
           maxLength={150}
@@ -84,9 +82,7 @@ const ProductInfo = ({ productInfo, setProductInfo }) => {
       </TabsLanguage>
       <TabsLanguage onChange={(key) => onSetLanguage("owner", key)}>
         <Input
-          label={`ชื่อผู้ผลิต${
-            language.owner === "th" ? "ภาษาไทย" : "ภาษาอังกฤษ"
-          }`}
+          label={`ชื่อผู้ผลิตภาษา${language.owner === "th" ? "ไทย" : "อังกฤษ"}`}
           value={productInfo.owner[language.owner]}
           isRequired
           maxLength={100}

@@ -5,6 +5,7 @@ import { Box, SpaceContainer } from "../../../style/common";
 import Typography from "../../../center_components/Typography";
 import IconSvg from "../../../center_components/IconSvg";
 import OptionSize from "./OptionSize";
+import OptionColor from "./OptionColor";
 import { ReactComponent as checked_icon } from "../../../assets/icons/check.svg";
 
 const Option = styled(Space)`
@@ -99,7 +100,11 @@ const OptionType = ({ sizeEnable, colorEnable, onSetEnble }) => {
               Color
             </Typography>
           </Option>
-          {colorEnable && <ContentOption>Option Color</ContentOption>}
+          {colorEnable && (
+            <ContentOption>
+              <OptionColor />
+            </ContentOption>
+          )}
         </SpaceContainer>
       </SpaceContainer>
     </SpaceContainer>
