@@ -21,7 +21,12 @@ const StepsContainer = styled(Steps)`
   .ant-steps-item-process
     > .ant-steps-item-container
     > .ant-steps-item-content
-    > .ant-steps-item-title {
+    > .ant-steps-item-title,
+  .ant-steps-item-finish
+    > .ant-steps-item-container
+    > .ant-steps-item-content
+    > .ant-steps-item-title,
+  .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
     color: #584207;
     font-weight: 700;
   }
@@ -42,6 +47,16 @@ const StepsContainer = styled(Steps)`
     > .ant-steps-item-container
     > .ant-steps-item-tail::after {
     background-color: #bdbdbd;
+  }
+
+  .ant-steps-item-finish .ant-steps-item-icon {
+    border-color: #584207;
+  }
+
+  .ant-steps-item-finish
+    > .ant-steps-item-container
+    > .ant-steps-item-tail::after {
+    background-color: #584207;
   }
 `;
 
