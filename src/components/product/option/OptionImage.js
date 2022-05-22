@@ -4,6 +4,7 @@ import UploadImage from "../../../center_components/UploadImage";
 const OptionImage = () => {
   return (
     <UploadImage
+      type="product"
       label="อัปโหลดรูปภาพสินค้า"
       labelDescription="(สามารถอัปโหลดได้มากกว่า 1 รูป)"
       isRequired

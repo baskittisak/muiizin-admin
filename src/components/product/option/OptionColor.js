@@ -98,6 +98,7 @@ const OptionColor = () => {
             </InputWrapper>
           </SpaceContainer>
           <UploadImage
+            type="product"
             label="อัปโหลดรูปภาพสินค้า"
             labelDescription="(สามารถอัปโหลดได้มากกว่า 1 รูป)"
             isRequired

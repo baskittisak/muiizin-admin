@@ -85,10 +85,11 @@ const ImageContainer = styled.div`
   }
 `;
 
-// const CLOUND_NAME = "selacnx";
-// const UPLOAD_PRESET = "selacnx";
+const CLOUND_NAME = "muiizin";
+const UPLOAD_PRESET = "muiizin";
 
 const UploadImage = ({
+  type,
   label,
   labelDescription,
   fontSize = 18,
@@ -109,14 +110,15 @@ const UploadImage = ({
       const { default: axios } = await import("axios");
       setLoading(true);
       const file = await e.target.files[0];
+      console.log(file, "file");
       const payload = new FormData();
       payload.append("file", file);
-      payload.append("folder", "product");
-    //   payload.append("upload_preset", UPLOAD_PRESET);
+      payload.append("folder", type);
+      payload.append("upload_preset", UPLOAD_PRESET);
       try {
         const response = await axios({
           method: "POST",
-        //   url: `https://api.Cloudinary.com/v1_1/${CLOUND_NAME}/image/upload`,
+          url: `https://api.Cloudinary.com/v1_1/${CLOUND_NAME}/image/upload`,
           data: payload,
         });
         const url = response?.data?.secure_url;
@@ -130,7 +132,7 @@ const UploadImage = ({
         console.error(error);
       }
     },
-    [imageList, setImageList, onUploadImage]
+    [type, imageList, setImageList, onUploadImage]
   );
 
   const onBrowseFile = useCallback(() => {
