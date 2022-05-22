@@ -47,10 +47,14 @@ const Container = styled.div`
   }
 `;
 
-const TabsLanguage = ({ children, onChange }) => {
+const TabsLanguage = ({ children, activeKey = "th", onChange }) => {
   return (
     <Container>
-      <Tabs defaultActiveKey="th" onChange={onChange}>
+      <Tabs
+        defaultActiveKey={activeKey}
+        activeKey={activeKey}
+        onChange={onChange}
+      >
         <TabPane tab="TH" key="th">
           {children}
         </TabPane>
