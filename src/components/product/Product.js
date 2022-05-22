@@ -17,22 +17,10 @@ import StepsProduct from "./StepsProduct";
 import ProductInfo from "./ProductInfo";
 import ProductOption from "./option/ProductOption";
 import ProductDetail from "./ProductDetail";
+import ProductReview from "./ProductReview";
 
 const Body = styled.div`
   margin-bottom: 24px;
-  /* height: 400px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-
-  ::-webkit-scrollbar {
-    display: block !important;
-    width: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #8aa399;
-    border-radius: 5px;
-  } */
 `;
 
 const Footer = styled(Box)`
@@ -43,7 +31,7 @@ const Footer = styled(Box)`
 
 const Product = () => {
   const navigate = useNavigate();
-  const [current, setCurrent] = useState(2);
+  const [current, setCurrent] = useState(0);
   const [productInfo, setProductInfo] = useState(defaultProductInfo);
   const [option, setOption] = useState(defaultOption);
   const [productOption, setProductOption] = useState();
@@ -200,7 +188,16 @@ const Product = () => {
           />
         );
       case 3:
-        return <>Product Review</>;
+        return (
+          <ProductReview
+            productInfo={productInfo}
+            optionEnable={option.enable}
+            productOption={productOption}
+            detailTH={productDetail.th}
+            detailEN={productDetail.en}
+            setCurrent={setCurrent}
+          />
+        );
       default:
         return null;
     }
@@ -322,7 +319,12 @@ const Product = () => {
       case 3:
         return (
           <>
-            <BaseButton width="90px" bgColor="#D9E3D9" color="#044700">
+            <BaseButton
+              width="90px"
+              bgColor="#D9E3D9"
+              color="#044700"
+              onClick={() => setCurrent(0)}
+            >
               แก้ไข
             </BaseButton>
             <BaseButton width="90px" bgColor="#044700" color="#fff">
@@ -338,7 +340,7 @@ const Product = () => {
   return (
     <Frame label="เพิ่มสินค้าใหม่" onBack={() => navigate("/")}>
       <FormWrapper>
-        <StepsProduct current={current} />
+        {current < 3 && <StepsProduct current={current} />}
         <FormWrapper>
           <Body>{displayStep}</Body>
         </FormWrapper>
