@@ -48,8 +48,11 @@ const OptionType = ({
   sizeEnable,
   colorEnable,
   optionSize,
+  optionColor,
   onSetEnble,
   onSetSize,
+  onSetColor,
+  onSetColorImage,
 }) => {
   return (
     <SpaceContainer direction="vertical" size={10}>
@@ -108,7 +111,11 @@ const OptionType = ({
           </Option>
           {colorEnable && (
             <ContentOption>
-              <OptionColor />
+              <OptionColor
+                optionColor={optionColor}
+                onSetColor={onSetColor}
+                onSetColorImage={onSetColorImage}
+              />
             </ContentOption>
           )}
         </SpaceContainer>

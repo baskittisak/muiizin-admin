@@ -11,6 +11,8 @@ const ProductOption = ({
   productOption,
   onSetEnble,
   onSetSize,
+  onSetColor,
+  onSetColorImage,
 }) => {
   const displayOption = useMemo(() => {
     if (optionEnable) {
@@ -19,8 +21,11 @@ const ProductOption = ({
           sizeEnable={sizeEnable}
           colorEnable={colorEnable}
           optionSize={productOption?.size}
+          optionColor={productOption?.color}
           onSetEnble={onSetEnble}
           onSetSize={onSetSize}
+          onSetColor={onSetColor}
+          onSetColorImage={onSetColorImage}
         />
       );
     } else {
@@ -33,6 +38,8 @@ const ProductOption = ({
     productOption,
     onSetEnble,
     onSetSize,
+    onSetColor,
+    onSetColorImage,
   ]);
 
   return (

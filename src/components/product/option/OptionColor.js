@@ -5,9 +5,10 @@ import InputContainer from "../../../center_components/form/Input";
 import Typography from "../../../center_components/Typography";
 import UploadImage from "../../../center_components/UploadImage";
 import { Box, SpaceContainer } from "../../../style/common";
-import { Input, Space } from "antd";
+import { Space } from "antd";
+import { DebounceInput } from "react-debounce-input";
 
-const Header = styled.div`
+const Header = styled(Box)`
   background: #d9e3d9;
   border: 1px solid #d9e3d9;
   border-bottom: 0;
@@ -34,7 +35,7 @@ const InputWrapper = styled.div`
   }
 `;
 
-const InputColor = styled(Input)`
+const InputColor = styled(DebounceInput)`
   cursor: pointer;
   -webkit-appearance: none;
   border: none;
@@ -43,76 +44,108 @@ const InputColor = styled(Input)`
   padding: 0;
 `;
 
-const OptionColor = () => {
-  const [language, setLanguage] = useState("th");
-  const [color, setColor] = useState();
+const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
+  const [language, setLanguage] = useState(["th", "th"]);
 
-  const onColorPicker = useCallback(() => {
-    document.getElementById("color-picker").click();
+  const onSetLanguage = useCallback((index, value) => {
+    setLanguage((prevState) => {
+      const newLanguage = [...prevState];
+      newLanguage[index] = value;
+      return newLanguage;
+    });
+  }, []);
+
+  const onAddColor = useCallback(() => {
+    setLanguage((prevState) => {
+      const newLanguage = [...prevState];
+      newLanguage.push("th");
+      return newLanguage;
+    });
+    onSetColor("add");
+  }, [onSetColor]);
+
+  const onColorPicker = useCallback((index) => {
+    document.getElementById(`color-picker-${index}`).click();
   }, []);
 
   return (
     <SpaceContainer direction="vertical" size={20}>
-      <SpaceContainer direction="vertical" size={0}>
-        <Header>
-          <Typography
-            fontWeight={700}
-            lineHeight={17}
-            color="#4F4F4F"
-          >{`ตัวเลือกที่ ${1}`}</Typography>
-        </Header>
-        <Body direction="vertical" size={20}>
-          <TabsLanguage onChange={(value) => setLanguage(value)}>
-            <InputContainer
-              label={`ชื่อสีภาษา${language === "th" ? "ไทย" : "อังกฤษ"}`}
-              maxLength={30}
-              isRequired
-              fontSize={16}
-              lineHeight={17}
-            />
-          </TabsLanguage>
-          <SpaceContainer direction="vertical" size={5}>
-            <Space size={0}>
-              <Typography lineHeight={17} color="#828282">
-                รหัสสี
-              </Typography>
-              <Typography lineHeight={17} color="#F9414C">
-                *
-              </Typography>
-            </Space>
-            <InputWrapper onClick={onColorPicker}>
-              <Space>
-                <InputColor
-                  id="color-picker"
-                  type="color"
-                  value={color || "#000000"}
-                  onChange={(e) => setColor(e.target.value)}
-                />
-                <Typography
+      {optionColor &&
+        optionColor.map((color, index) => (
+          <SpaceContainer key={index} direction="vertical" size={0}>
+            <Header justify="space-between">
+              <Typography
+                fontWeight={700}
+                lineHeight={17}
+                color="#4F4F4F"
+              >{`ตัวเลือกที่ ${index + 1}`}</Typography>
+            </Header>
+            <Body direction="vertical" size={20}>
+              <TabsLanguage onChange={(value) => onSetLanguage(index, value)}>
+                <InputContainer
+                  label={`ชื่อสีภาษา${language === "th" ? "ไทย" : "อังกฤษ"}`}
+                  maxLength={30}
+                  isRequired
+                  value={color.name[language[index]]}
+                  fontSize={16}
                   lineHeight={17}
-                  color={color ? "#333333" : "#BDBDBD"}
-                >
-                  {color || "กรุณาเลือกรหัสสี"}
-                </Typography>
-              </Space>
-            </InputWrapper>
+                  onChange={(value) =>
+                    onSetColor("edit", index, value, language[index])
+                  }
+                />
+              </TabsLanguage>
+              <SpaceContainer direction="vertical" size={5}>
+                <Space size={0}>
+                  <Typography lineHeight={17} color="#828282">
+                    รหัสสี
+                  </Typography>
+                  <Typography lineHeight={17} color="#F9414C">
+                    *
+                  </Typography>
+                </Space>
+                <InputWrapper onClick={() => onColorPicker(index)}>
+                  <Space>
+                    <InputColor
+                      id={`color-picker-${index}`}
+                      type="color"
+                      value={color.code || "#000000"}
+                      debounceTimeout={300}
+                      onChange={(e) =>
+                        onSetColor("edit", index, e.target.value)
+                      }
+                    />
+                    <Typography
+                      lineHeight={17}
+                      color={color.code ? "#333333" : "#BDBDBD"}
+                    >
+                      {color.code || "กรุณาเลือกรหัสสี"}
+                    </Typography>
+                  </Space>
+                </InputWrapper>
+              </SpaceContainer>
+              <UploadImage
+                type="product"
+                label="อัปโหลดรูปภาพสินค้า"
+                labelDescription="(สามารถอัปโหลดได้มากกว่า 1 รูป)"
+                isRequired
+                fontSize={16}
+                lineHeight={17}
+                imageList={color.images}
+                setImageList={(images) => onSetColorImage("add", index, images)}
+                onDeleteImage={(indexDel) =>
+                  onSetColorImage("delete", index, "", indexDel)
+                }
+              />
+            </Body>
           </SpaceContainer>
-          <UploadImage
-            type="product"
-            label="อัปโหลดรูปภาพสินค้า"
-            labelDescription="(สามารถอัปโหลดได้มากกว่า 1 รูป)"
-            isRequired
-            fontSize={16}
-            lineHeight={17}
-            // imageList,
-            // setImageList,
-            // onUploadImage,
-            // onDeleteImage,
-          />
-        </Body>
-      </SpaceContainer>
+        ))}
       <Box justify="center">
-        <Typography fontWeight={700} lineHeight={17} color="#8AA399">
+        <Typography
+          fontWeight={700}
+          lineHeight={17}
+          color="#8AA399"
+          onClick={onAddColor}
+        >
           + เพิ่มตัวเลือก
         </Typography>
       </Box>

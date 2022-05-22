@@ -44,6 +44,10 @@ const Upload = styled(Box)`
   }
 `;
 
+const ImageWrapper = styled(Space)`
+  flex-wrap: wrap;
+`;
+
 const ManageImageWrapper = styled(Space)`
   width: 100%;
   height: 100%;
@@ -97,7 +101,6 @@ const UploadImage = ({
   isRequired,
   imageList,
   setImageList,
-  onUploadImage,
   onDeleteImage,
 }) => {
   const inputRef = createRef();
@@ -110,7 +113,6 @@ const UploadImage = ({
       const { default: axios } = await import("axios");
       setLoading(true);
       const file = await e.target.files[0];
-      console.log(file, "file");
       const payload = new FormData();
       payload.append("file", file);
       payload.append("folder", type);
@@ -125,14 +127,13 @@ const UploadImage = ({
         const newImageList = [...imageList];
         newImageList.push(url);
         setImageList(newImageList);
-        onUploadImage(newImageList);
         setLoading(false);
       } catch (error) {
         setLoading(false);
         console.error(error);
       }
     },
-    [type, imageList, setImageList, onUploadImage]
+    [type, imageList, setImageList]
   );
 
   const onBrowseFile = useCallback(() => {
@@ -176,7 +177,7 @@ const UploadImage = ({
         )}
       </Space>
       <Space direction="vertical" size={8}>
-        <Space size={16}>
+        <ImageWrapper size={16}>
           {imageList?.map((image, index) => (
             <ImageContainer key={index.toString()}>
               <Image
@@ -189,7 +190,7 @@ const UploadImage = ({
                   onVisibleChange: () => setVisiblePreview(false),
                 }}
               />
-              <ManageImageWrapper size={8} onClick={() => onPreview(index)}>
+              <ManageImageWrapper size={8}>
                 <ManageImage
                   justify="center"
                   align="center"
@@ -220,7 +221,7 @@ const UploadImage = ({
               />
             </Upload>
           </Spin>
-        </Space>
+        </ImageWrapper>
       </Space>
     </Space>
   );

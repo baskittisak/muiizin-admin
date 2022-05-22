@@ -48,6 +48,8 @@ const Product = () => {
   const [option, setOption] = useState(defaultOption);
   const [productOption, setProductOption] = useState();
 
+  console.log(productOption?.color, "productOption");
+
   useEffect(() => {
     if (option.enable !== null) {
       setProductOption(() => {
@@ -102,6 +104,54 @@ const Product = () => {
     });
   }, []);
 
+  const onSetColor = useCallback((type, index, value, language) => {
+    const isAdd = type === "add";
+    const isDelete = type === "delete";
+    setProductOption((prevState) => {
+      const newColor = [...prevState?.color];
+      if (isAdd) {
+        newColor.push({
+          name: {
+            th: "",
+            en: "",
+          },
+          code: "",
+          images: [],
+        });
+        return { ...prevState, color: [...newColor] };
+      } else if (isDelete) {
+        const colorDeleted = newColor.filter(
+          (_, prevIndex) => prevIndex !== index
+        );
+        return { ...prevState, color: [...colorDeleted] };
+      } else {
+        if (language) {
+          newColor[index].name[language] = value;
+        } else {
+          newColor[index].code = value;
+        }
+        return { ...prevState, color: [...newColor] };
+      }
+    });
+  }, []);
+
+  const onSetColorImage = useCallback((type, index, value, indexDel) => {
+    const isAdd = type === "add";
+    setProductOption((prevState) => {
+      const newColor = [...prevState?.color];
+      if (isAdd) {
+        newColor[index].images = value;
+        return { ...prevState, color: [...newColor] };
+      } else {
+        const imageDeleted = newColor[index].images.filter(
+          (_, prevIndex) => prevIndex !== indexDel
+        );
+        newColor[index].images = [...imageDeleted];
+        return { ...prevState, color: [...newColor] };
+      }
+    });
+  }, []);
+
   const displayStep = useMemo(() => {
     switch (current) {
       case 0:
@@ -120,6 +170,8 @@ const Product = () => {
             productOption={productOption}
             onSetEnble={onSetEnable}
             onSetSize={onSetSize}
+            onSetColor={onSetColor}
+            onSetColorImage={onSetColorImage}
           />
         );
       case 2:
@@ -138,6 +190,8 @@ const Product = () => {
     productOption,
     onSetEnable,
     onSetSize,
+    onSetColor,
+    onSetColorImage,
   ]);
 
   const isProductNull = useMemo(() => {
