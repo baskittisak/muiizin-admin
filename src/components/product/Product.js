@@ -1,10 +1,15 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Box } from "../../style/common";
 import { Space } from "antd";
 import { objValuesArr } from "../../utils/utils";
-import { defaultOption, defaultProductInfo } from "./data/defaultData";
+import {
+  defaultOption,
+  defaultProductInfo,
+  defaultOptionSize,
+  defaultOptionColor,
+} from "./data/defaultData";
 import FormWrapper from "../../center_components/FormWrapper";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
@@ -41,6 +46,26 @@ const Product = () => {
   const [current, setCurrent] = useState(1);
   const [productInfo, setProductInfo] = useState(defaultProductInfo);
   const [option, setOption] = useState(defaultOption);
+  const [productOption, setProductOption] = useState();
+
+  useEffect(() => {
+    if (option.enable !== null) {
+      setProductOption(() => {
+        if (option.enable) {
+          const optionData = {};
+          if (option.size) {
+            optionData.size = defaultOptionSize;
+          }
+          if (option.color) {
+            optionData.color = defaultOptionColor;
+          }
+          return optionData;
+        } else {
+          return [];
+        }
+      });
+    }
+  }, [option.enable, option.size, option.color]);
 
   const onNext = useCallback(() => {
     setCurrent((prev) => prev + 1);
@@ -55,6 +80,23 @@ const Product = () => {
       ...prevState,
       [type]: value,
     }));
+  }, []);
+
+  const onSetSize = useCallback((type, index, value) => {
+    const isAdd = type === "add";
+    const isDelete = type === "delete";
+    setProductOption((prevState) => {
+      const newSize = [...prevState?.size];
+      if (isAdd) {
+        newSize.push({ name: "" });
+        return { ...prevState, size: [...newSize] };
+      } else if (isDelete) {
+        return newSize.filter((_, prevIndex) => prevIndex !== index);
+      } else {
+        newSize[index].name = value;
+        return { ...prevState, size: [...newSize] };
+      }
+    });
   }, []);
 
   const displayStep = useMemo(() => {
@@ -72,7 +114,9 @@ const Product = () => {
             optionEnable={option.enable}
             sizeEnable={option.size}
             colorEnable={option.color}
+            productOption={productOption}
             onSetEnble={onSetEnable}
+            onSetSize={onSetSize}
           />
         );
       case 2:
@@ -88,7 +132,9 @@ const Product = () => {
     option.enable,
     option.size,
     productInfo,
+    productOption,
     onSetEnable,
+    onSetSize,
   ]);
 
   const isProductNull = useMemo(() => {

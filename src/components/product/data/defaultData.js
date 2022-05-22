@@ -17,3 +17,24 @@ export const defaultOption = {
   size: false,
   color: false,
 };
+
+export const defaultOptionSize = [{ name: "" }, { name: "" }];
+
+export const defaultOptionColor = [
+  {
+    name: {
+      th: "",
+      en: "",
+    },
+    code: "",
+    images: [],
+  },
+  {
+    name: {
+      th: "",
+      en: "",
+    },
+    code: "",
+    images: [],
+  },
+];

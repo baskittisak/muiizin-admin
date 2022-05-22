@@ -44,7 +44,13 @@ const ContentOption = styled.div`
   border-radius: 0 0 3px 3px;
 `;
 
-const OptionType = ({ sizeEnable, colorEnable, onSetEnble }) => {
+const OptionType = ({
+  sizeEnable,
+  colorEnable,
+  optionSize,
+  onSetEnble,
+  onSetSize,
+}) => {
   return (
     <SpaceContainer direction="vertical" size={10}>
       <Space size={0}>
@@ -77,7 +83,7 @@ const OptionType = ({ sizeEnable, colorEnable, onSetEnble }) => {
           </Option>
           {sizeEnable && (
             <ContentOption>
-              <OptionSize />
+              <OptionSize optionSize={optionSize} onSetSize={onSetSize} />
             </ContentOption>
           )}
         </SpaceContainer>

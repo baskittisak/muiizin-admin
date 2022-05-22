@@ -8,7 +8,9 @@ const ProductOption = ({
   optionEnable,
   sizeEnable,
   colorEnable,
+  productOption,
   onSetEnble,
+  onSetSize,
 }) => {
   const displayOption = useMemo(() => {
     if (optionEnable) {
@@ -16,13 +18,22 @@ const ProductOption = ({
         <OptionType
           sizeEnable={sizeEnable}
           colorEnable={colorEnable}
+          optionSize={productOption?.size}
           onSetEnble={onSetEnble}
+          onSetSize={onSetSize}
         />
       );
     } else {
       return <OptionImage />;
     }
-  }, [optionEnable, sizeEnable, colorEnable, onSetEnble]);
+  }, [
+    optionEnable,
+    sizeEnable,
+    colorEnable,
+    productOption,
+    onSetEnble,
+    onSetSize,
+  ]);
 
   return (
     <SpaceContainer direction="vertical" size={30}>
