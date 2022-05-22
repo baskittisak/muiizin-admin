@@ -66,6 +66,17 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
     onSetColor("add");
   }, [onSetColor]);
 
+  const onDeleteColor = useCallback(
+    (index) => {
+      setLanguage((prevState) => {
+        const newLanguage = [...prevState];
+        return newLanguage.filter((_, prevIndex) => prevIndex !== index);
+      });
+      onSetColor("delete", index);
+    },
+    [onSetColor]
+  );
+
   const onColorPicker = useCallback((index) => {
     document.getElementById(`color-picker-${index}`).click();
   }, []);
@@ -74,14 +85,11 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
     (index) => {
       return (
         optionColor?.length > 2 && (
-          <IconSvg
-            src={delete_icon}
-            onClick={() => onSetColor("delete", index)}
-          />
+          <IconSvg src={delete_icon} onClick={() => onDeleteColor(index)} />
         )
       );
     },
-    [optionColor?.length, onSetColor]
+    [optionColor?.length, onDeleteColor]
   );
 
   return (
@@ -98,9 +106,14 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
               {deleteIcon(index)}
             </Header>
             <Body direction="vertical" size={20}>
-              <TabsLanguage onChange={(value) => onSetLanguage(index, value)}>
+              <TabsLanguage
+                activeKey={language[index]}
+                onChange={(value) => onSetLanguage(index, value)}
+              >
                 <InputContainer
-                  label={`ชื่อสีภาษา${language[index] === "th" ? "ไทย" : "อังกฤษ"}`}
+                  label={`ชื่อสีภาษา${
+                    language[index] === "th" ? "ไทย" : "อังกฤษ"
+                  }`}
                   maxLength={30}
                   isRequired
                   value={color.name[language[index]]}
