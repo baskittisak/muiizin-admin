@@ -1,41 +1,36 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import { SpaceContainer } from "../../../style/common";
 import Options from "./Options";
 import OptionImage from "./OptionImage";
 import OptionType from "./OptionType";
 
-const ProductOption = () => {
-  const [option, setOption] = useState(null);
-  const [optionEnable, setOptionEnable] = useState({
-    size: false,
-    color: false,
-  });
-
-  const onSetOptionEnable = useCallback((type, value) => {
-    setOptionEnable((prevState) => ({
-      ...prevState,
-      [type]: value,
-    }));
-  }, []);
-
+const ProductOption = ({
+  optionEnable,
+  sizeEnable,
+  colorEnable,
+  onSetEnble,
+}) => {
   const displayOption = useMemo(() => {
-    if (option) {
+    if (optionEnable) {
       return (
         <OptionType
-          sizeEnable={optionEnable.size}
-          colorEnable={optionEnable.color}
-          onSetEnble={onSetOptionEnable}
+          sizeEnable={sizeEnable}
+          colorEnable={colorEnable}
+          onSetEnble={onSetEnble}
         />
       );
     } else {
       return <OptionImage />;
     }
-  }, [option, optionEnable.color, optionEnable.size, onSetOptionEnable]);
+  }, [optionEnable, sizeEnable, colorEnable, onSetEnble]);
 
   return (
     <SpaceContainer direction="vertical" size={30}>
-      <Options option={option} setOption={setOption} />
-      {option !== null && displayOption}
+      <Options
+        option={optionEnable}
+        setOption={(value) => onSetEnble("enable", value)}
+      />
+      {optionEnable !== null && displayOption}
     </SpaceContainer>
   );
 };

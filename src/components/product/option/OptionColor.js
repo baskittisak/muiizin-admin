@@ -85,7 +85,7 @@ const OptionColor = () => {
                 <InputColor
                   id="color-picker"
                   type="color"
-                  value={color || "#000"}
+                  value={color || "#000000"}
                   onChange={(e) => setColor(e.target.value)}
                 />
                 <Typography
@@ -104,6 +104,10 @@ const OptionColor = () => {
             isRequired
             fontSize={16}
             lineHeight={17}
+            // imageList,
+            // setImageList,
+            // onUploadImage,
+            // onDeleteImage,
           />
         </Body>
       </SpaceContainer>

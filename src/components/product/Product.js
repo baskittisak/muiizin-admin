@@ -51,6 +51,11 @@ const Product = () => {
     price: "",
     status: "",
   });
+  const [option, setOption] = useState({
+    enable: null,
+    size: false,
+    color: false,
+  });
 
   const onNext = useCallback(() => {
     setCurrent((prev) => prev + 1);
@@ -58,6 +63,13 @@ const Product = () => {
 
   const onPrev = useCallback(() => {
     setCurrent((prev) => prev - 1);
+  }, []);
+
+  const onSetEnable = useCallback((type, value) => {
+    setOption((prevState) => ({
+      ...prevState,
+      [type]: value,
+    }));
   }, []);
 
   const displayStep = useMemo(() => {
@@ -70,7 +82,14 @@ const Product = () => {
           />
         );
       case 1:
-        return <ProductOption />;
+        return (
+          <ProductOption
+            optionEnable={option.enable}
+            sizeEnable={option.size}
+            colorEnable={option.color}
+            onSetEnble={onSetEnable}
+          />
+        );
       case 2:
         return <ProductDetail />;
       case 3:
@@ -78,7 +97,14 @@ const Product = () => {
       default:
         return null;
     }
-  }, [current, productInfo]);
+  }, [
+    current,
+    option.color,
+    option.enable,
+    option.size,
+    productInfo,
+    onSetEnable,
+  ]);
 
   const isProductNull = useMemo(() => {
     const values = [
