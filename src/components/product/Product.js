@@ -48,8 +48,6 @@ const Product = () => {
   const [option, setOption] = useState(defaultOption);
   const [productOption, setProductOption] = useState();
 
-  console.log(productOption?.color, "productOption");
-
   useEffect(() => {
     if (option.enable !== null) {
       setProductOption(() => {
@@ -211,14 +209,39 @@ const Product = () => {
     productInfo.status,
   ]);
 
+  const isOptionNull = useMemo(() => {
+    const totalOption = productOption && objValuesArr(productOption).length;
+    const initNull =
+      option.enable === null || !productOption || totalOption === 0;
+    if (totalOption !== 0) {
+      const size = productOption?.size;
+      const color = productOption?.color;
+      const sizeName = size && size?.map((size) => size.name);
+      const colorCode = color && color?.map((color) => color.code);
+      const colorName =
+        color && color?.flatMap((color) => objValuesArr(color.name));
+      const colorImages = color && color?.map((color) => color.images?.length);
+      const sizeIsNull = sizeName && sizeName.includes("");
+      const colorIsNull =
+        (colorCode && colorName && [...colorCode, ...colorName].includes("")) ||
+        (colorImages && colorImages.includes(0));
+
+      return sizeIsNull || colorIsNull;
+    } else {
+      return initNull;
+    }
+  }, [option.enable, productOption]);
+
   const isDisabled = useMemo(() => {
     switch (current) {
       case 0:
         return isProductNull;
+      case 1:
+        return isOptionNull;
       default:
         return false;
     }
-  }, [current, isProductNull]);
+  }, [current, isProductNull, isOptionNull]);
 
   const nextButton = useMemo(
     () => (
