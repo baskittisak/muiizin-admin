@@ -43,10 +43,14 @@ const Footer = styled(Box)`
 
 const Product = () => {
   const navigate = useNavigate();
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(2);
   const [productInfo, setProductInfo] = useState(defaultProductInfo);
   const [option, setOption] = useState(defaultOption);
   const [productOption, setProductOption] = useState();
+  const [productDetail, setProductDetail] = useState({
+    th: "<p></p>",
+    en: "<p></p>",
+  });
 
   useEffect(() => {
     if (option.enable !== null) {
@@ -150,6 +154,20 @@ const Product = () => {
     });
   }, []);
 
+  const onSetDetailTH = useCallback((value) => {
+    setProductDetail((prevState) => ({
+      ...prevState,
+      th: value,
+    }));
+  }, []);
+
+  const onSetDetailEN = useCallback((value) => {
+    setProductDetail((prevState) => ({
+      ...prevState,
+      en: value,
+    }));
+  }, []);
+
   const displayStep = useMemo(() => {
     switch (current) {
       case 0:
@@ -173,7 +191,14 @@ const Product = () => {
           />
         );
       case 2:
-        return <ProductDetail />;
+        return (
+          <ProductDetail
+            detailTH={productDetail.th}
+            detailEN={productDetail.en}
+            onSetDetailTH={onSetDetailTH}
+            onSetDetailEN={onSetDetailEN}
+          />
+        );
       case 3:
         return <>Product Review</>;
       default:
@@ -186,10 +211,14 @@ const Product = () => {
     option.size,
     productInfo,
     productOption,
+    productDetail.th,
+    productDetail.en,
     onSetEnable,
     onSetSize,
     onSetColor,
     onSetColorImage,
+    onSetDetailTH,
+    onSetDetailEN,
   ]);
 
   const isProductNull = useMemo(() => {
@@ -232,16 +261,22 @@ const Product = () => {
     }
   }, [option.enable, productOption]);
 
+  const isDetailNull = useMemo(() => {
+    return productDetail.th === "<p></p>" || productDetail.en === "<p></p>";
+  }, [productDetail.en, productDetail.th]);
+
   const isDisabled = useMemo(() => {
     switch (current) {
       case 0:
         return isProductNull;
       case 1:
         return isOptionNull;
+      case 2:
+        return isDetailNull;
       default:
         return false;
     }
-  }, [current, isProductNull, isOptionNull]);
+  }, [current, isProductNull, isOptionNull, isDetailNull]);
 
   const nextButton = useMemo(
     () => (

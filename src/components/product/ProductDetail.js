@@ -1,12 +1,33 @@
-import { memo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import TabsLanguage from "../../center_components/form/TabsLanguage";
 import InputEditor from "../../center_components/InputEditor";
 import Typography from "../../center_components/Typography";
 import { SpaceContainer } from "../../style/common";
 import { Space } from "antd";
 
-const ProductDetail = () => {
+const ProductDetail = ({
+  detailTH,
+  detailEN,
+  onSetDetailTH,
+  onSetDetailEN,
+}) => {
   const [language, setLanguage] = useState("th");
+
+  const InputEditorTH = useMemo(
+    () =>
+      language === "th" && (
+        <InputEditor value={detailTH} language="th" onChange={onSetDetailTH} />
+      ),
+    [language, detailTH, onSetDetailTH]
+  );
+
+  const InputEditorEn = useMemo(
+    () =>
+      language === "en" && (
+        <InputEditor value={detailEN} language="en" onChange={onSetDetailEN} />
+      ),
+    [language, detailEN, onSetDetailEN]
+  );
 
   return (
     <TabsLanguage onChange={(value) => setLanguage(value)}>
@@ -19,7 +40,8 @@ const ProductDetail = () => {
             *
           </Typography>
         </Space>
-        <InputEditor value="<p></p>" onChange={(value) => console.log(value)} />
+        {InputEditorTH}
+        {InputEditorEn}
       </SpaceContainer>
     </TabsLanguage>
   );
