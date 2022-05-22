@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Box } from "../../style/common";
 import { Space } from "antd";
 import { objValuesArr } from "../../utils/utils";
+import { defaultOption, defaultProductInfo } from "./data/defaultData";
 import FormWrapper from "../../center_components/FormWrapper";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
@@ -38,24 +39,8 @@ const Footer = styled(Box)`
 const Product = () => {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(1);
-  const [productInfo, setProductInfo] = useState({
-    name: {
-      th: "",
-      en: "",
-    },
-    owner: {
-      th: "",
-      en: "",
-    },
-    category: "",
-    price: "",
-    status: "",
-  });
-  const [option, setOption] = useState({
-    enable: null,
-    size: false,
-    color: false,
-  });
+  const [productInfo, setProductInfo] = useState(defaultProductInfo);
+  const [option, setOption] = useState(defaultOption);
 
   const onNext = useCallback(() => {
     setCurrent((prev) => prev + 1);
