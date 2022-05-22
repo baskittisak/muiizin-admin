@@ -91,7 +91,10 @@ const Product = () => {
         newSize.push({ name: "" });
         return { ...prevState, size: [...newSize] };
       } else if (isDelete) {
-        return newSize.filter((_, prevIndex) => prevIndex !== index);
+        const sizeDeleted = newSize.filter(
+          (_, prevIndex) => prevIndex !== index
+        );
+        return { ...prevState, size: [...sizeDeleted] };
       } else {
         newSize[index].name = value;
         return { ...prevState, size: [...newSize] };
