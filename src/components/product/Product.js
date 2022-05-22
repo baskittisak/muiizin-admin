@@ -142,6 +142,18 @@ const Product = () => {
     });
   }, []);
 
+  const onSetImage = useCallback((type, value, index) => {
+    const isAdd = type === "add";
+    if (isAdd) {
+      setProductOption(value);
+    } else {
+      setProductOption((prevState) => {
+        const newImage = [...prevState];
+        return newImage.filter((_, prevIndex) => prevIndex !== index);
+      });
+    }
+  }, []);
+
   const onSetDetailTH = useCallback((value) => {
     setProductDetail((prevState) => ({
       ...prevState,
@@ -176,6 +188,7 @@ const Product = () => {
             onSetSize={onSetSize}
             onSetColor={onSetColor}
             onSetColorImage={onSetColorImage}
+            onSetImage={onSetImage}
           />
         );
       case 2:
@@ -214,6 +227,7 @@ const Product = () => {
     onSetSize,
     onSetColor,
     onSetColorImage,
+    onSetImage,
     onSetDetailTH,
     onSetDetailEN,
   ]);

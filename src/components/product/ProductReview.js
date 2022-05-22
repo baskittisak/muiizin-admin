@@ -183,6 +183,18 @@ const ProductReview = ({
     return findStatus?.name[language];
   }, [statusItems, language, productInfo.status]);
 
+  const optionSize = useMemo(() => {
+    return productOption?.size;
+  }, [productOption?.size]);
+
+  const optionColor = useMemo(() => {
+    return productOption?.color;
+  }, [productOption?.color]);
+
+  const isImage = useMemo(() => {
+    return !optionSize && !optionColor;
+  }, [optionColor, optionSize]);
+
   return (
     <>
       <Box justify="center">
@@ -217,71 +229,86 @@ const ProductReview = ({
         </Space>
         <Space direction="vertical" size={26}>
           <Title label="ตัวเลือกและรูปภาพสินค้า" onEdit={() => setCurrent(1)} />
-          <Space direction="vertical" size={16}>
-            {optionEnable && (
-              <Space width="initial">
-                <Checked justify="center" align="center">
-                  <IconSvg
-                    src={checked_icon}
-                    fontSize={10}
-                    heightable={false}
-                  />
-                </Checked>
-                <Typography
-                  fontSize={18}
-                  lineHeight={20}
-                  fontWeight={700}
-                  color="#4F4F4F"
-                >
-                  เป็นสินค้าที่มีตัวเลือก
-                </Typography>
-              </Space>
-            )}
-            {productOption?.size && (
-              <ProductInfo
-                label="ไซส์"
-                value={productOption?.size?.length + " ตัวเลือก"}
-              />
-            )}
-            {productOption?.size && (
-              <Typography fontSize={18} lineHeight={20} color="#4F4F4F">
-                - {productOption?.size?.map((size) => size.name).join(", ")}
-              </Typography>
-            )}
-            {productOption?.color && (
-              <ProductInfo
-                label="สี"
-                value={productOption?.color?.length + " ตัวเลือก"}
-              />
-            )}
-            {productOption?.color &&
-              productOption?.color?.map((color, index) => (
-                <Space key={index} direction="vertical" size={16}>
-                  <Space width="initial">
-                    <Space size={5} width="initial">
-                      <Typography fontSize={18} lineHeight={20} color="#4F4F4F">
-                        -
-                      </Typography>
-                      <Color color={color.code} />
-                    </Space>
-                    <Typography fontSize={18} lineHeight={20} color="#4F4F4F">
-                      {color.name[language]}
-                    </Typography>
-                  </Space>
-                  <Space width="initial" size={10}>
-                    {color.images.map((image, indexImg) => (
-                      <ImageWrapper
-                        key={indexImg}
-                        justify="center"
-                        align="center"
-                      >
-                        <BaseImage src={image} width={65} height={65} />
-                      </ImageWrapper>
-                    ))}
-                  </Space>
-                </Space>
+          {isImage && (
+            <Space width="initial" size={10}>
+              {productOption?.map((image, indexImg) => (
+                <ImageWrapper key={indexImg} justify="center" align="center">
+                  <BaseImage src={image} width={65} height={65} />
+                </ImageWrapper>
               ))}
-          </Space>
+            </Space>
+          )}
+          {!isImage && (
+            <Space direction="vertical" size={16}>
+              {optionEnable && (
+                <Space width="initial">
+                  <Checked justify="center" align="center">
+                    <IconSvg
+                      src={checked_icon}
+                      fontSize={10}
+                      heightable={false}
+                    />
+                  </Checked>
+                  <Typography
+                    fontSize={18}
+                    lineHeight={20}
+                    fontWeight={700}
+                    color="#4F4F4F"
+                  >
+                    เป็นสินค้าที่มีตัวเลือก
+                  </Typography>
+                </Space>
+              )}
+              {optionSize && (
+                <ProductInfo
+                  label="ไซส์"
+                  value={optionSize?.length + " ตัวเลือก"}
+                />
+              )}
+              {optionSize && (
+                <Typography fontSize={18} lineHeight={20} color="#4F4F4F">
+                  - {optionSize?.map((size) => size.name).join(", ")}
+                </Typography>
+              )}
+              {optionColor && (
+                <ProductInfo
+                  label="สี"
+                  value={optionColor?.length + " ตัวเลือก"}
+                />
+              )}
+              {optionColor &&
+                optionColor?.map((color, index) => (
+                  <Space key={index} direction="vertical" size={16}>
+                    <Space width="initial">
+                      <Space size={5} width="initial">
+                        <Typography
+                          fontSize={18}
+                          lineHeight={20}
+                          color="#4F4F4F"
+                        >
+                          -
+                        </Typography>
+                        <Color color={color.code} />
+                      </Space>
+                      <Typography fontSize={18} lineHeight={20} color="#4F4F4F">
+                        {color.name[language]}
+                      </Typography>
+                    </Space>
+                    <Space width="initial" size={10}>
+                      {color.images.map((image, indexImg) => (
+                        <ImageWrapper
+                          key={indexImg}
+                          justify="center"
+                          align="center"
+                        >
+                          <BaseImage src={image} width={65} height={65} />
+                        </ImageWrapper>
+                      ))}
+                    </Space>
+                  </Space>
+                ))}
+            </Space>
+          )}
         </Space>
         <Space direction="vertical" size={0}>
           <Title label="รายละเอียดสินค้า" onEdit={() => setCurrent(2)} />
