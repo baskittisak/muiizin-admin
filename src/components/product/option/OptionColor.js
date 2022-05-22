@@ -4,9 +4,11 @@ import TabsLanguage from "../../../center_components/form/TabsLanguage";
 import InputContainer from "../../../center_components/form/Input";
 import Typography from "../../../center_components/Typography";
 import UploadImage from "../../../center_components/UploadImage";
+import IconSvg from "../../../center_components/IconSvg";
 import { Box, SpaceContainer } from "../../../style/common";
 import { Space } from "antd";
 import { DebounceInput } from "react-debounce-input";
+import { ReactComponent as delete_icon } from "../../../assets/icons/delete.svg";
 
 const Header = styled(Box)`
   background: #d9e3d9;
@@ -68,6 +70,20 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
     document.getElementById(`color-picker-${index}`).click();
   }, []);
 
+  const deleteIcon = useCallback(
+    (index) => {
+      return (
+        optionColor?.length > 2 && (
+          <IconSvg
+            src={delete_icon}
+            onClick={() => onSetColor("delete", index)}
+          />
+        )
+      );
+    },
+    [optionColor?.length, onSetColor]
+  );
+
   return (
     <SpaceContainer direction="vertical" size={20}>
       {optionColor &&
@@ -79,11 +95,12 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
                 lineHeight={17}
                 color="#4F4F4F"
               >{`ตัวเลือกที่ ${index + 1}`}</Typography>
+              {deleteIcon(index)}
             </Header>
             <Body direction="vertical" size={20}>
               <TabsLanguage onChange={(value) => onSetLanguage(index, value)}>
                 <InputContainer
-                  label={`ชื่อสีภาษา${language === "th" ? "ไทย" : "อังกฤษ"}`}
+                  label={`ชื่อสีภาษา${language[index] === "th" ? "ไทย" : "อังกฤษ"}`}
                   maxLength={30}
                   isRequired
                   value={color.name[language[index]]}
