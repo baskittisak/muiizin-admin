@@ -8,19 +8,11 @@ import FilterProduct from "./FilterProduct";
 import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { Space } from "antd";
-import { Box } from "../../style/common";
+import { Action } from "../../style/common";
 import { useNavigate } from "react-router-dom";
 
 const Name = styled.div`
   text-align: left;
-`;
-
-const Action = styled(Box)`
-  cursor: pointer;
-  width: 33px;
-  height: 33px;
-  background-color: #f2f2f2;
-  border-radius: 5px;
 `;
 
 const ProductList = () => {
@@ -170,7 +162,7 @@ const ProductList = () => {
         columns={columns}
         dataSource={dataSource}
         page={page}
-        totalData={30}
+        totalData={20}
         onChange={(e) => setPage(e.current)}
       />
     </Frame>
