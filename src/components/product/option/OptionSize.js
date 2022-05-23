@@ -34,7 +34,6 @@ const OptionSize = ({ optionSize, onSetSize }) => {
       <Box justify="center">
         <Typography
           fontWeight={700}
-          lineHeight={17}
           color="#8AA399"
           onClick={() => onSetSize("add")}
         >

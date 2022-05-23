@@ -98,11 +98,9 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
         optionColor.map((color, index) => (
           <SpaceContainer key={index} direction="vertical" size={0}>
             <Header justify="space-between">
-              <Typography
-                fontWeight={700}
-                lineHeight={17}
-                color="#4F4F4F"
-              >{`ตัวเลือกที่ ${index + 1}`}</Typography>
+              <Typography fontWeight={700} color="#4F4F4F">{`ตัวเลือกที่ ${
+                index + 1
+              }`}</Typography>
               {deleteIcon(index)}
             </Header>
             <Body direction="vertical" size={20}>
@@ -126,12 +124,8 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
               </TabsLanguage>
               <SpaceContainer direction="vertical" size={5}>
                 <Space size={0}>
-                  <Typography lineHeight={17} color="#828282">
-                    รหัสสี
-                  </Typography>
-                  <Typography lineHeight={17} color="#F9414C">
-                    *
-                  </Typography>
+                  <Typography color="#828282">รหัสสี</Typography>
+                  <Typography color="#F9414C">*</Typography>
                 </Space>
                 <InputWrapper onClick={() => onColorPicker(index)}>
                   <Space>
@@ -144,10 +138,7 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
                         onSetColor("edit", index, e.target.value)
                       }
                     />
-                    <Typography
-                      lineHeight={17}
-                      color={color.code ? "#333333" : "#BDBDBD"}
-                    >
+                    <Typography color={color.code ? "#333333" : "#BDBDBD"}>
                       {color.code || "กรุณาเลือกรหัสสี"}
                     </Typography>
                   </Space>
@@ -170,12 +161,7 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
           </SpaceContainer>
         ))}
       <Box justify="center">
-        <Typography
-          fontWeight={700}
-          lineHeight={17}
-          color="#8AA399"
-          onClick={onAddColor}
-        >
+        <Typography fontWeight={700} color="#8AA399" onClick={onAddColor}>
           + เพิ่มตัวเลือก
         </Typography>
       </Box>

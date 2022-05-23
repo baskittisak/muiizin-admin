@@ -116,7 +116,7 @@ const Login = () => {
             </Box>
             {inputPassword}
             <ForgetPassword direction="column" align="flex-end">
-              <Typography lineHeight={17} color="#828282" underline>
+              <Typography color="#828282" underline>
                 ลืมรหัสผ่าน?
               </Typography>
             </ForgetPassword>

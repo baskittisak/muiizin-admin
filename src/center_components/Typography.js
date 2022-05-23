@@ -44,7 +44,7 @@ const Typography = ({
   color,
   fontSize = 16,
   fontWeight = 400,
-  lineHeight,
+  lineHeight = 17,
   underline,
   children,
   onClick,
