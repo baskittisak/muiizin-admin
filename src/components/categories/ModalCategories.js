@@ -76,7 +76,7 @@ const ModalCategories = ({ visible, value, onChange, onCancel, onOk }) => {
         </Space>
       }
     >
-      <TabsLanguage onChange={setLanguage}>
+      <TabsLanguage activeKey={language} onChange={setLanguage}>
         <Input
           label={`ชื่อหมวดหมู่ภาษา${language === "th" ? "ไทย" : "อังกฤษ"}`}
           value={value[language]}
