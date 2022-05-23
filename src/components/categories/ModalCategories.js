@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import IconSvg from "../../center_components/IconSvg";
 import TabsLanguage from "../../center_components/form/TabsLanguage";
@@ -38,19 +38,29 @@ const ModalCategories = ({ visible, value, onChange, onCancel, onOk }) => {
     return value.en === "" || value.th === "";
   }, [value.en, value.th]);
 
+  const onClose = useCallback(() => {
+    setLanguage("th");
+    onCancel();
+  }, [onCancel]);
+
+  const onSave = useCallback(() => {
+    setLanguage("th");
+    onOk();
+  }, [onOk]);
+
   return (
     <ModalContainer
       title="เพิ่มหมวดหมู่"
       closeIcon={<IconSvg src={close_icon} />}
       visible={visible}
-      onCancel={onCancel}
+      onCancel={onClose}
       footer={
         <Space size={16}>
           <BaseButton
             width="95px"
             bgColor="#F2F2F2"
             color="#4F4F4F"
-            onClick={onCancel}
+            onClick={onClose}
           >
             ยกเลิก
           </BaseButton>
@@ -59,7 +69,7 @@ const ModalCategories = ({ visible, value, onChange, onCancel, onOk }) => {
             bgColor="#044700"
             color="#fff"
             disabled={isDisabled}
-            onClick={onOk}
+            onClick={onSave}
           >
             บันทึก
           </BaseButton>
