@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Typography from "../../center_components/Typography";
 import IconSvg from "../../center_components/IconSvg";
 import BaseImage from "../../center_components/BaseImage";
+import Info from "../../center_components/Info";
 import { Box, SpaceContainer } from "../../style/common";
 import { Tabs } from "antd";
 import { ReactComponent as checked_icon } from "../../assets/icons/checked.svg";
@@ -98,17 +99,6 @@ const Title = memo(({ label, onEdit }) => (
     <EditWrapper justify="center" align="center" onClick={onEdit}>
       <IconSvg src={edit_icon} fontSize={17} />
     </EditWrapper>
-  </Box>
-));
-
-const ProductInfo = memo(({ label, value }) => (
-  <Box justify="space-between">
-    <Typography fontSize={18} lineHeight={20} fontWeight={700} color="#4F4F4F">
-      {label}
-    </Typography>
-    <Typography fontSize={18} lineHeight={22} color="#4F4F4F">
-      {value}
-    </Typography>
   </Box>
 ));
 
@@ -217,14 +207,11 @@ const ProductReview = ({
         <Space direction="vertical" size={26}>
           <Title label="ข้อมูลสินค้า" onEdit={() => setCurrent(0)} />
           <Space direction="vertical" size={16}>
-            <ProductInfo
-              label="ชื่อสินค้า"
-              value={productInfo.name[language]}
-            />
-            <ProductInfo label="ผู้ผลิต" value={productInfo.owner[language]} />
-            <ProductInfo label="หมวดหมู่สินค้า" value={category} />
-            <ProductInfo label="ราคาสินค้า" value={productInfo.price} />
-            <ProductInfo label="สถานะ" value={status} />
+            <Info label="ชื่อสินค้า" value={productInfo.name[language]} />
+            <Info label="ผู้ผลิต" value={productInfo.owner[language]} />
+            <Info label="หมวดหมู่สินค้า" value={category} />
+            <Info label="ราคาสินค้า" value={productInfo.price} />
+            <Info label="สถานะ" value={status} />
           </Space>
         </Space>
         <Space direction="vertical" size={26}>
@@ -260,10 +247,7 @@ const ProductReview = ({
                 </Space>
               )}
               {optionSize && (
-                <ProductInfo
-                  label="ไซส์"
-                  value={optionSize?.length + " ตัวเลือก"}
-                />
+                <Info label="ไซส์" value={optionSize?.length + " ตัวเลือก"} />
               )}
               {optionSize && (
                 <Typography fontSize={18} lineHeight={20} color="#4F4F4F">
@@ -271,10 +255,7 @@ const ProductReview = ({
                 </Typography>
               )}
               {optionColor && (
-                <ProductInfo
-                  label="สี"
-                  value={optionColor?.length + " ตัวเลือก"}
-                />
+                <Info label="สี" value={optionColor?.length + " ตัวเลือก"} />
               )}
               {optionColor &&
                 optionColor?.map((color, index) => (
