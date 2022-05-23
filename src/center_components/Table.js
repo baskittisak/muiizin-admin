@@ -1,7 +1,9 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import styled from "styled-components";
 import TableAntd from "antd/lib/table";
 import Typography from "./Typography";
+import { arrayMoveImmutable } from "array-move";
+import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
 const Container = styled.div`
   margin-top: 40px;
@@ -59,6 +61,9 @@ const TableContainer = styled(TableAntd)`
   }
 `;
 
+const SortableItem = SortableElement((props) => <tr {...props} />);
+const SortableBody = SortableContainer((props) => <tbody {...props} />);
+
 const Table = ({
   label,
   dataSource,
@@ -66,8 +71,53 @@ const Table = ({
   pagination = true,
   page,
   totalData,
+  sortable,
+  setDataSource,
   onChange,
 }) => {
+  const onSortEnd = useCallback(
+    ({ oldIndex, newIndex }) => {
+      if (oldIndex !== newIndex) {
+        setDataSource &&
+          setDataSource((prevState) => {
+            const newData = arrayMoveImmutable(
+              [...prevState].slice(),
+              oldIndex,
+              newIndex
+            ).filter((el) => !!el);
+            return newData.map((data, index) => ({
+              ...data,
+              sequence: index + 1,
+            }));
+          });
+      }
+    },
+    [setDataSource]
+  );
+
+  const DraggableContainer = useCallback(
+    (props) => (
+      <SortableBody
+        useDragHandle
+        disableAutoscroll
+        helperClass="row-dragging"
+        onSortEnd={onSortEnd}
+        {...props}
+      />
+    ),
+    [onSortEnd]
+  );
+
+  const DraggableBodyRow = useCallback(
+    ({ className, style, ...restProps }) => {
+      const index = dataSource.findIndex(
+        (x) => x.index === restProps["data-row-key"]
+      );
+      return <SortableItem index={index} {...restProps} />;
+    },
+    [dataSource]
+  );
+
   return (
     <Container>
       {label && (
@@ -90,6 +140,15 @@ const Table = ({
             total: totalData,
             pageSize: 10,
             position: ["bottomLeft"],
+          }
+        }
+        rowKey={sortable ? "index" : undefined}
+        components={
+          sortable && {
+            body: {
+              wrapper: DraggableContainer,
+              row: DraggableBodyRow,
+            },
           }
         }
         onChange={onChange && onChange}

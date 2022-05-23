@@ -1,16 +1,22 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
 import FilterCategories from "./FilterCategories";
 import IconSvg from "../../center_components/IconSvg";
 import Table from "../../center_components/Table";
+import ModalCategories from "./ModalCategories";
 import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { ReactComponent as drag_icon } from "../../assets/icons/drag.svg";
 import { Space } from "antd";
 import { Action, Box } from "../../style/common";
-import ModalCategories from "./ModalCategories";
+import { mockCategories } from "./data/defaultData";
+import { SortableHandle } from "react-sortable-hoc";
+
+const DragHandle = SortableHandle(() => (
+  <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />
+));
 
 const Footer = styled(Box)`
   height: 80px;
@@ -25,6 +31,18 @@ const Categories = () => {
   const [visible, setVisible] = useState(false);
   const [sortable, setSortable] = useState(false);
   const [name, setName] = useState({ th: "", en: "" });
+  const [dataSource, setDataSource] = useState(mockCategories);
+
+  useEffect(() => {
+    setDataSource((prevState) => {
+      const newData = [...prevState];
+      return newData.map((data, index) => ({
+        ...data,
+        index,
+        sequence: index + 1,
+      }));
+    });
+  }, []);
 
   const onFilters = useCallback((type, value) => {
     setFilters((prevState) => ({
@@ -51,6 +69,11 @@ const Categories = () => {
   const columns = useMemo(() => {
     return [
       {
+        title: "ลำดับ",
+        dataIndex: "sequence",
+        width: "5%",
+      },
+      {
         title: "ชื่อภาษาไทย",
         dataIndex: "nameTH",
         width: "20%",
@@ -63,7 +86,7 @@ const Categories = () => {
       {
         title: "จำนวนสินค้า",
         dataIndex: "stock",
-        width: "15%",
+        width: sortable ? "10%" : "15%",
       },
       {
         title: "สถานะ",
@@ -81,7 +104,7 @@ const Categories = () => {
         width: "15%",
         render: (_, record) =>
           sortable ? (
-            <IconSvg src={drag_icon} fontSize={18} />
+            <DragHandle />
           ) : (
             <Space size={25}>
               <Action
@@ -103,59 +126,6 @@ const Categories = () => {
       },
     ];
   }, [sortable]);
-
-  const dataSource = useMemo(() => {
-    return [
-      {
-        key: "1",
-        nameTH: "กระเป๋า",
-        nameEN: "Bags",
-        stock: 50,
-        status: "ใช้งาน",
-        createdTime: "01/02/2022",
-      },
-      {
-        key: "2",
-        nameTH: "หมวก",
-        nameEN: "Hats",
-        stock: 50,
-        status: "ใช้งาน",
-        createdTime: "01/02/2022",
-      },
-      {
-        key: "3",
-        nameTH: "เสื้อผ้า",
-        nameEN: "Clothing",
-        stock: 50,
-        status: "ใช้งาน",
-        createdTime: "01/02/2022",
-      },
-      {
-        key: "4",
-        nameTH: "ผ้า",
-        nameEN: "Fabric",
-        stock: 50,
-        status: "ใช้งาน",
-        createdTime: "01/02/2022",
-      },
-      {
-        key: "5",
-        nameTH: "เครื่องประดับ",
-        nameEN: "Jewelry",
-        stock: 50,
-        status: "ใช้งาน",
-        createdTime: "01/02/2022",
-      },
-      {
-        key: "6",
-        nameTH: "ของฝาก",
-        nameEN: "Accessory Gifts",
-        stock: 50,
-        status: "ปิดชั่วคราว",
-        createdTime: "01/02/2022",
-      },
-    ];
-  }, []);
 
   const displayProductList = useMemo(
     () => (
@@ -188,7 +158,13 @@ const Categories = () => {
           status={filters.status}
           onFilters={onFilters}
         />
-        <Table columns={columns} dataSource={dataSource} pagination={false} />
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          pagination={false}
+          sortable={sortable}
+          setDataSource={setDataSource}
+        />
         {sortable && (
           <Footer justify="center" align="center">
             <BaseButton
