@@ -92,7 +92,7 @@ const Table = ({
             position: ["bottomLeft"],
           }
         }
-        onChange={onChange}
+        onChange={onChange && onChange}
       />
     </Container>
   );
