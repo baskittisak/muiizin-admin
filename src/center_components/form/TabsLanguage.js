@@ -45,6 +45,10 @@ const Container = styled.div`
     border: 1px solid #044700;
     border-radius: 0 5px 5px;
   }
+
+  .ant-tabs-ink-bar {
+    display: none;
+  }
 `;
 
 const TabsLanguage = ({ children, activeKey, onChange }) => {

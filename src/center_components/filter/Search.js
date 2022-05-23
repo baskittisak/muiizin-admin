@@ -3,15 +3,26 @@ import styled from "styled-components";
 import Typography from "../Typography";
 import IconSvg from "../IconSvg";
 import { ReactComponent as search_icon } from "../../assets/icons/search.svg";
-import { Space, Input } from "antd";
+import { Input } from "antd";
+import { SpaceContainer } from "../../style/common";
 
 const InputSearch = styled(Input)`
-  width: 200px;
+  .ant-input {
+    font-size: 16px;
+  }
+  height: 35px;
+  width: ${({ width }) => width};
 `;
 
-const Search = ({ label, value, onChange }) => {
+const Search = ({
+  label,
+  value,
+  placeholder = "",
+  width = "200px",
+  onChange,
+}) => {
   return (
-    <Space direction="vertical" size={5}>
+    <SpaceContainer direction="vertical" size={5}>
       <Typography
         fontSize={18}
         lineHeight={20}
@@ -22,10 +33,12 @@ const Search = ({ label, value, onChange }) => {
       </Typography>
       <InputSearch
         prefix={<IconSvg src={search_icon} fontSize={20} />}
+        placeholder={placeholder}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        width={width}
+        onChange={(e) => onChange && onChange(e.target.value)}
       />
-    </Space>
+    </SpaceContainer>
   );
 };
 

@@ -9,6 +9,7 @@ import { Box } from "../../style/common";
 const DropdownContainer = styled(Dropdown)`
   cursor: pointer;
   width: 200px;
+  height: 35px;
   border: 1px solid #d9d9d9;
   padding: 4px 11px;
   border-radius: 5px;
