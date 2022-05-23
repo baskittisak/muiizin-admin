@@ -8,6 +8,7 @@ import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { Space } from "antd";
 import { Action } from "../../style/common";
+import ModalCategories from "./ModalCategories";
 
 const Categories = () => {
   const [page, setPage] = useState(1);
@@ -15,6 +16,8 @@ const Categories = () => {
     search: "",
     status: "1",
   });
+  const [visible, setVisible] = useState(false);
+  const [name, setName] = useState({ th: "", en: "" });
 
   const onFilters = useCallback((type, value) => {
     setFilters((prevState) => ({
@@ -22,6 +25,21 @@ const Categories = () => {
       [type]: value,
     }));
   }, []);
+
+  const onSetName = useCallback((value, language) => {
+    setName((prevState) => ({
+      ...prevState,
+      [language]: value,
+    }));
+  }, []);
+
+  const onSave = useCallback(() => {
+    console.log(name.th);
+    console.log(name.en);
+    onSetName("", "th");
+    onSetName("", "en");
+    setVisible(false);
+  }, [name.en, name.th, onSetName]);
 
   const columns = useMemo(() => {
     return [
@@ -129,7 +147,11 @@ const Categories = () => {
           <BaseButton bgColor="#D9E3D9" color="#044700">
             จัดเรียงหมวดหมู่
           </BaseButton>
-          <BaseButton bgColor="#044700" color="#fff">
+          <BaseButton
+            bgColor="#044700"
+            color="#fff"
+            onClick={() => setVisible(true)}
+          >
             เพิ่มหมวดหมู่
           </BaseButton>
         </Space>
@@ -146,6 +168,13 @@ const Categories = () => {
         page={page}
         totalData={30}
         onChange={(e) => setPage(e.current)}
+      />
+      <ModalCategories
+        visible={visible}
+        value={name}
+        onChange={onSetName}
+        onCancel={() => setVisible(false)}
+        onOk={onSave}
       />
     </Frame>
   );
