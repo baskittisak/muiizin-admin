@@ -13,9 +13,12 @@ const Info = ({ label, value }) => {
       >
         {label}
       </Typography>
-      <Typography fontSize={18} lineHeight={22} color="#4F4F4F">
-        {value}
-      </Typography>
+      {typeof value === "string" && (
+        <Typography fontSize={18} lineHeight={22} color="#4F4F4F">
+          {value}
+        </Typography>
+      )}
+      {typeof value !== "string" && value}
     </Box>
   );
 };
