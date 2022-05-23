@@ -1,3 +1,5 @@
+import mock_hat from "../../../assets/image/mock_hat.png";
+
 export const mockCategories = [
   {
     key: "1",
@@ -46,5 +48,33 @@ export const mockCategories = [
     stock: 50,
     status: "ปิดชั่วคราว",
     createdTime: "01/02/2022",
+  },
+];
+
+export const mockProduct = [
+  {
+    id: "1",
+    name: "OTOP SELECT หมวกแก๊ปผ้าไหมแท้​ทอมือ",
+    image: mock_hat,
+  },
+  {
+    id: "2",
+    name: "OTOP SELECT หมวกแก๊ปผ้าไหมแท้​ทอมือ",
+    image: mock_hat,
+  },
+  {
+    id: "3",
+    name: "OTOP SELECT หมวกแก๊ปผ้าไหมแท้​ทอมือ",
+    image: mock_hat,
+  },
+  {
+    id: "4",
+    name: "OTOP SELECT หมวกแก๊ปผ้าไหมแท้​ทอมือ",
+    image: mock_hat,
+  },
+  {
+    id: "5",
+    name: "OTOP SELECT หมวกแก๊ปผ้าไหมแท้​ทอมือ",
+    image: mock_hat,
   },
 ];

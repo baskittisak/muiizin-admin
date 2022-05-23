@@ -13,6 +13,7 @@ import { Space } from "antd";
 import { Action, Box } from "../../style/common";
 import { mockCategories } from "./data/defaultData";
 import { SortableHandle } from "react-sortable-hoc";
+import { useNavigate } from "react-router-dom";
 
 const DragHandle = SortableHandle(() => (
   <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />
@@ -24,6 +25,7 @@ const Footer = styled(Box)`
 `;
 
 const Categories = () => {
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     search: "",
     status: "1",
@@ -110,7 +112,7 @@ const Categories = () => {
               <Action
                 justify="center"
                 align="center"
-                onClick={() => console.log(record?.key)}
+                onClick={() => navigate(`/category?categoryId=${record?.key}`)}
               >
                 <IconSvg src={eye_icon} fontSize={18} />
               </Action>
@@ -125,7 +127,7 @@ const Categories = () => {
           ),
       },
     ];
-  }, [sortable]);
+  }, [sortable, navigate]);
 
   const displayProductList = useMemo(
     () => (
