@@ -91,7 +91,7 @@ const LayoutContainer = styled.div`
       }
 
       .ant-menu.ant-menu-inline-collapsed > .ant-menu-item {
-        padding: 0 calc(50% - 32px / 2);
+        padding: 4px calc(50% - 40px / 2) 0;
       }
     `};
 `;
@@ -222,7 +222,11 @@ const Layout = ({ children }) => {
               </Space>
             </Space>
           )}
-          <IconSvg src={logout_icon} fontSize={collapsed ? 20 : 18} />
+          <IconSvg
+            src={logout_icon}
+            fontSize={collapsed ? 20 : 18}
+            heightable={false}
+          />
         </Footer>
       </LayoutContainer>
     ),
