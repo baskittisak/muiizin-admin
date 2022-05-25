@@ -1,17 +1,17 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
-import FilterCategories from "./FilterCategories";
+import FilterBanner from "./FilterBanner";
 import IconSvg from "../../center_components/IconSvg";
 import Table from "../../center_components/Table";
-import ModalCategories from "./ModalCategories";
+import BaseImage from "../../center_components/BaseImage";
 import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { ReactComponent as drag_icon } from "../../assets/icons/drag.svg";
 import { Space } from "antd";
 import { Action, Box } from "../../style/common";
-import { mockCategories } from "./data/defaultData";
+import { mockBanner } from "./data/defaultData";
 import { SortableHandle } from "react-sortable-hoc";
 import { useNavigate } from "react-router-dom";
 
@@ -24,16 +24,41 @@ const Footer = styled(Box)`
   padding-top: 24px;
 `;
 
+const Status = styled(Box)`
+  height: 30px;
+  width: 80px;
+  border-radius: 5px;
+
+  ${({ status }) =>
+    status === "เตรียมใช้งาน" &&
+    css`
+      background-color: #dbe7f3;
+      color: #3699ff;
+    `};
+
+  ${({ status }) =>
+    status === "กำลังใช้งาน" &&
+    css`
+      background-color: #d2ecdf;
+      color: #00a651;
+    `};
+
+  ${({ status }) =>
+    status === "หมดอายุ" &&
+    css`
+      background-color: #f2f2f2;
+      color: #828282;
+    `};
+`;
+
 const Categories = () => {
   const navigate = useNavigate();
   const [filters, setFilters] = useState({
     search: "",
     status: "1",
   });
-  const [visible, setVisible] = useState(false);
   const [sortable, setSortable] = useState(false);
-  const [name, setName] = useState({ th: "", en: "" });
-  const [dataSource, setDataSource] = useState(mockCategories);
+  const [dataSource, setDataSource] = useState(mockBanner);
 
   useEffect(() => {
     setDataSource((prevState) => {
@@ -53,21 +78,6 @@ const Categories = () => {
     }));
   }, []);
 
-  const onSetName = useCallback((value, language) => {
-    setName((prevState) => ({
-      ...prevState,
-      [language]: value,
-    }));
-  }, []);
-
-  const onSave = useCallback(() => {
-    console.log(name.th);
-    console.log(name.en);
-    onSetName("", "th");
-    onSetName("", "en");
-    setVisible(false);
-  }, [name.en, name.th, onSetName]);
-
   const columns = useMemo(() => {
     return [
       {
@@ -76,34 +86,47 @@ const Categories = () => {
         width: "5%",
       },
       {
-        title: "ชื่อภาษาไทย",
-        dataIndex: "nameTH",
-        width: "20%",
+        title: "รูปภาพแบนเนอร์",
+        dataIndex: "image",
+        width: "25%",
+        render: (image) => (
+          <BaseImage src={image} width={200} height={80} objectFit="cover" />
+        ),
       },
       {
-        title: "ชื่อภาษาอังกฤษ",
-        dataIndex: "nameEN",
+        title: "ชื่อแบนเนอร์",
+        dataIndex: "name",
         width: "20%",
-      },
-      {
-        title: "จำนวนสินค้า",
-        dataIndex: "stock",
-        width: "10%",
       },
       {
         title: "สถานะ",
         dataIndex: "status",
-        width: "15%",
+        width: "10%",
+        render: (status) => (
+          <Status justify="center" align="center" status={status}>
+            {status}
+          </Status>
+        ),
+      },
+      {
+        title: "วันที่เริ่มใช้งาน",
+        dataIndex: "startDate",
+        width: "10%",
+      },
+      {
+        title: "วันที่สิ้นสุด",
+        dataIndex: "endDate",
+        width: "10%",
       },
       {
         title: "วันที่สร้าง",
         dataIndex: "createdTime",
-        width: "15%",
+        width: "10%",
       },
       {
         title: "",
         dataIndex: "action",
-        width: "15%",
+        width: "10%",
         render: (_, record) =>
           sortable ? (
             <DragHandle />
@@ -112,7 +135,7 @@ const Categories = () => {
               <Action
                 justify="center"
                 align="center"
-                onClick={() => navigate(`/category?categoryId=${record?.key}`)}
+                onClick={() => navigate(`/banner?bannerId=${record?.key}`)}
               >
                 <IconSvg src={eye_icon} fontSize={18} />
               </Action>
@@ -132,7 +155,7 @@ const Categories = () => {
   const displayProductList = useMemo(
     () => (
       <Frame
-        label={sortable ? "จัดเรียงหมวดหมู่" : "หมวดหมู่สินค้า"}
+        label={sortable ? "จัดเรียงแบนเนอร์" : "แบนเนอร์"}
         extra={
           !sortable && (
             <Space size={20}>
@@ -141,21 +164,17 @@ const Categories = () => {
                 color="#044700"
                 onClick={() => setSortable(true)}
               >
-                จัดเรียงหมวดหมู่
+                จัดเรียงแบนเนอร์
               </BaseButton>
-              <BaseButton
-                bgColor="#044700"
-                color="#fff"
-                onClick={() => setVisible(true)}
-              >
-                เพิ่มหมวดหมู่
+              <BaseButton bgColor="#044700" color="#fff">
+                เพิ่มแบนเนอร์
               </BaseButton>
             </Space>
           )
         }
         onBack={sortable ? () => setSortable(false) : undefined}
       >
-        <FilterCategories
+        <FilterBanner
           search={filters.search}
           status={filters.status}
           onFilters={onFilters}
@@ -183,18 +202,7 @@ const Categories = () => {
     [columns, dataSource, filters.search, filters.status, sortable, onFilters]
   );
 
-  return (
-    <>
-      {displayProductList}
-      <ModalCategories
-        visible={visible}
-        value={name}
-        onChange={onSetName}
-        onCancel={() => setVisible(false)}
-        onOk={onSave}
-      />
-    </>
-  );
+  return <>{displayProductList}</>;
 };
 
 export default memo(Categories);
