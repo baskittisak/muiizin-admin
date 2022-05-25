@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import styled, { css } from "styled-components";
 import LayoutAntd from "antd/lib/layout";
 import Menu from "antd/lib/menu";
@@ -142,12 +142,40 @@ const Layout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeKey, setActiveKey] = useState("1");
 
+  useEffect(() => {
+    switch (window.location.pathname) {
+      case "/":
+      case "/product-list":
+      case "/product":
+        setActiveKey("1");
+        break;
+      case "/categories":
+      case "/category":
+        setActiveKey("2");
+        break;
+      case "/banner-list":
+      case "/banner":
+        setActiveKey("3");
+        break;
+      default:
+        setActiveKey("1");
+        break;
+    }
+  }, []);
+
   const colorActive = useCallback(
     (key) => {
       return key === activeKey ? "#044700" : "";
     },
     [activeKey]
   );
+
+  const onLinkTo = useCallback((event) => {
+    const { key } = event;
+    const { link } = event.item.props;
+    window.location.replace(link);
+    setActiveKey(key);
+  }, []);
 
   const menuItems = useMemo(
     () => [
@@ -157,6 +185,7 @@ const Layout = ({ children }) => {
           <IconSvg src={product_icon} color={colorActive("1")} fontSize={23} />
         ),
         label: "รายการสินค้า",
+        link: "/product-list",
       },
       {
         key: "2",
@@ -168,6 +197,7 @@ const Layout = ({ children }) => {
           />
         ),
         label: "หมวดหมู่สินค้า",
+        link: "/categories",
       },
       {
         key: "3",
@@ -175,6 +205,7 @@ const Layout = ({ children }) => {
           <IconSvg src={banner_icon} color={colorActive("3")} fontSize={23} />
         ),
         label: "แบนเนอร์",
+        link: "/banner-list",
       },
     ],
     [colorActive]
@@ -195,8 +226,9 @@ const Layout = ({ children }) => {
           <Menu
             mode="inline"
             defaultSelectedKeys={[activeKey]}
+            selectedKeys={[activeKey]}
             items={menuItems}
-            onSelect={(e) => setActiveKey(e.key)}
+            onSelect={onLinkTo}
           />
         </Sider>
         <Footer
@@ -230,7 +262,7 @@ const Layout = ({ children }) => {
         </Footer>
       </LayoutContainer>
     ),
-    [activeKey, collapsed, menuItems]
+    [activeKey, collapsed, menuItems, onLinkTo]
   );
 
   const body = useMemo(
