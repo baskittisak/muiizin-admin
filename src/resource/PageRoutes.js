@@ -6,6 +6,7 @@ import Product from "../components/product/Product";
 import Categories from "../components/categories/Categories";
 import Category from "../components/categories/Category";
 import BannerList from "../components/banner/BannerList";
+import Banner from "../components/banner/Banner";
 
 const PageRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const PageRoutes = () => {
         <Route path="/categories" element={<Categories />} />
         <Route path="/category" element={<Category />} />
         <Route path="/banner-list" element={<BannerList />} />
+        <Route path="/banner" element={<Banner />} />
       </Routes>
     </BrowserRouter>
   );

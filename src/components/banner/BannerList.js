@@ -166,7 +166,11 @@ const Categories = () => {
               >
                 จัดเรียงแบนเนอร์
               </BaseButton>
-              <BaseButton bgColor="#044700" color="#fff">
+              <BaseButton
+                bgColor="#044700"
+                color="#fff"
+                onClick={() => navigate("/banner")}
+              >
                 เพิ่มแบนเนอร์
               </BaseButton>
             </Space>
@@ -199,7 +203,15 @@ const Categories = () => {
         )}
       </Frame>
     ),
-    [columns, dataSource, filters.search, filters.status, sortable, onFilters]
+    [
+      columns,
+      dataSource,
+      filters.search,
+      filters.status,
+      sortable,
+      navigate,
+      onFilters,
+    ]
   );
 
   return <>{displayProductList}</>;

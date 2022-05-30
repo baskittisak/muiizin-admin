@@ -10,6 +10,7 @@ import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { Space } from "antd";
 import { Action } from "../../style/common";
 import { useNavigate } from "react-router-dom";
+import { mockProduct } from "./data/defaultData";
 
 const Name = styled.div`
   text-align: left;
@@ -85,59 +86,6 @@ const ProductList = () => {
     ];
   }, []);
 
-  const dataSource = useMemo(() => {
-    return [
-      {
-        key: "1",
-        name: "กระเป๋ากระจูด จ.ระยอง คนพื้นเมืองทำเพื่อ คนเมือง",
-        category: "กระเป๋า",
-        price: 850,
-        status: "พร้อมส่ง",
-        updatedTime: "01/02/2022",
-      },
-      {
-        key: "2",
-        name: "หมอนอิง จ.กาญจนบุรี อิงของเก่าให้เข้า ยุคใหม่",
-        category: "หมอน",
-        price: 650,
-        status: "พรีออเดอร์",
-        updatedTime: "01/02/2022",
-      },
-      {
-        key: "3",
-        name: "OTOP SELECT หมวกแก๊ปผ้าไหมแท้​ทอมือ",
-        category: "หมวก",
-        price: 1500,
-        status: "พรีออเดอร์",
-        updatedTime: "01/02/2022",
-      },
-      {
-        key: "4",
-        name: "กระเป๋ากระจูด จ.ระยอง คนพื้นเมืองทำเพื่อ คนเมือง",
-        category: "กระเป๋า",
-        price: 850,
-        status: "พร้อมส่ง",
-        updatedTime: "01/02/2022",
-      },
-      {
-        key: "5",
-        name: "หมอนอิง จ.กาญจนบุรี อิงของเก่าให้เข้า ยุคใหม่",
-        category: "หมอน",
-        price: 650.0,
-        status: "พรีออเดอร์",
-        updatedTime: "01/02/2022",
-      },
-      {
-        key: "6",
-        name: "OTOP SELECT หมวกแก๊ปผ้าไหมแท้​ทอมือ",
-        category: "หมวก",
-        price: 1500.0,
-        status: "พรีออเดอร์",
-        updatedTime: "01/02/2022",
-      },
-    ];
-  }, []);
-
   return (
     <Frame
       label="รายการสินค้า"
@@ -160,7 +108,7 @@ const ProductList = () => {
       />
       <Table
         columns={columns}
-        dataSource={dataSource}
+        dataSource={mockProduct}
         page={page}
         totalData={20}
         onChange={(e) => setPage(e.current)}

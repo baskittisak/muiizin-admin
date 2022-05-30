@@ -59,6 +59,22 @@ const TableContainer = styled(TableAntd)`
   .ant-pagination-item-active a:hover {
     color: #ffffff;
   }
+
+  .ant-checkbox-inner,
+  .ant-checkbox-indeterminate .ant-checkbox-inner {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .ant-checkbox-inner:hover {
+    border-color: #d9d9d9;
+  }
+
+  .ant-checkbox-indeterminate .ant-checkbox-inner::after,
+  .ant-checkbox-checked .ant-checkbox-inner {
+    background-color: #044700;
+    border-color: #044700;
+  }
 `;
 
 const SortableItem = SortableElement((props) => <tr {...props} />);
@@ -70,6 +86,7 @@ const Table = ({
   columns,
   pagination = true,
   page,
+  rowSelection,
   totalData,
   sortable,
   setDataSource,
@@ -151,6 +168,7 @@ const Table = ({
             },
           }
         }
+        rowSelection={rowSelection && rowSelection}
         onChange={onChange && onChange}
       />
     </Container>
