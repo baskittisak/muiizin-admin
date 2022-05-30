@@ -1,4 +1,4 @@
-import { createRef, memo, useCallback, useState } from "react";
+import { createRef, memo, useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import { Image, Space, Button, Spin } from "antd";
 import {
@@ -99,6 +99,7 @@ const UploadImage = ({
   fontSize = 18,
   lineHeight = 20,
   isRequired,
+  maximum = 10,
   imageList,
   setImageList,
   onDeleteImage,
@@ -144,6 +145,10 @@ const UploadImage = ({
     setActivePreview(index);
     setVisiblePreview(true);
   }, []);
+
+  const totalImage = useMemo(() => {
+    return imageList?.length;
+  }, [imageList?.length]);
 
   return (
     <Space direction="vertical" size={5}>
@@ -208,19 +213,21 @@ const UploadImage = ({
               </ManageImageWrapper>
             </ImageContainer>
           ))}
-          <Spin spinning={loading} indicator={<LoadingOutlined spin />}>
-            <Upload justify="center" align="center">
-              <PlusOutlined />
-              <Button onClick={onBrowseFile}>Upload</Button>
-              <input
-                type="file"
-                ref={inputRef}
-                hidden
-                accept=".png,.jpeg,.jpg"
-                onChange={(e) => handleChange(e)}
-              />
-            </Upload>
-          </Spin>
+          {totalImage < maximum && (
+            <Spin spinning={loading} indicator={<LoadingOutlined spin />}>
+              <Upload justify="center" align="center">
+                <PlusOutlined />
+                <Button onClick={onBrowseFile}>Upload</Button>
+                <input
+                  type="file"
+                  ref={inputRef}
+                  hidden
+                  accept=".png,.jpeg,.jpg"
+                  onChange={(e) => handleChange(e)}
+                />
+              </Upload>
+            </Spin>
+          )}
         </ImageWrapper>
       </Space>
     </Space>
