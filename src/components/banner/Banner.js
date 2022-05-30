@@ -182,6 +182,7 @@ const Banner = () => {
           bgColor="#044700"
           color="#fff"
           disabled={isDisabled}
+          onClick={() => navigate("/banner-info")}
         >
           ยืนยัน
         </BaseButton>

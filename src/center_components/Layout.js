@@ -155,6 +155,7 @@ const Layout = ({ children }) => {
         break;
       case "/banner-list":
       case "/banner":
+      case "/banner-info":
         setActiveKey("3");
         break;
       default:

@@ -7,6 +7,7 @@ import Categories from "../components/categories/Categories";
 import Category from "../components/categories/Category";
 import BannerList from "../components/banner/BannerList";
 import Banner from "../components/banner/Banner";
+import BannerInfo from "../components/banner/BannerInfo";
 
 const PageRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const PageRoutes = () => {
         <Route path="/category" element={<Category />} />
         <Route path="/banner-list" element={<BannerList />} />
         <Route path="/banner" element={<Banner />} />
+        <Route path="/banner-info" element={<BannerInfo />} />
       </Routes>
     </BrowserRouter>
   );
