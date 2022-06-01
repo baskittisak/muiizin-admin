@@ -10,6 +10,7 @@ import {
   defaultOptionSize,
   defaultOptionColor,
 } from "./data/defaultData";
+import { useQuery } from "../../utils/useQuery";
 import FormWrapper from "../../center_components/FormWrapper";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
@@ -31,6 +32,7 @@ const Footer = styled(Box)`
 
 const Product = () => {
   const navigate = useNavigate();
+  const productId = useQuery("productId");
   const [current, setCurrent] = useState(0);
   const [productInfo, setProductInfo] = useState(defaultProductInfo);
   const [option, setOption] = useState(defaultOption);
@@ -58,6 +60,10 @@ const Product = () => {
       });
     }
   }, [option.enable, option.size, option.color]);
+
+  useEffect(() => {
+    productId && setCurrent(3);
+  }, [productId]);
 
   const onNext = useCallback(() => {
     setCurrent((prev) => prev + 1);

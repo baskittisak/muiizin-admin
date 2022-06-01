@@ -12,7 +12,7 @@ export const mockBanner = [
     status: "เตรียมใช้งาน",
     startDate: "01/03/2022",
     endDate: "31/03/2022",
-    createdTime: "27/02/2022",
+    updatedTime: "27/02/2022",
   },
   {
     key: "2",
@@ -21,7 +21,7 @@ export const mockBanner = [
     status: "กำลังใช้งาน",
     startDate: "01/03/2022",
     endDate: "31/03/2022",
-    createdTime: "27/02/2022",
+    updatedTime: "27/02/2022",
   },
   {
     key: "3",
@@ -30,7 +30,7 @@ export const mockBanner = [
     status: "กำลังใช้งาน",
     startDate: "01/03/2022",
     endDate: "31/03/2022",
-    createdTime: "27/02/2022",
+    updatedTime: "27/02/2022",
   },
   {
     key: "4",
@@ -39,7 +39,7 @@ export const mockBanner = [
     status: "กำลังใช้งาน",
     startDate: "01/03/2022",
     endDate: "31/03/2022",
-    createdTime: "27/02/2022",
+    updatedTime: "27/02/2022",
   },
   {
     key: "5",
@@ -48,7 +48,7 @@ export const mockBanner = [
     status: "หมดอายุ",
     startDate: "15/01/2022",
     endDate: "31/01/2022",
-    createdTime: "14/01/2022",
+    updatedTime: "14/01/2022",
   },
 ];
 

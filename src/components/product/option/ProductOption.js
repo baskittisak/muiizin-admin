@@ -30,7 +30,9 @@ const ProductOption = ({
         />
       );
     } else {
-      return <OptionImage images={productOption} onSetImage={onSetImage} />;
+      if (Array.isArray(productOption)) {
+        return <OptionImage images={productOption} onSetImage={onSetImage} />;
+      }
     }
   }, [
     optionEnable,

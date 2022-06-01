@@ -119,8 +119,8 @@ const Categories = () => {
         width: "10%",
       },
       {
-        title: "วันที่สร้าง",
-        dataIndex: "createdTime",
+        title: "วันที่อัปเดต",
+        dataIndex: "updatedTime",
         width: "10%",
       },
       {
@@ -135,7 +135,7 @@ const Categories = () => {
               <Action
                 justify="center"
                 align="center"
-                onClick={() => navigate(`/banner?bannerId=${record?.key}`)}
+                onClick={() => navigate(`/banner-info?bannerId=${record?.key}`)}
               >
                 <IconSvg src={eye_icon} fontSize={18} />
               </Action>

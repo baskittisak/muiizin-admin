@@ -69,7 +69,7 @@ const ProductList = () => {
             <Action
               justify="center"
               align="center"
-              onClick={() => console.log(record?.key)}
+              onClick={() => navigate(`/product?productId=${record?.key}`)}
             >
               <IconSvg src={eye_icon} fontSize={18} />
             </Action>
@@ -84,7 +84,7 @@ const ProductList = () => {
         ),
       },
     ];
-  }, []);
+  }, [navigate]);
 
   return (
     <Frame

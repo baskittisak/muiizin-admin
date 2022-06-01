@@ -56,7 +56,6 @@ const BannerInfo = () => {
             />
             <Info label="ลำดับการแสดง" value="#4" />
             <Info label="ชื่อแบนเนอร์" value="Banner_5" />
-            <Info label="สถานะ" value="เตรียมใช้งาน" />
             <SpaceContainer direction="vertical" size={10}>
               <Info
                 label="รูปภาพแบนเนอร์"

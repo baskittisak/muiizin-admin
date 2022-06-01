@@ -7,7 +7,7 @@ export const mockCategories = [
     nameEN: "Bags",
     stock: 50,
     status: "ใช้งาน",
-    createdTime: "01/02/2022",
+    updatedTime: "01/02/2022",
   },
   {
     key: "2",
@@ -15,7 +15,7 @@ export const mockCategories = [
     nameEN: "Hats",
     stock: 50,
     status: "ใช้งาน",
-    createdTime: "01/02/2022",
+    updatedTime: "01/02/2022",
   },
   {
     key: "3",
@@ -23,7 +23,7 @@ export const mockCategories = [
     nameEN: "Clothing",
     stock: 50,
     status: "ใช้งาน",
-    createdTime: "01/02/2022",
+    updatedTime: "01/02/2022",
   },
   {
     key: "4",
@@ -31,7 +31,7 @@ export const mockCategories = [
     nameEN: "Fabric",
     stock: 50,
     status: "ใช้งาน",
-    createdTime: "01/02/2022",
+    updatedTime: "01/02/2022",
   },
   {
     key: "5",
@@ -39,7 +39,7 @@ export const mockCategories = [
     nameEN: "Jewelry",
     stock: 50,
     status: "ใช้งาน",
-    createdTime: "01/02/2022",
+    updatedTime: "01/02/2022",
   },
   {
     key: "6",
@@ -47,7 +47,7 @@ export const mockCategories = [
     nameEN: "Accessory Gifts",
     stock: 50,
     status: "ปิดชั่วคราว",
-    createdTime: "01/02/2022",
+    updatedTime: "01/02/2022",
   },
 ];
 

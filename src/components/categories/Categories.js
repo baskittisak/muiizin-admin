@@ -96,8 +96,8 @@ const Categories = () => {
         width: "15%",
       },
       {
-        title: "วันที่สร้าง",
-        dataIndex: "createdTime",
+        title: "วันที่อัปเดต",
+        dataIndex: "updatedTime",
         width: "15%",
       },
       {
