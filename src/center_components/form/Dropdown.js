@@ -57,7 +57,11 @@ const DropdownForm = ({
           </Typography>
         )}
       </Space>
-      <DropdownContainer overlay={menuList} height={height}>
+      <DropdownContainer
+        overlay={menuList}
+        height={height}
+        getPopupContainer={(trigger) => trigger.parentElement}
+      >
         <Box align="center" justify="space-between">
           <Typography
             color={

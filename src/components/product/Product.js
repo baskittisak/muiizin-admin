@@ -33,19 +33,24 @@ const Footer = styled(Box)`
 const Product = () => {
   const navigate = useNavigate();
   const productId = useQuery("productId");
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(1);
   const [productInfo, setProductInfo] = useState(defaultProductInfo);
   const [option, setOption] = useState(defaultOption);
+  const [typeOption, setTypeOption] = useState("");
   const [productOption, setProductOption] = useState();
   const [productDetail, setProductDetail] = useState({
     th: "<p></p>",
     en: "<p></p>",
   });
 
+  const isSizeOnly = useMemo(() => {
+    return typeOption === "1";
+  }, [typeOption]);
+
   useEffect(() => {
     if (option.enable !== null) {
       setProductOption(() => {
-        if (option.enable) {
+        if (option.enable && typeOption) {
           const optionData = {};
           if (option.size) {
             optionData.size = defaultOptionSize;
@@ -53,13 +58,16 @@ const Product = () => {
           if (option.color) {
             optionData.color = defaultOptionColor;
           }
+          if (isSizeOnly) {
+            optionData.images = [];
+          }
           return optionData;
         } else {
           return [];
         }
       });
     }
-  }, [option.enable, option.size, option.color]);
+  }, [option.enable, option.size, option.color, isSizeOnly, typeOption]);
 
   useEffect(() => {
     productId && setCurrent(3);
@@ -78,6 +86,7 @@ const Product = () => {
       ...prevState,
       [type]: value,
     }));
+    !value && setTypeOption("");
   }, []);
 
   const onSetSize = useCallback((type, index, value) => {
@@ -148,17 +157,37 @@ const Product = () => {
     });
   }, []);
 
-  const onSetImage = useCallback((type, value, index) => {
-    const isAdd = type === "add";
-    if (isAdd) {
-      setProductOption(value);
-    } else {
-      setProductOption((prevState) => {
-        const newImage = [...prevState];
-        return newImage.filter((_, prevIndex) => prevIndex !== index);
-      });
-    }
-  }, []);
+  const onSetImage = useCallback(
+    (type, value, index) => {
+      const isAdd = type === "add";
+      if (isAdd) {
+        if (isSizeOnly) {
+          setProductOption((prevState) => ({
+            ...prevState,
+            images: value,
+          }));
+        } else {
+          setProductOption(value);
+        }
+      } else {
+        if (isSizeOnly) {
+          setProductOption((prevState) => {
+            const newImage = [...prevState?.images];
+            const imagesDeleted = newImage.filter(
+              (_, prevIndex) => prevIndex !== index
+            );
+            return { ...prevState, images: imagesDeleted };
+          });
+        } else {
+          setProductOption((prevState) => {
+            const newImage = [...prevState];
+            return newImage.filter((_, prevIndex) => prevIndex !== index);
+          });
+        }
+      }
+    },
+    [isSizeOnly]
+  );
 
   const onSetDetailTH = useCallback((value) => {
     setProductDetail((prevState) => ({
@@ -190,7 +219,10 @@ const Product = () => {
             sizeEnable={option.size}
             colorEnable={option.color}
             productOption={productOption}
-            onSetEnble={onSetEnable}
+            typeOption={typeOption}
+            isSizeOnly={isSizeOnly}
+            setTypeOption={setTypeOption}
+            onSetEnable={onSetEnable}
             onSetSize={onSetSize}
             onSetColor={onSetColor}
             onSetColorImage={onSetColorImage}
@@ -227,6 +259,8 @@ const Product = () => {
     option.size,
     productInfo,
     productOption,
+    typeOption,
+    isSizeOnly,
     productDetail.th,
     productDetail.en,
     onSetEnable,
@@ -259,6 +293,7 @@ const Product = () => {
     const totalOption = productOption && objValuesArr(productOption).length;
     const initNull =
       option.enable === null || !productOption || totalOption === 0;
+
     if (totalOption !== 0) {
       const size = productOption?.size;
       const color = productOption?.color;
@@ -271,12 +306,13 @@ const Product = () => {
       const colorIsNull =
         (colorCode && colorName && [...colorCode, ...colorName].includes("")) ||
         (colorImages && colorImages.includes(0));
+      const imageIsNull = isSizeOnly && productOption?.images?.length === 0;
 
-      return sizeIsNull || colorIsNull;
+      return sizeIsNull || colorIsNull || imageIsNull;
     } else {
       return initNull;
     }
-  }, [option.enable, productOption]);
+  }, [option.enable, productOption, isSizeOnly]);
 
   const isDetailNull = useMemo(() => {
     return productDetail.th === "<p></p>" || productDetail.en === "<p></p>";

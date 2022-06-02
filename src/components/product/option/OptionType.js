@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import styled, { css } from "styled-components";
 import { Space } from "antd";
 import { Box, SpaceContainer } from "../../../style/common";
@@ -45,81 +45,103 @@ const ContentOption = styled.div`
 `;
 
 const OptionType = ({
+  typeOption,
   sizeEnable,
   colorEnable,
   optionSize,
   optionColor,
-  onSetEnble,
+  onSetEnable,
   onSetSize,
   onSetColor,
   onSetColorImage,
 }) => {
-  return (
-    <SpaceContainer direction="vertical" size={10}>
-      <Space size={0}>
-        <Typography fontSize={18} lineHeight={20} color="#828282">
-          ประเภทตัวเลือก
-        </Typography>
-        <Typography fontSize={18} lineHeight={20} color="#F9414C">
-          *
-        </Typography>
-      </Space>
-      <SpaceContainer direction="vertical" size={20}>
-        <SpaceContainer direction="vertical" size={0}>
-          <Option
-            size={10}
-            active={sizeEnable ? 1 : 0}
-            onClick={() => onSetEnble("size", !sizeEnable)}
+  const sizeOption = useMemo(
+    () => (
+      <SpaceContainer direction="vertical" size={0}>
+        <Option
+          size={10}
+          active={sizeEnable ? 1 : 0}
+          onClick={() => onSetEnable("size", !sizeEnable)}
+        >
+          <Square justify="center" align="center" active={sizeEnable}>
+            {sizeEnable && (
+              <IconSvg src={checked_icon} fontSize={10} heightable={false} />
+            )}
+          </Square>
+          <Typography
+            fontSize={18}
+            lineHeight={20}
+            color={sizeEnable ? "#044700" : "#4F4F4F"}
           >
-            <Square justify="center" align="center" active={sizeEnable}>
-              {sizeEnable && (
-                <IconSvg src={checked_icon} fontSize={10} heightable={false} />
-              )}
-            </Square>
-            <Typography
-              fontSize={18}
-              lineHeight={20}
-              color={sizeEnable ? "#044700" : "#4F4F4F"}
-            >
-              Size
-            </Typography>
-          </Option>
-          {sizeEnable && (
-            <ContentOption>
-              <OptionSize optionSize={optionSize} onSetSize={onSetSize} />
-            </ContentOption>
-          )}
-        </SpaceContainer>
-        <SpaceContainer direction="vertical" size={0}>
-          <Option
-            size={10}
-            active={colorEnable ? 1 : 0}
-            onClick={() => onSetEnble("color", !colorEnable)}
-          >
-            <Square justify="center" align="center" active={colorEnable}>
-              {colorEnable && (
-                <IconSvg src={checked_icon} fontSize={10} heightable={false} />
-              )}
-            </Square>
-            <Typography
-              fontSize={18}
-              lineHeight={20}
-              color={colorEnable ? "#044700" : "#4F4F4F"}
-            >
-              Color
-            </Typography>
-          </Option>
-          {colorEnable && (
-            <ContentOption>
-              <OptionColor
-                optionColor={optionColor}
-                onSetColor={onSetColor}
-                onSetColorImage={onSetColorImage}
-              />
-            </ContentOption>
-          )}
-        </SpaceContainer>
+            Size
+          </Typography>
+        </Option>
+        {sizeEnable && (
+          <ContentOption>
+            <OptionSize optionSize={optionSize} onSetSize={onSetSize} />
+          </ContentOption>
+        )}
       </SpaceContainer>
+    ),
+    [optionSize, sizeEnable, onSetEnable, onSetSize]
+  );
+
+  const colorOption = useMemo(
+    () => (
+      <SpaceContainer direction="vertical" size={0}>
+        <Option
+          size={10}
+          active={colorEnable ? 1 : 0}
+          onClick={() => onSetEnable("color", !colorEnable)}
+        >
+          <Square justify="center" align="center" active={colorEnable}>
+            {colorEnable && (
+              <IconSvg src={checked_icon} fontSize={10} heightable={false} />
+            )}
+          </Square>
+          <Typography
+            fontSize={18}
+            lineHeight={20}
+            color={colorEnable ? "#044700" : "#4F4F4F"}
+          >
+            Color
+          </Typography>
+        </Option>
+        {colorEnable && (
+          <ContentOption>
+            <OptionColor
+              optionColor={optionColor}
+              onSetColor={onSetColor}
+              onSetColorImage={onSetColorImage}
+            />
+          </ContentOption>
+        )}
+      </SpaceContainer>
+    ),
+    [colorEnable, optionColor, onSetColor, onSetColorImage, onSetEnable]
+  );
+
+  const displayOption = useMemo(() => {
+    switch (typeOption) {
+      case "1":
+        return sizeOption;
+      case "2":
+        return colorOption;
+      case "3":
+        return (
+          <>
+            {sizeOption}
+            {colorOption}
+          </>
+        );
+      default:
+        return null;
+    }
+  }, [typeOption, sizeOption, colorOption]);
+
+  return (
+    <SpaceContainer direction="vertical" size={20}>
+      {displayOption}
     </SpaceContainer>
   );
 };

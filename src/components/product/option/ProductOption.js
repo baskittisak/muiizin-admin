@@ -1,15 +1,19 @@
 import { memo, useMemo } from "react";
 import { SpaceContainer } from "../../../style/common";
 import Options from "./Options";
-import OptionImage from "./OptionImage";
 import OptionType from "./OptionType";
+import OptionImage from "./OptionImage";
+import OptionDropdown from "./OptionDropdown";
 
 const ProductOption = ({
   optionEnable,
   sizeEnable,
   colorEnable,
   productOption,
-  onSetEnble,
+  typeOption,
+  isSizeOnly,
+  setTypeOption,
+  onSetEnable,
   onSetSize,
   onSetColor,
   onSetColorImage,
@@ -18,16 +22,29 @@ const ProductOption = ({
   const displayOption = useMemo(() => {
     if (optionEnable) {
       return (
-        <OptionType
-          sizeEnable={sizeEnable}
-          colorEnable={colorEnable}
-          optionSize={productOption?.size}
-          optionColor={productOption?.color}
-          onSetEnble={onSetEnble}
-          onSetSize={onSetSize}
-          onSetColor={onSetColor}
-          onSetColorImage={onSetColorImage}
-        />
+        <SpaceContainer direction="vertical" size={20}>
+          <OptionDropdown
+            typeOption={typeOption}
+            setTypeOption={setTypeOption}
+            onSetEnable={onSetEnable}
+          />
+          {typeOption && (
+            <OptionType
+              typeOption={typeOption}
+              sizeEnable={sizeEnable}
+              colorEnable={colorEnable}
+              optionSize={productOption?.size}
+              optionColor={productOption?.color}
+              onSetEnable={onSetEnable}
+              onSetSize={onSetSize}
+              onSetColor={onSetColor}
+              onSetColorImage={onSetColorImage}
+            />
+          )}
+          {isSizeOnly && (
+            <OptionImage images={productOption?.images} onSetImage={onSetImage} />
+          )}
+        </SpaceContainer>
       );
     } else {
       if (Array.isArray(productOption)) {
@@ -36,10 +53,13 @@ const ProductOption = ({
     }
   }, [
     optionEnable,
+    typeOption,
+    setTypeOption,
     sizeEnable,
     colorEnable,
     productOption,
-    onSetEnble,
+    isSizeOnly,
+    onSetEnable,
     onSetSize,
     onSetColor,
     onSetColorImage,
@@ -50,7 +70,7 @@ const ProductOption = ({
     <SpaceContainer direction="vertical" size={30}>
       <Options
         option={optionEnable}
-        setOption={(value) => onSetEnble("enable", value)}
+        setOption={(value) => onSetEnable("enable", value)}
       />
       {optionEnable !== null && displayOption}
     </SpaceContainer>
