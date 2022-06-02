@@ -33,7 +33,7 @@ const Footer = styled(Box)`
 const Product = () => {
   const navigate = useNavigate();
   const productId = useQuery("productId");
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(0);
   const [productInfo, setProductInfo] = useState(defaultProductInfo);
   const [option, setOption] = useState(defaultOption);
   const [typeOption, setTypeOption] = useState("");
