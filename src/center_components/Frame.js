@@ -4,7 +4,8 @@ import Typography from "./Typography";
 import IconSvg from "./IconSvg";
 import { ReactComponent as arrow_icon } from "../assets/icons/arrow_left.svg";
 import { Box } from "../style/common";
-import { Space } from "antd";
+import { Space, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const Container = styled.div`
   padding: 32px 50px 26px;
@@ -28,29 +29,40 @@ const BackButton = styled(Box)`
   border-radius: 5px;
 `;
 
-const Frame = ({ label, extra, children, onBack }) => {
+const Loading = styled(Spin)`
+  max-height: initial !important;
+
+  > span {
+    font-size: 24px;
+    color: #044700;
+  }
+`;
+
+const Frame = ({ label, extra, loading = false, children, onBack }) => {
   return (
-    <Container>
-      <Header justify="space-between" align="center">
-        <Space size={12}>
-          {onBack && (
-            <BackButton justify="center" align="center" onClick={onBack}>
-              <IconSvg src={arrow_icon} fontSize={20} />
-            </BackButton>
-          )}
-          <Typography
-            fontSize={28}
-            lineHeight={30}
-            fontWeight={700}
-            color="#333333"
-          >
-            {label}
-          </Typography>
-        </Space>
-        {extra && extra}
-      </Header>
-      {children}
-    </Container>
+    <Loading spinning={loading} indicator={<LoadingOutlined spin />}>
+      <Container>
+        <Header justify="space-between" align="center">
+          <Space size={12}>
+            {onBack && (
+              <BackButton justify="center" align="center" onClick={onBack}>
+                <IconSvg src={arrow_icon} fontSize={20} />
+              </BackButton>
+            )}
+            <Typography
+              fontSize={28}
+              lineHeight={30}
+              fontWeight={700}
+              color="#333333"
+            >
+              {label}
+            </Typography>
+          </Space>
+          {extra && extra}
+        </Header>
+        {children}
+      </Container>
+    </Loading>
   );
 };
 
