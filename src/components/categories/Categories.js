@@ -5,15 +5,18 @@ import BaseButton from "../../center_components/BaseButton";
 import FilterCategories from "./FilterCategories";
 import IconSvg from "../../center_components/IconSvg";
 import Table from "../../center_components/Table";
+import ErrorPage from "../../center_components/ErrorPage";
 import ModalCategories from "./ModalCategories";
 import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { ReactComponent as drag_icon } from "../../assets/icons/drag.svg";
 import { Space } from "antd";
 import { Action, Box } from "../../style/common";
-import { mockCategories } from "./data/defaultData";
 import { SortableHandle } from "react-sortable-hoc";
 import { useNavigate } from "react-router-dom";
+import { getFormatDate } from "../../utils/utils";
+import { useDebounce } from "use-debounce";
+import useSWR from "swr";
 
 const DragHandle = SortableHandle(() => (
   <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />
@@ -33,18 +36,21 @@ const Categories = () => {
   const [visible, setVisible] = useState(false);
   const [sortable, setSortable] = useState(false);
   const [name, setName] = useState({ th: "", en: "" });
-  const [dataSource, setDataSource] = useState(mockCategories);
+  const [dataSource, setDataSource] = useState([]);
+
+  const [search] = useDebounce(filters.search, 500);
+  const apiCategories = useMemo(() => {
+    const isAllStatus = filters.status === "1";
+    const status = filters.status === "2" ? "ใช้งาน" : "ปิดชั่วคราว";
+    const statusQuery = !isAllStatus ? `&status=${status}` : "";
+    return `/data/list/category?search=${search}${statusQuery}`;
+  }, [search, filters.status]);
+
+  const { data: categories, error: categoriesError } = useSWR(apiCategories);
 
   useEffect(() => {
-    setDataSource((prevState) => {
-      const newData = [...prevState];
-      return newData.map((data, index) => ({
-        ...data,
-        index,
-        sequence: index + 1,
-      }));
-    });
-  }, []);
+    categories && setDataSource([...categories]);
+  }, [categories]);
 
   const onFilters = useCallback((type, value) => {
     setFilters((prevState) => ({
@@ -99,6 +105,7 @@ const Categories = () => {
         title: "วันที่อัปเดต",
         dataIndex: "updatedTime",
         width: "15%",
+        render: (date) => getFormatDate(date),
       },
       {
         title: "",
@@ -112,14 +119,14 @@ const Categories = () => {
               <Action
                 justify="center"
                 align="center"
-                onClick={() => navigate(`/category?categoryId=${record?.key}`)}
+                onClick={() => navigate(`/category?categoryId=${record?.id}`)}
               >
                 <IconSvg src={eye_icon} fontSize={18} />
               </Action>
               <Action
                 justify="center"
                 align="center"
-                onClick={() => console.log(record?.key)}
+                onClick={() => console.log(record?.id)}
               >
                 <IconSvg src={delete_icon} fontSize={18} />
               </Action>
@@ -132,6 +139,7 @@ const Categories = () => {
   const displayProductList = useMemo(
     () => (
       <Frame
+        loading={!categories}
         label={sortable ? "จัดเรียงหมวดหมู่" : "หมวดหมู่สินค้า"}
         extra={
           !sortable && (
@@ -180,8 +188,19 @@ const Categories = () => {
         )}
       </Frame>
     ),
-    [columns, dataSource, filters.search, filters.status, sortable, onFilters]
+    [
+      categories,
+      columns,
+      dataSource,
+      filters.search,
+      filters.status,
+      sortable,
+      onFilters,
+    ]
   );
+
+  if (categoriesError)
+    return <ErrorPage message={categoriesError?.response?.data} />;
 
   return (
     <>
