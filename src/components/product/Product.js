@@ -49,7 +49,22 @@ const Product = () => {
     return productId && `/data/product/${productId}`;
   }, [productId]);
 
+  const apiProductSize = useMemo(() => {
+    return productId && `/data/product/option/size/${productId}`;
+  }, [productId]);
+
+  const apiProductColor = useMemo(() => {
+    return productId && `/data/product/option/color/${productId}`;
+  }, [productId]);
+
+  const apiProductImage = useMemo(() => {
+    return productId && `/data/product/images/${productId}`;
+  }, [productId]);
+
   const { data: product, error: productError } = useSWR(apiProduct);
+  const { data: productSize, error: sizeError } = useSWR(apiProductSize);
+  const { data: productColor, error: colorError } = useSWR(apiProductColor);
+  const { data: productImages, error: imagesError } = useSWR(apiProductImage);
 
   const isSizeOnly = useMemo(() => {
     return typeOption === "1";
@@ -64,7 +79,59 @@ const Product = () => {
   }, [product, productId]);
 
   useEffect(() => {
-    if (option.enable !== null) {
+    if (productId && productSize && productSize?.length !== 0) {
+      setOption((prevState) => ({
+        ...prevState,
+        enable: true,
+        size: true,
+      }));
+      setProductOption((prevState) => {
+        const optionData = { ...prevState };
+        optionData.size = productSize;
+        return optionData;
+      });
+    }
+  }, [productId, productSize]);
+
+  useEffect(() => {
+    if (productId && productColor && productColor?.length !== 0) {
+      setOption((prevState) => ({
+        ...prevState,
+        enable: true,
+        color: true,
+      }));
+      setProductOption((prevState) => {
+        const optionData = { ...prevState };
+        optionData.color = productColor;
+        return optionData;
+      });
+    }
+  }, [productId, productColor]);
+
+  useEffect(() => {
+    if (productId && productImages && productImages?.length !== 0) {
+      const isSize = productSize?.length !== 0;
+      setOption((prevState) => ({
+        ...prevState,
+        enable: true,
+        color: false,
+        size: isSize,
+      }));
+      setProductOption((prevState) => {
+        if (isSize) {
+          const optionData = { ...prevState };
+          optionData.size = productSize;
+          optionData.images = productImages;
+          return optionData;
+        } else {
+          return productImages;
+        }
+      });
+    }
+  }, [productId, productImages, productSize]);
+
+  useEffect(() => {
+    if (!productId && option.enable !== null) {
       setProductOption(() => {
         if (option.enable && typeOption) {
           const optionData = {};
@@ -83,7 +150,14 @@ const Product = () => {
         }
       });
     }
-  }, [option.enable, option.size, option.color, isSizeOnly, typeOption]);
+  }, [
+    productId,
+    option.enable,
+    option.size,
+    option.color,
+    isSizeOnly,
+    typeOption,
+  ]);
 
   const onNext = useCallback(() => {
     setCurrent((prev) => prev + 1);
@@ -405,11 +479,28 @@ const Product = () => {
     }
   }, [current, nextButton, prevButton]);
 
-  if (productError) return <ErrorPage message={productError?.response?.data} />;
+  const isLoading = useMemo(() => {
+    return (
+      productId && (!product || !productSize || !productColor || !productImages)
+    );
+  }, [product, productId, productSize, productColor, productImages]);
+
+  if (productError || sizeError || colorError || imagesError) {
+    return (
+      <ErrorPage
+        message={
+          productError?.response?.data ||
+          sizeError?.response?.data ||
+          colorError?.response?.data ||
+          imagesError?.response?.data
+        }
+      />
+    );
+  }
 
   return (
     <Frame
-      loading={productId && !product}
+      loading={isLoading}
       label="เพิ่มสินค้าใหม่"
       onBack={() => navigate("/")}
     >

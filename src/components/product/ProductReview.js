@@ -137,6 +137,10 @@ const ProductReview = ({
     return productOption?.color;
   }, [productOption?.color]);
 
+  const optionImage = useMemo(() => {
+    return productOption?.images;
+  }, [productOption?.images]);
+
   const isImage = useMemo(() => {
     return !optionSize && !optionColor;
   }, [optionColor, optionSize]);
@@ -175,12 +179,15 @@ const ProductReview = ({
         <Space direction="vertical" size={26}>
           <Title label="ตัวเลือกและรูปภาพสินค้า" onEdit={() => setCurrent(1)} />
           {isImage && (
-            <Space width="initial" size={10}>
-              {productOption?.map((image, indexImg) => (
-                <ImageWrapper key={indexImg} justify="center" align="center">
-                  <BaseImage src={image} width={65} height={65} />
-                </ImageWrapper>
-              ))}
+            <Space direction="vertical" size={16}>
+              <Info label="รูปภาพ" value={productOption?.length + " รูป"} />
+              <Space width="initial" size={10}>
+                {productOption?.map((image) => (
+                  <ImageWrapper key={image?.id} justify="center" align="center">
+                    <BaseImage src={image?.image} width={65} height={65} />
+                  </ImageWrapper>
+                ))}
+              </Space>
             </Space>
           )}
           {!isImage && (
@@ -234,18 +241,38 @@ const ProductReview = ({
                       </Typography>
                     </Space>
                     <Space width="initial" size={10}>
-                      {color.images.map((image, indexImg) => (
+                      {color.images.map((image) => (
                         <ImageWrapper
-                          key={indexImg}
+                          key={image?.id}
                           justify="center"
                           align="center"
                         >
-                          <BaseImage src={image} width={65} height={65} />
+                          <BaseImage
+                            src={image?.image}
+                            width={65}
+                            height={65}
+                          />
                         </ImageWrapper>
                       ))}
                     </Space>
                   </Space>
                 ))}
+              {optionImage && (
+                <Info label="รูปภาพ" value={optionImage?.length + " รูป"} />
+              )}
+              {optionImage && (
+                <Space width="initial" size={10}>
+                  {optionImage?.map((image) => (
+                    <ImageWrapper
+                      key={image?.id}
+                      justify="center"
+                      align="center"
+                    >
+                      <BaseImage src={image?.image} width={65} height={65} />
+                    </ImageWrapper>
+                  ))}
+                </Space>
+              )}
             </Space>
           )}
         </Space>
