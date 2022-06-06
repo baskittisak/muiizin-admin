@@ -28,31 +28,21 @@ const ProductList = () => {
     status: "1",
   });
 
-  const status = useMemo(() => {
-    let query = "&status=";
-    switch (filters.status) {
-      case "2":
-        query += "พร้อมส่ง";
-        break;
-      case "3":
-        query += "พรีออเดอร์";
-        break;
-      case "4":
-        query += "สินค้าหมด";
-        break;
-      default:
-        break;
-    }
-    return filters.status !== "1" ? query : "";
-  }, [filters.status]);
-
   const [search] = useDebounce(filters.search, 500);
   const apiProductList = useMemo(() => {
     const searchQuery = search ? `&search=${search}` : "";
+    const isAllStatus = filters.status === "1";
+    const status =
+      filters.status === "2"
+        ? "พร้อมส่ง"
+        : filters.status === "3"
+        ? "พรีออเดอร์"
+        : "สินค้าหมด";
+    const statusQuery = !isAllStatus ? `&status=${status}` : "";
     const category =
       filters.category !== "0" ? `&category=${filters.category}` : "";
-    return `/data/list/product?page=${page}${searchQuery}${category}${status}`;
-  }, [filters.category, status, page, search]);
+    return `/data/list/product?page=${page}${searchQuery}${category}${statusQuery}`;
+  }, [filters.category, filters.status, page, search]);
 
   const { data: productList, error } = useSWR(apiProductList);
 
