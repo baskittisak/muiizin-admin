@@ -28,10 +28,20 @@ const ProductInfo = ({ productInfo, setProductInfo }) => {
           },
         }));
       } else {
-        setProductInfo((prevState) => ({
-          ...prevState,
-          [type]: value,
-        }));
+        const isStatus = type === "status";
+        if (isStatus) {
+          setProductInfo((prevState) => ({
+            ...prevState,
+            status: {
+              key: value,
+            },
+          }));
+        } else {
+          setProductInfo((prevState) => ({
+            ...prevState,
+            [type]: value,
+          }));
+        }
       }
     },
     [setProductInfo]
@@ -114,7 +124,7 @@ const ProductInfo = ({ productInfo, setProductInfo }) => {
         label="สถานะสินค้า"
         menuItems={statusItems}
         placeholder="กรุณาเลือกสถานะ"
-        value={productInfo.status}
+        value={productInfo.status.key}
         isRequired
         onChange={(value) => onSetProductInfo("status", value)}
       />

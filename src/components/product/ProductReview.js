@@ -5,9 +5,10 @@ import IconSvg from "../../center_components/IconSvg";
 import BaseImage from "../../center_components/BaseImage";
 import Info from "../../center_components/Info";
 import { Box, SpaceContainer } from "../../style/common";
-import { Tabs } from "antd";
+import { Empty, Tabs } from "antd";
 import { ReactComponent as checked_icon } from "../../assets/icons/checked.svg";
 import { ReactComponent as edit_icon } from "../../assets/icons/edit.svg";
+import useSWR from "swr";
 
 const { TabPane } = Tabs;
 
@@ -89,6 +90,7 @@ const ImageWrapper = styled(Box)`
 
 const HTMLReader = styled.div`
   margin-top: 26px;
+  font-size: 18px;
 `;
 
 const Title = memo(({ label, onEdit }) => (
@@ -112,73 +114,20 @@ const ProductReview = ({
 }) => {
   const [language, setLanguage] = useState("th");
 
-  const categoriesItems = useMemo(
-    () => [
-      {
-        key: "1",
-        name: {
-          th: "กระเป๋า",
-          en: "Bag",
-        },
-      },
-      {
-        key: "2",
-        name: {
-          th: "หมอน",
-          en: "Pillow",
-        },
-      },
-      {
-        key: "3",
-        name: {
-          th: "หมวก",
-          en: "Hat",
-        },
-      },
-    ],
-    []
-  );
+  const apiCategory = useMemo(() => {
+    return productInfo?.category && `/data/category/${productInfo?.category}`;
+  }, [productInfo?.category]);
 
-  const statusItems = useMemo(
-    () => [
-      {
-        key: "1",
-        name: {
-          th: "พร้อมส่ง",
-          en: "Ready to Ship",
-        },
-      },
-      {
-        key: "2",
-        name: {
-          th: "พรีออเดอร์",
-          en: "Pre-order",
-        },
-      },
-      {
-        key: "3",
-        name: {
-          th: "สินค้าหมด",
-          en: "Out of Stock",
-        },
-      },
-    ],
-    []
-  );
+  const { data: categoryData, error } = useSWR(apiCategory);
 
   const category = useMemo(() => {
-    const findCategory = categoriesItems.find(
-      (category) => category.key === productInfo.category
-    );
-    return findCategory?.name[language];
-  }, [categoriesItems, language, productInfo.category]);
+    if (!categoryData) return <>Loading...</>;
+    return categoryData?.name?.[language];
+  }, [categoryData, language]);
 
   const status = useMemo(() => {
-    const findStatus = statusItems.find(
-      (status) => status.key === productInfo.status
-    );
-    return findStatus?.name[language];
-  }, [statusItems, language, productInfo.status]);
+    return productInfo?.status?.name?.[language];
+  }, [productInfo?.status?.name, language]);
 
   const optionSize = useMemo(() => {
     return productOption?.size;
@@ -191,6 +140,8 @@ const ProductReview = ({
   const isImage = useMemo(() => {
     return !optionSize && !optionColor;
   }, [optionColor, optionSize]);
+
+  if (error) return <Empty />;
 
   return (
     <>

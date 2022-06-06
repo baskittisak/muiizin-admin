@@ -14,11 +14,13 @@ import { useQuery } from "../../utils/useQuery";
 import FormWrapper from "../../center_components/FormWrapper";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
+import ErrorPage from "../../center_components/ErrorPage";
 import StepsProduct from "./StepsProduct";
 import ProductInfo from "./ProductInfo";
 import ProductOption from "./option/ProductOption";
 import ProductDetail from "./ProductDetail";
 import ProductReview from "./ProductReview";
+import useSWR from "swr";
 
 const Body = styled.div`
   margin-bottom: 24px;
@@ -43,9 +45,23 @@ const Product = () => {
     en: "<p></p>",
   });
 
+  const apiProduct = useMemo(() => {
+    return productId && `/data/product/${productId}`;
+  }, [productId]);
+
+  const { data: product, error: productError } = useSWR(apiProduct);
+
   const isSizeOnly = useMemo(() => {
     return typeOption === "1";
   }, [typeOption]);
+
+  useEffect(() => {
+    if (productId && product) {
+      setProductInfo(product);
+      setProductDetail(product?.detail);
+      setCurrent(3);
+    }
+  }, [product, productId]);
 
   useEffect(() => {
     if (option.enable !== null) {
@@ -68,10 +84,6 @@ const Product = () => {
       });
     }
   }, [option.enable, option.size, option.color, isSizeOnly, typeOption]);
-
-  useEffect(() => {
-    productId && setCurrent(3);
-  }, [productId]);
 
   const onNext = useCallback(() => {
     setCurrent((prev) => prev + 1);
@@ -278,7 +290,7 @@ const Product = () => {
       ...objValuesArr(productInfo.owner),
       productInfo.category,
       productInfo.price,
-      productInfo.status,
+      productInfo.status.key,
     ];
     return values.includes("");
   }, [
@@ -286,7 +298,7 @@ const Product = () => {
     productInfo.name,
     productInfo.owner,
     productInfo.price,
-    productInfo.status,
+    productInfo.status.key,
   ]);
 
   const isOptionNull = useMemo(() => {
@@ -393,8 +405,14 @@ const Product = () => {
     }
   }, [current, nextButton, prevButton]);
 
+  if (productError) return <ErrorPage message={productError?.response?.data} />;
+
   return (
-    <Frame label="เพิ่มสินค้าใหม่" onBack={() => navigate("/")}>
+    <Frame
+      loading={productId && !product}
+      label="เพิ่มสินค้าใหม่"
+      onBack={() => navigate("/")}
+    >
       <FormWrapper>
         {current < 3 && <StepsProduct current={current} />}
         <FormWrapper>

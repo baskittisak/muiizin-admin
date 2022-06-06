@@ -11,7 +11,9 @@ export const defaultProductInfo = {
   },
   category: "",
   price: "",
-  status: "",
+  status: {
+    key: "",
+  },
 };
 
 export const defaultOption = {
