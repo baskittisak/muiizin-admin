@@ -9,6 +9,7 @@ import { Box, SpaceContainer } from "../../../style/common";
 import { Space } from "antd";
 import { DebounceInput } from "react-debounce-input";
 import { ReactComponent as delete_icon } from "../../../assets/icons/delete.svg";
+import { useQuery } from "../../../utils/useQuery";
 
 const Header = styled(Box)`
   background: #d9e3d9;
@@ -47,6 +48,7 @@ const InputColor = styled(DebounceInput)`
 `;
 
 const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
+  const productId = useQuery("productId");
   const [language, setLanguage] = useState(["th", "th"]);
 
   const onSetLanguage = useCallback((index, value) => {
@@ -151,7 +153,11 @@ const OptionColor = ({ optionColor, onSetColor, onSetColorImage }) => {
                 isRequired
                 fontSize={16}
                 lineHeight={17}
-                imageList={color.images}
+                imageList={
+                  productId
+                    ? color.images.map((image) => image?.image)
+                    : color.images
+                }
                 setImageList={(images) => onSetColorImage("add", index, images)}
                 onDeleteImage={(indexDel) =>
                   onSetColorImage("delete", index, "", indexDel)

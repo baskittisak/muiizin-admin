@@ -3,12 +3,18 @@ import Dropdown from "../../center_components/form/Dropdown";
 import Input from "../../center_components/form/Input";
 import TabsLanguage from "../../center_components/form/TabsLanguage";
 import { SpaceContainer } from "../../style/common";
+import { Empty, Skeleton } from "antd";
+import useSWR from "swr";
 
 const ProductInfo = ({ productInfo, setProductInfo }) => {
   const [language, setLanguage] = useState({
     name: "th",
     owner: "th",
   });
+
+  const { data: categories, error: categoriesError } = useSWR(
+    "/data/list/filter/category?type=create"
+  );
 
   const onSetLanguage = useCallback((type, value) => {
     setLanguage((prevState) => ({
@@ -47,24 +53,6 @@ const ProductInfo = ({ productInfo, setProductInfo }) => {
     [setProductInfo]
   );
 
-  const categoriesItems = useMemo(
-    () => [
-      {
-        key: "1",
-        label: "กระเป๋า",
-      },
-      {
-        key: "2",
-        label: "หมอน",
-      },
-      {
-        key: "3",
-        label: "หมวก",
-      },
-    ],
-    []
-  );
-
   const statusItems = useMemo(
     () => [
       {
@@ -82,6 +70,9 @@ const ProductInfo = ({ productInfo, setProductInfo }) => {
     ],
     []
   );
+
+  if (categoriesError) return <Empty />;
+  if (!categories) return <Skeleton active />;
 
   return (
     <SpaceContainer direction="vertical" size={30}>
@@ -105,7 +96,7 @@ const ProductInfo = ({ productInfo, setProductInfo }) => {
       </TabsLanguage>
       <Dropdown
         label="หมวดหมู่สินค้า"
-        menuItems={categoriesItems}
+        menuItems={categories}
         placeholder="กรุณาเลือกหมวดหมู่สินค้า"
         value={productInfo.category}
         isRequired

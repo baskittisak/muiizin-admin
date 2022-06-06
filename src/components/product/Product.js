@@ -90,6 +90,7 @@ const Product = () => {
         optionData.size = productSize;
         return optionData;
       });
+      setTypeOption("1");
     }
   }, [productId, productSize]);
 
@@ -105,6 +106,7 @@ const Product = () => {
         optionData.color = productColor;
         return optionData;
       });
+      setTypeOption("2");
     }
   }, [productId, productColor]);
 
@@ -113,7 +115,7 @@ const Product = () => {
       const isSize = productSize?.length !== 0;
       setOption((prevState) => ({
         ...prevState,
-        enable: true,
+        enable: isSize,
         color: false,
         size: isSize,
       }));
@@ -127,8 +129,15 @@ const Product = () => {
           return productImages;
         }
       });
+      isSize && setTypeOption("1");
     }
   }, [productId, productImages, productSize]);
+
+  useEffect(() => {
+    if (productId && productSize?.length !== 0 && productColor?.length !== 0) {
+      setTypeOption("3");
+    }
+  }, [productColor?.length, productId, productSize?.length]);
 
   useEffect(() => {
     if (!productId && option.enable !== null) {
