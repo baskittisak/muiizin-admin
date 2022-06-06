@@ -115,7 +115,9 @@ const ProductReview = ({
   const [language, setLanguage] = useState("th");
 
   const apiCategory = useMemo(() => {
-    return productInfo?.category && `/data/category/${productInfo?.category}`;
+    return (
+      productInfo?.category && `/data/name/category/${productInfo?.category}`
+    );
   }, [productInfo?.category]);
 
   const { data: categoryData, error } = useSWR(apiCategory);

@@ -12,12 +12,14 @@ import Toggle from "../../center_components/Toggle";
 import Search from "../../center_components/filter/Search";
 import TabsLanguage from "../../center_components/form/TabsLanguage";
 import Input from "../../center_components/form/Input";
-import { mockCategories, mockProduct } from "./data/defaultData";
+import ErrorPage from "../../center_components/ErrorPage";
 import { useQuery } from "../../utils/useQuery";
 import { useNavigate } from "react-router-dom";
 import { Action, Box, SpaceContainer } from "../../style/common";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { Space } from "antd";
+import useSWR from "swr";
+import { useDebounce } from "use-debounce";
 
 const Footer = styled(Box)`
   height: 80px;
@@ -34,15 +36,33 @@ const Category = () => {
   const navigate = useNavigate();
   const categoryId = useQuery("categoryId");
   const [isEdit, setIsEdit] = useState(false);
-  const [current, setCurrent] = useState(1);
+  const [page, setPage] = useState(1);
   const [language, setLanguage] = useState("th");
   const [categoryData, setCategoryData] = useState({});
+  const [searchValue, setSearchValue] = useState("");
+
+  const apiCategory = useMemo(() => {
+    return categoryId && `/data/category/${categoryId}`;
+  }, [categoryId]);
+
+  const [search] = useDebounce(searchValue, 500);
+  const apiProducts = useMemo(() => {
+    return (
+      categoryId &&
+      `/data/list/product?page=${page}&search=${search}&category=${categoryId}`
+    );
+  }, [page, search, categoryId]);
+
+  const { data: category, error: categoryError } = useSWR(apiCategory);
+  const { data: products, error: productsError } = useSWR(apiProducts);
 
   useEffect(() => {
-    setCategoryData(() =>
-      mockCategories?.find((category) => category?.key === categoryId)
-    );
-  }, [categoryId]);
+    category && setCategoryData(category);
+  }, [category]);
+
+  useEffect(() => {
+    searchValue && setPage(1);
+  }, [searchValue]);
 
   const onSetCategoryData = useCallback((type, value) => {
     setCategoryData((prevState) => ({
@@ -52,11 +72,8 @@ const Category = () => {
   }, []);
 
   const categoryName = useMemo(() => {
-    const category = mockCategories?.find(
-      (category) => category?.key === categoryId
-    );
-    return category?.nameTH + "/" + category?.nameEN;
-  }, [categoryId]);
+    return categoryData?.nameTH + "/" + categoryData?.nameEN;
+  }, [categoryData?.nameEN, categoryData?.nameTH]);
 
   const isTH = useMemo(() => {
     return language === "th";
@@ -71,7 +88,7 @@ const Category = () => {
             <Toggle
               checked={categoryData?.status === "ใช้งาน"}
               onChange={(checked) =>
-                onSetCategoryData("status", checked ? "ใช้งาน" : "ปิดใช้งาน")
+                onSetCategoryData("status", checked ? "ใช้งาน" : "ปิดชั่วคราว")
               }
             />
           ) : (
@@ -113,19 +130,24 @@ const Category = () => {
   const productList = useMemo(
     () => (
       <SpaceContainer direction="vertical" size={5}>
-        <Info label="รายการสินค้า" value={`50 รายการ`} />
+        <Info label="รายการสินค้า" value={`${category?.stock} รายการ`} />
         {isEdit && (
           <SearchWrapper>
-            <Search width="100%" placeholder="ค้นหารายการสินค้า" />
+            <Search
+              width="100%"
+              placeholder="ค้นหารายการสินค้า"
+              value={searchValue}
+              onChange={setSearchValue}
+            />
           </SearchWrapper>
         )}
-        {mockProduct.map((product, index) => (
-          <Box key={product.id} justify="space-between" align="center">
+        {products?.data?.map((product, index) => (
+          <Box key={product?.key} justify="space-between" align="center">
             <Typography color="#4F4F4F" width="70%">
-              {index + 1 + ". " + product.name}
+              {index + 1 + ". " + product?.name}
             </Typography>
             <Space size={25}>
-              <BaseImage src={product.image} width={45} height={45} />
+              <BaseImage src={product?.image} width={45} height={45} />
               {isEdit && (
                 <Action justify="center" align="center">
                   <IconSvg src={delete_icon} fontSize={19} heightable={false} />
@@ -136,7 +158,7 @@ const Category = () => {
         ))}
       </SpaceContainer>
     ),
-    [isEdit]
+    [category?.stock, isEdit, products?.data, searchValue]
   );
 
   const displayCategory = useMemo(
@@ -146,14 +168,28 @@ const Category = () => {
           {status}
           {displayName}
           {!isEdit && (
-            <Info label="ลำดับหมวดหมู่" value={"#" + categoryData?.key} />
+            <Info label="ลำดับหมวดหมู่" value={"#" + categoryData?.sequence} />
           )}
           {productList}
         </SpaceContainer>
-        <Pagination current={current} total={20} onChange={setCurrent} />
+        {categoryData?.stock > 10 && (
+          <Pagination
+            current={page}
+            total={categoryData?.stock}
+            onChange={setPage}
+          />
+        )}
       </SpaceContainer>
     ),
-    [categoryData?.key, status, productList, displayName, current, isEdit]
+    [
+      categoryData?.sequence,
+      categoryData?.stock,
+      status,
+      productList,
+      displayName,
+      page,
+      isEdit,
+    ]
   );
 
   const displayButton = useMemo(
@@ -183,9 +219,22 @@ const Category = () => {
     [isEdit]
   );
 
+  const isLoading = useMemo(() => {
+    return categoryId && (!category || !products);
+  }, [category, categoryId, products]);
+
+  if (categoryError || productsError) {
+    return (
+      <ErrorPage
+        message={categoryError?.response?.data || productsError?.response?.data}
+      />
+    );
+  }
+
   return (
     <Frame
       label={categoryName}
+      loading={isLoading}
       onBack={!isEdit ? () => navigate("/categories") : undefined}
       extra={
         !isEdit && (
