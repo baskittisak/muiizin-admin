@@ -47,14 +47,14 @@ const ProductList = () => {
   }, [filters.status]);
 
   const [search] = useDebounce(filters.search, 500);
-  const productListAPI = useMemo(() => {
+  const apiProductList = useMemo(() => {
     const searchQuery = search ? `&search=${search}` : "";
     const category =
       filters.category !== "0" ? `&category=${filters.category}` : "";
     return `/data/list/product?page=${page}${searchQuery}${category}${status}`;
   }, [filters.category, status, page, search]);
 
-  const { data: productList, error } = useSWR(productListAPI);
+  const { data: productList, error } = useSWR(apiProductList);
 
   useEffect(() => {
     if (filters.search || filters.category !== "0" || filters.status !== "1") {

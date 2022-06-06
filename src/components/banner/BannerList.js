@@ -6,14 +6,17 @@ import FilterBanner from "./FilterBanner";
 import IconSvg from "../../center_components/IconSvg";
 import Table from "../../center_components/Table";
 import BaseImage from "../../center_components/BaseImage";
+import ErrorPage from "../../center_components/ErrorPage";
 import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { ReactComponent as drag_icon } from "../../assets/icons/drag.svg";
 import { Space } from "antd";
 import { Action, Box } from "../../style/common";
-import { mockBanner } from "./data/defaultData";
 import { SortableHandle } from "react-sortable-hoc";
 import { useNavigate } from "react-router-dom";
+import { useDebounce } from "use-debounce";
+import { getFormatDate } from "../../utils/utils";
+import useSWR from "swr";
 
 const DragHandle = SortableHandle(() => (
   <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />
@@ -58,18 +61,26 @@ const Categories = () => {
     status: "1",
   });
   const [sortable, setSortable] = useState(false);
-  const [dataSource, setDataSource] = useState(mockBanner);
+  const [dataSource, setDataSource] = useState([]);
+
+  const [search] = useDebounce(filters.search, 500);
+  const apiBannerList = useMemo(() => {
+    const isAllStatus = filters.status === "1";
+    const status =
+      filters.status === "2"
+        ? "เตรียมใช้งาน"
+        : filters.status === "3"
+        ? "กำลังใช้งาน"
+        : "หมดอายุ";
+    const statusQuery = !isAllStatus ? `&status=${status}` : "";
+    return `/data/list/banner?search=${search}${statusQuery}`;
+  }, [search, filters.status]);
+
+  const { data: bannerList, error } = useSWR(apiBannerList);
 
   useEffect(() => {
-    setDataSource((prevState) => {
-      const newData = [...prevState];
-      return newData.map((data, index) => ({
-        ...data,
-        index,
-        sequence: index + 1,
-      }));
-    });
-  }, []);
+    bannerList && setDataSource([...bannerList]);
+  }, [bannerList]);
 
   const onFilters = useCallback((type, value) => {
     setFilters((prevState) => ({
@@ -112,16 +123,19 @@ const Categories = () => {
         title: "วันที่เริ่มใช้งาน",
         dataIndex: "startDate",
         width: "10%",
+        render: (date) => getFormatDate(date),
       },
       {
         title: "วันที่สิ้นสุด",
         dataIndex: "endDate",
         width: "10%",
+        render: (date) => getFormatDate(date),
       },
       {
         title: "วันที่อัปเดต",
         dataIndex: "updatedTime",
         width: "10%",
+        render: (date) => getFormatDate(date),
       },
       {
         title: "",
@@ -156,6 +170,7 @@ const Categories = () => {
     () => (
       <Frame
         label={sortable ? "จัดเรียงแบนเนอร์" : "แบนเนอร์"}
+        loading={!bannerList}
         extra={
           !sortable && (
             <Space size={20}>
@@ -204,6 +219,7 @@ const Categories = () => {
       </Frame>
     ),
     [
+      bannerList,
       columns,
       dataSource,
       filters.search,
@@ -214,7 +230,9 @@ const Categories = () => {
     ]
   );
 
-  return <>{displayProductList}</>;
+  if (error) return <ErrorPage message={error?.response?.data} />;
+
+  return displayProductList;
 };
 
 export default memo(Categories);
