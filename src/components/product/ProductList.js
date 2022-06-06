@@ -5,6 +5,7 @@ import BaseButton from "../../center_components/BaseButton";
 import IconSvg from "../../center_components/IconSvg";
 import Table from "../../center_components/Table";
 import ErrorPage from "../../center_components/ErrorPage";
+import BaseImage from "../../center_components/BaseImage";
 import FilterProduct from "./FilterProduct";
 import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
@@ -15,7 +16,7 @@ import { getFormatDate } from "../../utils/utils";
 import useSWR from "swr";
 import { useDebounce } from "use-debounce";
 
-const Name = styled.div`
+const Name = styled(Space)`
   text-align: left;
 `;
 
@@ -65,7 +66,12 @@ const ProductList = () => {
         title: "ชื่อสินค้า",
         dataIndex: "name",
         width: "25%",
-        render: (name) => <Name>{name}</Name>,
+        render: (name, record) => (
+          <Name size={16}>
+            <BaseImage src={record?.image} width={45} height={45} />
+            {name}
+          </Name>
+        ),
       },
       {
         title: "หมวดหมู่สินค้า",
