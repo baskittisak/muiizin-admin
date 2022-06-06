@@ -152,7 +152,14 @@ const ProductReview = ({
         key: "2",
         name: {
           th: "พรีออเดอร์",
-          en: "pre-order",
+          en: "Pre-order",
+        },
+      },
+      {
+        key: "3",
+        name: {
+          th: "สินค้าหมด",
+          en: "Out of Stock",
         },
       },
     ],

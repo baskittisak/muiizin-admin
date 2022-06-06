@@ -46,7 +46,7 @@ const Categories = () => {
     return `/data/list/category?search=${search}${statusQuery}`;
   }, [search, filters.status]);
 
-  const { data: categories, error: categoriesError } = useSWR(apiCategories);
+  const { data: categories, error } = useSWR(apiCategories);
 
   useEffect(() => {
     categories && setDataSource([...categories]);
@@ -199,8 +199,7 @@ const Categories = () => {
     ]
   );
 
-  if (categoriesError)
-    return <ErrorPage message={categoriesError?.response?.data} />;
+  if (error) return <ErrorPage message={error?.response?.data} />;
 
   return (
     <>

@@ -65,6 +65,10 @@ const ProductInfo = ({ productInfo, setProductInfo }) => {
         key: "2",
         label: "พรีออเดอร์",
       },
+      {
+        key: "3",
+        label: "สินค้าหมด",
+      },
     ],
     []
   );
