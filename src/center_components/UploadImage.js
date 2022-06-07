@@ -83,6 +83,10 @@ const ManageImage = styled(Box)`
 const ImageContainer = styled.div`
   position: relative;
 
+  .ant-image-img {
+    object-fit: contain;
+  }
+
   :hover ${ManageImageWrapper} {
     opacity: 1;
     transition: 0.3s;

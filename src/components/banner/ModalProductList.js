@@ -46,7 +46,7 @@ const ModalProductList = ({ visible, onCancel, onOk }) => {
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
     search: "",
-    category: "1",
+    category: "0",
     status: "1",
   });
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);

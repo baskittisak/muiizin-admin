@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import styled, { css } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Input from "../../center_components/form/Input";
@@ -12,12 +12,14 @@ import BaseButton from "../../center_components/BaseButton";
 import ModalProductList from "./ModalProductList";
 import BaseImage from "../../center_components/BaseImage";
 import Typography from "../../center_components/Typography";
+import ErrorPage from "../../center_components/ErrorPage";
 import { Action, Box, SpaceContainer } from "../../style/common";
 import { Col, Row, Space } from "antd";
 import { ReactComponent as check_icon } from "../../assets/icons/check.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { defaultBannerData } from "./data/defaultData";
-import { mockProduct } from "../product/data/defaultData";
+import { useQuery } from "../../utils/useQuery";
+import useSWR from "swr";
 
 const CheckboxContainer = styled(Space)`
   cursor: pointer;
@@ -45,9 +47,20 @@ const Footer = styled(Box)`
 
 const Banner = () => {
   const navigate = useNavigate();
+  const bannerId = useQuery("bannerId");
   const [language, setLanguage] = useState("th");
   const [banner, setBanner] = useState(defaultBannerData);
   const [visible, setVisible] = useState(false);
+
+  const apiBanner = useMemo(() => {
+    return bannerId && `/data/banner/${bannerId}`;
+  }, [bannerId]);
+
+  const { data: bannerData, error } = useSWR(apiBanner);
+
+  useEffect(() => {
+    bannerData && setBanner({ ...bannerData });
+  }, [bannerData]);
 
   const onSetBanner = useCallback((type, value, subType) => {
     setBanner((prevState) => {
@@ -80,8 +93,14 @@ const Banner = () => {
     banner.products.length,
   ]);
 
+  if (error) return <ErrorPage message={error?.response?.data} />;
+
   return (
-    <Frame label="เพิ่มแบนเนอร์" onBack={() => navigate("/banner-list")}>
+    <Frame
+      loading={!bannerData}
+      label="เพิ่มแบนเนอร์"
+      onBack={() => navigate("/banner-list")}
+    >
       <FormWrapper>
         <FormWrapper>
           <SpaceContainer direction="vertical" size={30}>
@@ -89,6 +108,7 @@ const Banner = () => {
               label="ชื่อแบนเนอร์"
               maxLength={50}
               isRequired
+              value={banner?.name}
               onChange={(value) => onSetBanner("name", value)}
             />
             <TabsLanguage onChange={setLanguage}>
@@ -156,13 +176,17 @@ const Banner = () => {
             )}
             {banner.isProduct &&
               banner.products.length !== 0 &&
-              mockProduct.map((product, index) => (
-                <Box key={product.key} justify="space-between" align="center">
+              banner.products.map((product, index) => (
+                <Box
+                  key={product?.bannerProductId}
+                  justify="space-between"
+                  align="center"
+                >
                   <Typography color="#4F4F4F" width="70%">
-                    {index + 1 + ". " + product.name}
+                    {index + 1 + ". " + product?.name}
                   </Typography>
                   <Space size={25}>
-                    <BaseImage src={product.image} width={45} height={45} />
+                    <BaseImage src={product?.image} width={45} height={45} />
                     <Action justify="center" align="center">
                       <IconSvg
                         src={delete_icon}
