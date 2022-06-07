@@ -13,8 +13,8 @@ import { Space } from "antd";
 import { Action } from "../../style/common";
 import { useNavigate } from "react-router-dom";
 import { getFormatDate } from "../../utils/utils";
-import useSWR from "swr";
 import { useDebounce } from "use-debounce";
+import useSWR from "swr";
 
 const Name = styled(Space)`
   text-align: left;
