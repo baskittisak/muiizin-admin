@@ -3,10 +3,14 @@ import styled from "styled-components";
 import IconSvg from "../../center_components/IconSvg";
 import BaseButton from "../../center_components/BaseButton";
 import Table from "../../center_components/Table";
+import BaseImage from "../../center_components/BaseImage";
 import FilterProduct from "../product/FilterProduct";
 import { ReactComponent as close_icon } from "../../assets/icons/close.svg";
-import { Modal, Space } from "antd";
-import { mockProduct } from "../product/data/defaultData";
+import { Empty, Modal, Space } from "antd";
+import { Loading } from "../../style/common";
+import { useDebounce } from "use-debounce";
+import { LoadingOutlined } from "@ant-design/icons";
+import useSWR from "swr";
 
 const ModalContainer = styled(Modal)`
   width: 650px !important;
@@ -38,7 +42,7 @@ const ModalContainer = styled(Modal)`
   }
 `;
 
-const Name = styled.div`
+const Name = styled(Space)`
   text-align: left;
 `;
 
@@ -50,6 +54,24 @@ const ModalProductList = ({ visible, onCancel, onOk }) => {
     status: "1",
   });
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const [search] = useDebounce(filters.search, 500);
+  const apiProductList = useMemo(() => {
+    const searchQuery = search ? `&search=${search}` : "";
+    const isAllStatus = filters.status === "1";
+    const status =
+      filters.status === "2"
+        ? "พร้อมส่ง"
+        : filters.status === "3"
+        ? "พรีออเดอร์"
+        : "สินค้าหมด";
+    const statusQuery = !isAllStatus ? `&status=${status}` : "";
+    const category =
+      filters.category !== "0" ? `&category=${filters.category}` : "";
+    return `/data/list/product?page=${page}${searchQuery}${category}${statusQuery}`;
+  }, [filters.category, filters.status, page, search]);
+
+  const { data: productList, error } = useSWR(apiProductList);
 
   const onFilters = useCallback((type, value) => {
     setFilters((prevState) => ({
@@ -80,8 +102,13 @@ const ModalProductList = ({ visible, onCancel, onOk }) => {
       {
         title: "ชื่อสินค้า",
         dataIndex: "name",
-        width: "30%",
-        render: (name) => <Name>{name}</Name>,
+        width: "25%",
+        render: (name, record) => (
+          <Name size={16}>
+            <BaseImage src={record?.image} width={45} height={45} />
+            {name}
+          </Name>
+        ),
       },
       {
         title: "หมวดหมู่สินค้า",
@@ -134,20 +161,25 @@ const ModalProductList = ({ visible, onCancel, onOk }) => {
         </Space>
       }
     >
-      <FilterProduct
-        search={filters.search}
-        category={filters.category}
-        status={filters.status}
-        onFilters={onFilters}
-      />
-      <Table
-        columns={columns}
-        dataSource={mockProduct}
-        page={page}
-        rowSelection={rowSelection}
-        totalData={20}
-        onChange={(e) => setPage(e.current)}
-      />
+      {error && <Empty />}
+      {!error && (
+        <Loading spinning={!productList} indicator={<LoadingOutlined spin />}>
+          <FilterProduct
+            search={filters.search}
+            category={filters.category}
+            status={filters.status}
+            onFilters={onFilters}
+          />
+          <Table
+            columns={columns}
+            dataSource={productList?.data}
+            page={page}
+            totalData={productList?.total}
+            rowSelection={rowSelection}
+            onChange={(e) => setPage(e.current)}
+          />
+        </Loading>
+      )}
     </ModalContainer>
   );
 };

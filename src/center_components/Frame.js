@@ -3,8 +3,8 @@ import styled from "styled-components";
 import Typography from "./Typography";
 import IconSvg from "./IconSvg";
 import { ReactComponent as arrow_icon } from "../assets/icons/arrow_left.svg";
-import { Box } from "../style/common";
-import { Space, Spin } from "antd";
+import { Box, Loading } from "../style/common";
+import { Space } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const Container = styled.div`
@@ -27,15 +27,6 @@ const BackButton = styled(Box)`
   background: #f2f2f2;
   border: 1px solid #f2f2f2;
   border-radius: 5px;
-`;
-
-const Loading = styled(Spin)`
-  max-height: initial !important;
-
-  > span {
-    font-size: 24px;
-    color: #044700;
-  }
 `;
 
 const Frame = ({ label, extra, loading = false, children, onBack }) => {

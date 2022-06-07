@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Space from "antd/lib/space";
+import Spin from "antd/lib/spin";
 
 export const Box = styled.div`
   display: flex;
@@ -18,4 +19,13 @@ export const Action = styled(Box)`
   height: 33px;
   background-color: #f2f2f2;
   border-radius: 5px;
+`;
+
+export const Loading = styled(Spin)`
+  max-height: initial !important;
+
+  > span {
+    font-size: 24px;
+    color: #044700;
+  }
 `;
