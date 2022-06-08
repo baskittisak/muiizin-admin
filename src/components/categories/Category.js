@@ -8,7 +8,6 @@ import Info from "../../center_components/Info";
 import IconSvg from "../../center_components/IconSvg";
 import BaseImage from "../../center_components/BaseImage";
 import Pagination from "../../center_components/Pagination";
-import Toggle from "../../center_components/Toggle";
 import Search from "../../center_components/filter/Search";
 import TabsLanguage from "../../center_components/form/TabsLanguage";
 import Input from "../../center_components/form/Input";
@@ -18,8 +17,8 @@ import { useNavigate } from "react-router-dom";
 import { Action, Box, SpaceContainer } from "../../style/common";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { Space } from "antd";
-import useSWR from "swr";
 import { useDebounce } from "use-debounce";
+import useSWR from "swr";
 
 const Footer = styled(Box)`
   height: 80px;
@@ -78,27 +77,6 @@ const Category = () => {
   const isTH = useMemo(() => {
     return language === "th";
   }, [language]);
-
-  const status = useMemo(
-    () => (
-      <Info
-        label="สถานะ"
-        value={
-          isEdit ? (
-            <Toggle
-              checked={categoryData?.status === "ใช้งาน"}
-              onChange={(checked) =>
-                onSetCategoryData("status", checked ? "ใช้งาน" : "ปิดชั่วคราว")
-              }
-            />
-          ) : (
-            categoryData?.status
-          )
-        }
-      />
-    ),
-    [isEdit, categoryData?.status, onSetCategoryData]
-  );
 
   const displayName = useMemo(
     () =>
@@ -165,7 +143,6 @@ const Category = () => {
     () => (
       <SpaceContainer direction="vertical" size={15}>
         <SpaceContainer direction="vertical" size={30}>
-          {status}
           {displayName}
           {!isEdit && (
             <Info label="ลำดับหมวดหมู่" value={"#" + categoryData?.sequence} />
@@ -184,7 +161,6 @@ const Category = () => {
     [
       categoryData?.sequence,
       categoryData?.stock,
-      status,
       productList,
       displayName,
       page,

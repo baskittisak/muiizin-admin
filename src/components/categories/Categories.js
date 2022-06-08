@@ -29,35 +29,22 @@ const Footer = styled(Box)`
 
 const Categories = () => {
   const navigate = useNavigate();
-  const [filters, setFilters] = useState({
-    search: "",
-    status: "1",
-  });
+  const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
   const [sortable, setSortable] = useState(false);
   const [name, setName] = useState({ th: "", en: "" });
   const [dataSource, setDataSource] = useState([]);
 
-  const [search] = useDebounce(filters.search, 500);
+  const [searchValue] = useDebounce(search, 500);
   const apiCategories = useMemo(() => {
-    const isAllStatus = filters.status === "1";
-    const status = filters.status === "2" ? "ใช้งาน" : "ปิดชั่วคราว";
-    const statusQuery = !isAllStatus ? `&status=${status}` : "";
-    return `/data/list/category?search=${search}${statusQuery}`;
-  }, [search, filters.status]);
+    return `/data/list/category?search=${searchValue}`;
+  }, [searchValue]);
 
   const { data: categories, error } = useSWR(apiCategories);
 
   useEffect(() => {
     categories && setDataSource([...categories]);
   }, [categories]);
-
-  const onFilters = useCallback((type, value) => {
-    setFilters((prevState) => ({
-      ...prevState,
-      [type]: value,
-    }));
-  }, []);
 
   const onSetName = useCallback((value, language) => {
     setName((prevState) => ({
@@ -84,21 +71,16 @@ const Categories = () => {
       {
         title: "ชื่อภาษาไทย",
         dataIndex: "nameTH",
-        width: "20%",
+        width: "25%",
       },
       {
         title: "ชื่อภาษาอังกฤษ",
         dataIndex: "nameEN",
-        width: "20%",
+        width: "25%",
       },
       {
         title: "จำนวนสินค้า",
         dataIndex: "stock",
-        width: "10%",
-      },
-      {
-        title: "สถานะ",
-        dataIndex: "status",
         width: "15%",
       },
       {
@@ -163,11 +145,7 @@ const Categories = () => {
         }
         onBack={sortable ? () => setSortable(false) : undefined}
       >
-        <FilterCategories
-          search={filters.search}
-          status={filters.status}
-          onFilters={onFilters}
-        />
+        <FilterCategories search={search} setSearch={setSearch} />
         <Table
           columns={columns}
           dataSource={dataSource}
@@ -188,15 +166,7 @@ const Categories = () => {
         )}
       </Frame>
     ),
-    [
-      categories,
-      columns,
-      dataSource,
-      filters.search,
-      filters.status,
-      sortable,
-      onFilters,
-    ]
+    [categories, columns, dataSource, search, sortable]
   );
 
   if (error) return <ErrorPage message={error?.response?.data} />;
