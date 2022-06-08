@@ -146,7 +146,7 @@ const Category = () => {
     () => (
       <SpaceContainer direction="vertical" size={5}>
         <Info label="รายการสินค้า" value={`${categoryData?.stock} รายการ`} />
-        {isEdit && categoryData?.stock >= 1 && (
+        {categoryData?.stock >= 1 && (
           <SearchWrapper>
             <Search
               width="100%"
@@ -166,7 +166,7 @@ const Category = () => {
         ))}
       </SpaceContainer>
     ),
-    [categoryData?.stock, isEdit, products?.data, searchValue]
+    [categoryData?.stock, products?.data, searchValue]
   );
 
   const displayCategory = useMemo(
