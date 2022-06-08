@@ -114,6 +114,32 @@ const Categories = () => {
     [mutate]
   );
 
+  const onSaveSequence = useCallback(async () => {
+    setLoading(true);
+    const { default: axios } = await import("axios");
+    try {
+      const categories = dataSource.map((category) => ({
+        categoryId: category?.id,
+        sequence: category?.sequence,
+      }));
+      await axios.put("/edit/sequence/category", { categories });
+      await mutate();
+      setLoading(false);
+      setSortable(false);
+      getNotification({
+        type: "success",
+        message: "แก้ไขลำดับหมวดหมู่สินค้าสำเร็จ",
+      });
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      getNotification({
+        type: "error",
+        message: "เกิดข้อผิดพลาด",
+      });
+    }
+  }, [dataSource, mutate]);
+
   const columns = useMemo(() => {
     return [
       {
@@ -213,18 +239,14 @@ const Categories = () => {
         />
         {sortable && (
           <Footer justify="center" align="center">
-            <BaseButton
-              bgColor="#044700"
-              color="#fff"
-              onClick={() => setSortable(false)}
-            >
+            <BaseButton bgColor="#044700" color="#fff" onClick={onSaveSequence}>
               บันทึก
             </BaseButton>
           </Footer>
         )}
       </Frame>
     ),
-    [categories, columns, dataSource, search, sortable, loading]
+    [categories, columns, dataSource, search, sortable, loading, onSaveSequence]
   );
 
   if (error) return <ErrorPage message={error?.response?.data} />;
