@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { getFormatDate } from "../../utils/utils";
 import { useDebounce } from "use-debounce";
 import useSWR from "swr";
+import { getNotification } from "../../center_components/Notification";
 
 const DragHandle = SortableHandle(() => (
   <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />
@@ -34,13 +35,15 @@ const Categories = () => {
   const [sortable, setSortable] = useState(false);
   const [name, setName] = useState({ th: "", en: "" });
   const [dataSource, setDataSource] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [searchValue] = useDebounce(search, 500);
   const apiCategories = useMemo(() => {
-    return `/data/list/category?search=${searchValue}`;
+    const searchQuery = searchValue ? `?search=${searchValue}` : "";
+    return `/data/list/category${searchQuery}`;
   }, [searchValue]);
 
-  const { data: categories, error } = useSWR(apiCategories);
+  const { data: categories, error, mutate } = useSWR(apiCategories);
 
   useEffect(() => {
     categories && setDataSource([...categories]);
@@ -53,13 +56,34 @@ const Categories = () => {
     }));
   }, []);
 
-  const onSave = useCallback(() => {
-    console.log(name.th);
-    console.log(name.en);
-    onSetName("", "th");
-    onSetName("", "en");
-    setVisible(false);
-  }, [name.en, name.th, onSetName]);
+  const onSave = useCallback(async () => {
+    setLoading(true);
+    const { default: axios } = await import("axios");
+    try {
+      const payload = {
+        nameEN: name.en,
+        nameTH: name.th,
+        updatedTime: Date.now(),
+      };
+      await axios.post("/create/category", payload);
+      await mutate();
+      onSetName("", "th");
+      onSetName("", "en");
+      setVisible(false);
+      setLoading(false);
+      getNotification({
+        type: "success",
+        message: "สร้างหมวดหมู่สินค้าสำเร็จ",
+      });
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      getNotification({
+        type: "error",
+        message: "เกิดข้อผิดพลาด",
+      });
+    }
+  }, [name.en, name.th, onSetName, mutate]);
 
   const columns = useMemo(() => {
     return [
@@ -177,6 +201,7 @@ const Categories = () => {
       <ModalCategories
         visible={visible}
         value={name}
+        loading={loading}
         onChange={onSetName}
         onCancel={() => setVisible(false)}
         onOk={onSave}

@@ -47,6 +47,7 @@ const BaseButton = ({
   bgColor,
   color,
   disabled,
+  loading,
   children,
   onClick
 }) => {
@@ -59,6 +60,7 @@ const BaseButton = ({
       bg_color={bgColor}
       color={color}
       disabled={disabled}
+      loading={loading}
       onClick={onClick}
     >
       {children}

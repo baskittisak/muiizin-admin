@@ -31,7 +31,14 @@ const ModalContainer = styled(Modal)`
   }
 `;
 
-const ModalCategories = ({ visible, value, onChange, onCancel, onOk }) => {
+const ModalCategories = ({
+  visible,
+  value,
+  loading,
+  onChange,
+  onCancel,
+  onOk,
+}) => {
   const [language, setLanguage] = useState("th");
 
   const isDisabled = useMemo(() => {
@@ -53,13 +60,14 @@ const ModalCategories = ({ visible, value, onChange, onCancel, onOk }) => {
       title="เพิ่มหมวดหมู่"
       closeIcon={<IconSvg src={close_icon} />}
       visible={visible}
-      onCancel={onClose}
+      onCancel={!loading && onClose}
       footer={
         <Space size={16}>
           <BaseButton
             width="95px"
             bgColor="#F2F2F2"
             color="#4F4F4F"
+            disabled={loading}
             onClick={onClose}
           >
             ยกเลิก
@@ -69,6 +77,7 @@ const ModalCategories = ({ visible, value, onChange, onCancel, onOk }) => {
             bgColor="#044700"
             color="#fff"
             disabled={isDisabled}
+            loading={loading}
             onClick={onSave}
           >
             บันทึก
