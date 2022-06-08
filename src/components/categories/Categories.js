@@ -18,6 +18,7 @@ import { getFormatDate } from "../../utils/utils";
 import { useDebounce } from "use-debounce";
 import useSWR from "swr";
 import { getNotification } from "../../center_components/Notification";
+import { getModalConfirm } from "../../center_components/ModalConfirm";
 
 const DragHandle = SortableHandle(() => (
   <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />
@@ -85,6 +86,34 @@ const Categories = () => {
     }
   }, [name.en, name.th, onSetName, mutate]);
 
+  const onDelete = useCallback(
+    async (categoryId) => {
+      setLoading(true);
+      const { default: axios } = await import("axios");
+      try {
+        const payload = {
+          categoryId,
+        };
+        await axios.put("/change/category", payload);
+        await axios.put("/delete/category", payload);
+        await mutate();
+        setLoading(false);
+        getNotification({
+          type: "success",
+          message: "ลบหมวดหมู่สินค้าสำเร็จ",
+        });
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+        getNotification({
+          type: "error",
+          message: "เกิดข้อผิดพลาด",
+        });
+      }
+    },
+    [mutate]
+  );
+
   const columns = useMemo(() => {
     return [
       {
@@ -132,7 +161,12 @@ const Categories = () => {
               <Action
                 justify="center"
                 align="center"
-                onClick={() => console.log(record?.id)}
+                onClick={() =>
+                  getModalConfirm({
+                    message: "คุณต้องการจะลบหมวดหมู่สินค้านี้ใช่หรือไม่?",
+                    onConfirm: () => onDelete(record?.id),
+                  })
+                }
               >
                 <IconSvg src={delete_icon} fontSize={18} />
               </Action>
@@ -140,12 +174,12 @@ const Categories = () => {
           ),
       },
     ];
-  }, [sortable, navigate]);
+  }, [sortable, navigate, onDelete]);
 
   const displayProductList = useMemo(
     () => (
       <Frame
-        loading={!categories}
+        loading={!categories || loading}
         label={sortable ? "จัดเรียงหมวดหมู่" : "หมวดหมู่สินค้า"}
         extra={
           !sortable && (
@@ -190,7 +224,7 @@ const Categories = () => {
         )}
       </Frame>
     ),
-    [categories, columns, dataSource, search, sortable]
+    [categories, columns, dataSource, search, sortable, loading]
   );
 
   if (error) return <ErrorPage message={error?.response?.data} />;
