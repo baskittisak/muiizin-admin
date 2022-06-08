@@ -5,7 +5,6 @@ import BaseButton from "../../center_components/BaseButton";
 import Typography from "../../center_components/Typography";
 import FormWrapper from "../../center_components/FormWrapper";
 import Info from "../../center_components/Info";
-import IconSvg from "../../center_components/IconSvg";
 import BaseImage from "../../center_components/BaseImage";
 import Pagination from "../../center_components/Pagination";
 import Search from "../../center_components/filter/Search";
@@ -14,8 +13,7 @@ import Input from "../../center_components/form/Input";
 import ErrorPage from "../../center_components/ErrorPage";
 import { useQuery } from "../../utils/useQuery";
 import { useNavigate } from "react-router-dom";
-import { Action, Box, SpaceContainer } from "../../style/common";
-import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
+import { Box, SpaceContainer } from "../../style/common";
 import { Space } from "antd";
 import { useDebounce } from "use-debounce";
 import { getNotification } from "../../center_components/Notification";
@@ -163,14 +161,7 @@ const Category = () => {
             <Typography color="#4F4F4F" width="70%">
               {index + 1 + ". " + product?.name}
             </Typography>
-            <Space size={25}>
-              <BaseImage src={product?.image} width={45} height={45} />
-              {isEdit && (
-                <Action justify="center" align="center">
-                  <IconSvg src={delete_icon} fontSize={19} heightable={false} />
-                </Action>
-              )}
-            </Space>
+            <BaseImage src={product?.image} width={45} height={45} />
           </Box>
         ))}
       </SpaceContainer>
