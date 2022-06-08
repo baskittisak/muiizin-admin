@@ -16,9 +16,9 @@ import { SortableHandle } from "react-sortable-hoc";
 import { useNavigate } from "react-router-dom";
 import { getFormatDate } from "../../utils/utils";
 import { useDebounce } from "use-debounce";
-import useSWR from "swr";
 import { getNotification } from "../../center_components/Notification";
 import { getModalConfirm } from "../../center_components/ModalConfirm";
+import useSWR from "swr";
 
 const DragHandle = SortableHandle(() => (
   <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />

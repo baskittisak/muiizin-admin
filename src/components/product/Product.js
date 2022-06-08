@@ -11,6 +11,7 @@ import {
   defaultOptionColor,
 } from "./data/defaultData";
 import { useQuery } from "../../utils/useQuery";
+import { getNotification } from "../../center_components/Notification";
 import FormWrapper from "../../center_components/FormWrapper";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
@@ -44,6 +45,7 @@ const Product = () => {
     th: "<p></p>",
     en: "<p></p>",
   });
+  const [loading, setLoading] = useState(false);
 
   const apiProduct = useMemo(() => {
     return productId && `/data/product/${productId}`;
@@ -298,6 +300,103 @@ const Product = () => {
     }));
   }, []);
 
+  const onSaveImage = useCallback(
+    async (productId) => {
+      const { default: axios } = await import("axios");
+      const payload = {
+        images: isSizeOnly ? productOption?.images : productOption,
+        productId,
+      };
+      await axios.post("/create/product/image", payload);
+    },
+    [isSizeOnly, productOption]
+  );
+
+  const onSaveSize = useCallback(
+    async (productId) => {
+      const { default: axios } = await import("axios");
+      const payload = {
+        sizes: productOption?.size,
+        productId,
+      };
+      await axios.post("/create/product/size", payload);
+    },
+    [productOption]
+  );
+
+  const onSaveColor = useCallback(
+    async (productId) => {
+      const { default: axios } = await import("axios");
+      const payload = {
+        colors: productOption?.color,
+        productId,
+      };
+      await axios.post("/create/product/color", payload);
+    },
+    [productOption]
+  );
+
+  const onSave = useCallback(async () => {
+    setLoading(true);
+    const { default: axios } = await import("axios");
+    try {
+      const { key } = productInfo.status;
+      const status =
+        key === "1" ? "พร้อมส่ง" : key === "2" ? "พรีออเดอร์" : "หมดอายุ";
+      const payload = {
+        name: productInfo.name,
+        owner: productInfo.owner,
+        price: productInfo.price,
+        status,
+        isOption: option.enable,
+        detail: productDetail,
+        updatedTime: Date.now(),
+        categoryId: productInfo.category,
+      };
+      const { data } = await axios.post("/create/product", payload);
+      const newProductId = data?.productId;
+      if (option.enable) {
+        if (isSizeOnly) {
+          await onSaveSize(newProductId);
+          await onSaveImage(newProductId);
+        } else {
+          option.size && onSaveSize(newProductId);
+          option.color && onSaveColor(newProductId);
+        }
+      } else {
+        await onSaveImage(newProductId);
+      }
+      setLoading(false);
+      getNotification({
+        type: "success",
+        message: "สร้างสินค้าสำเร็จ",
+      });
+      navigate(`/product?productId=${newProductId}`);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      getNotification({
+        type: "error",
+        message: "เกิดข้อผิดพลาด",
+      });
+    }
+  }, [
+    productInfo.status,
+    productInfo.name,
+    productInfo.owner,
+    productInfo.price,
+    productInfo.category,
+    option.enable,
+    option.size,
+    option.color,
+    productDetail,
+    navigate,
+    isSizeOnly,
+    onSaveSize,
+    onSaveImage,
+    onSaveColor,
+  ]);
+
   const displayStep = useMemo(() => {
     switch (current) {
       case 0:
@@ -474,11 +573,18 @@ const Product = () => {
               width="90px"
               bgColor="#D9E3D9"
               color="#044700"
+              disabled={loading}
               onClick={() => setCurrent(0)}
             >
               แก้ไข
             </BaseButton>
-            <BaseButton width="90px" bgColor="#044700" color="#fff">
+            <BaseButton
+              width="90px"
+              bgColor="#044700"
+              color="#fff"
+              loading={loading}
+              onClick={onSave}
+            >
               ยืนยัน
             </BaseButton>
           </>
@@ -486,13 +592,19 @@ const Product = () => {
       default:
         return null;
     }
-  }, [current, nextButton, prevButton]);
+  }, [current, nextButton, prevButton, loading, onSave]);
 
   const isLoading = useMemo(() => {
     return (
-      productId && (!product || !productSize || !productColor || !productImages)
+      loading ||
+      (productId &&
+        (!product || !productSize || !productColor || !productImages))
     );
-  }, [product, productId, productSize, productColor, productImages]);
+  }, [loading, product, productId, productSize, productColor, productImages]);
+
+  const label = useMemo(() => {
+    return productId && current === 3 ? productInfo.name.th : "เพิ่มสินค้าใหม่";
+  }, [current, productId, productInfo.name.th]);
 
   if (productError || sizeError || colorError || imagesError) {
     return (
@@ -508,11 +620,7 @@ const Product = () => {
   }
 
   return (
-    <Frame
-      loading={isLoading}
-      label="เพิ่มสินค้าใหม่"
-      onBack={() => navigate("/")}
-    >
+    <Frame loading={isLoading} label={label} onBack={() => navigate("/")}>
       <FormWrapper>
         {current < 3 && <StepsProduct current={current} />}
         <FormWrapper>

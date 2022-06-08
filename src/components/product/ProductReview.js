@@ -184,9 +184,9 @@ const ProductReview = ({
             <Space direction="vertical" size={16}>
               <Info label="รูปภาพ" value={productOption?.length + " รูป"} />
               <Space width="initial" size={10}>
-                {productOption?.map((image) => (
-                  <ImageWrapper key={image?.id} justify="center" align="center">
-                    <BaseImage src={image?.image} width={65} height={65} />
+                {productOption?.map((image, index) => (
+                  <ImageWrapper key={image?.id || index} justify="center" align="center">
+                    <BaseImage src={image?.image || image} width={65} height={65} />
                   </ImageWrapper>
                 ))}
               </Space>
@@ -243,14 +243,14 @@ const ProductReview = ({
                       </Typography>
                     </Space>
                     <Space width="initial" size={10}>
-                      {color.images.map((image) => (
+                      {color.images.map((image, index) => (
                         <ImageWrapper
-                          key={image?.id}
+                          key={image?.id || index}
                           justify="center"
                           align="center"
                         >
                           <BaseImage
-                            src={image?.image}
+                            src={image?.image || image}
                             width={65}
                             height={65}
                           />
@@ -264,13 +264,13 @@ const ProductReview = ({
               )}
               {optionImage && (
                 <Space width="initial" size={10}>
-                  {optionImage?.map((image) => (
+                  {optionImage?.map((image, index) => (
                     <ImageWrapper
-                      key={image?.id}
+                      key={image?.id || index}
                       justify="center"
                       align="center"
                     >
-                      <BaseImage src={image?.image} width={65} height={65} />
+                      <BaseImage src={image?.image || image} width={65} height={65} />
                     </ImageWrapper>
                   ))}
                 </Space>

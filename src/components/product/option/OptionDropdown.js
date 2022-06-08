@@ -32,8 +32,8 @@ const OptionDropdown = ({ typeOption, setTypeOption, onSetEnable }) => {
           onSetEnable("color", true);
           break;
         case "3":
-          onSetEnable("size", false);
-          onSetEnable("color", false);
+          onSetEnable("size", true);
+          onSetEnable("color", true);
           break;
         default:
           break;

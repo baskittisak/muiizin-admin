@@ -9,7 +9,6 @@ import OptionColor from "./OptionColor";
 import { ReactComponent as checked_icon } from "../../../assets/icons/check.svg";
 
 const Option = styled(Space)`
-  cursor: pointer;
   width: 100%;
   border: 1px solid #e0e0e0;
   border-radius: 3px;
@@ -50,7 +49,6 @@ const OptionType = ({
   colorEnable,
   optionSize,
   optionColor,
-  onSetEnable,
   onSetSize,
   onSetColor,
   onSetColorImage,
@@ -58,11 +56,7 @@ const OptionType = ({
   const sizeOption = useMemo(
     () => (
       <SpaceContainer direction="vertical" size={0}>
-        <Option
-          size={10}
-          active={sizeEnable ? 1 : 0}
-          onClick={() => onSetEnable("size", !sizeEnable)}
-        >
+        <Option size={10} active={sizeEnable ? 1 : 0}>
           <Square justify="center" align="center" active={sizeEnable}>
             {sizeEnable && (
               <IconSvg src={checked_icon} fontSize={10} heightable={false} />
@@ -83,17 +77,13 @@ const OptionType = ({
         )}
       </SpaceContainer>
     ),
-    [optionSize, sizeEnable, onSetEnable, onSetSize]
+    [optionSize, sizeEnable, onSetSize]
   );
 
   const colorOption = useMemo(
     () => (
       <SpaceContainer direction="vertical" size={0}>
-        <Option
-          size={10}
-          active={colorEnable ? 1 : 0}
-          onClick={() => onSetEnable("color", !colorEnable)}
-        >
+        <Option size={10} active={colorEnable ? 1 : 0}>
           <Square justify="center" align="center" active={colorEnable}>
             {colorEnable && (
               <IconSvg src={checked_icon} fontSize={10} heightable={false} />
@@ -118,7 +108,7 @@ const OptionType = ({
         )}
       </SpaceContainer>
     ),
-    [colorEnable, optionColor, onSetColor, onSetColorImage, onSetEnable]
+    [colorEnable, optionColor, onSetColor, onSetColorImage]
   );
 
   const displayOption = useMemo(() => {

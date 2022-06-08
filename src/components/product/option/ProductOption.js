@@ -35,7 +35,6 @@ const ProductOption = ({
               colorEnable={colorEnable}
               optionSize={productOption?.size}
               optionColor={productOption?.color}
-              onSetEnable={onSetEnable}
               onSetSize={onSetSize}
               onSetColor={onSetColor}
               onSetColorImage={onSetColorImage}
