@@ -18,6 +18,7 @@ import { Action, Box, SpaceContainer } from "../../style/common";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { Space } from "antd";
 import { useDebounce } from "use-debounce";
+import { getNotification } from "../../center_components/Notification";
 import useSWR from "swr";
 
 const Footer = styled(Box)`
@@ -39,6 +40,7 @@ const Category = () => {
   const [language, setLanguage] = useState("th");
   const [categoryData, setCategoryData] = useState({});
   const [searchValue, setSearchValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const apiCategory = useMemo(() => {
     return categoryId && `/data/category/${categoryId}`;
@@ -52,7 +54,7 @@ const Category = () => {
     );
   }, [page, search, categoryId]);
 
-  const { data: category, error: categoryError } = useSWR(apiCategory);
+  const { data: category, error: categoryError, mutate } = useSWR(apiCategory);
   const { data: products, error: productsError } = useSWR(apiProducts);
 
   useEffect(() => {
@@ -70,9 +72,46 @@ const Category = () => {
     }));
   }, []);
 
+  const onSave = useCallback(async () => {
+    setLoading(true);
+    const { default: axios } = await import("axios");
+    try {
+      const payload = {
+        categoryId,
+        nameEN: categoryData?.nameEN,
+        nameTH: categoryData?.nameTH,
+        sequence: categoryData?.sequence,
+        updatedTime: Date.now(),
+      };
+      await axios.put("/edit/category", payload);
+      await mutate();
+      setLoading(false);
+      setIsEdit(false);
+      getNotification({
+        type: "success",
+        message: "สร้างหมวดหมู่สินค้าสำเร็จ",
+      });
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      getNotification({
+        type: "error",
+        message: "เกิดข้อผิดพลาด",
+      });
+    }
+  }, [
+    categoryData?.nameEN,
+    categoryData?.nameTH,
+    categoryData?.sequence,
+    categoryId,
+    mutate,
+  ]);
+
   const categoryName = useMemo(() => {
-    return categoryData?.nameTH + "/" + categoryData?.nameEN;
-  }, [categoryData?.nameEN, categoryData?.nameTH]);
+    return isEdit
+      ? "แก้ไขหมวดหมู่สินค้า"
+      : categoryData?.nameTH + "/" + categoryData?.nameEN;
+  }, [isEdit, categoryData?.nameEN, categoryData?.nameTH]);
 
   const isTH = useMemo(() => {
     return language === "th";
@@ -108,8 +147,8 @@ const Category = () => {
   const productList = useMemo(
     () => (
       <SpaceContainer direction="vertical" size={5}>
-        <Info label="รายการสินค้า" value={`${category?.stock} รายการ`} />
-        {isEdit && (
+        <Info label="รายการสินค้า" value={`${categoryData?.stock} รายการ`} />
+        {isEdit && categoryData?.stock >= 1 && (
           <SearchWrapper>
             <Search
               width="100%"
@@ -136,7 +175,7 @@ const Category = () => {
         ))}
       </SpaceContainer>
     ),
-    [category?.stock, isEdit, products?.data, searchValue]
+    [categoryData?.stock, isEdit, products?.data, searchValue]
   );
 
   const displayCategory = useMemo(
@@ -147,7 +186,7 @@ const Category = () => {
           {!isEdit && (
             <Info label="ลำดับหมวดหมู่" value={"#" + categoryData?.sequence} />
           )}
-          {productList}
+          {(!isEdit || (isEdit && categoryData?.stock >= 1)) && productList}
         </SpaceContainer>
         {categoryData?.stock > 10 && (
           <Pagination
@@ -177,6 +216,7 @@ const Category = () => {
               width="95px"
               bgColor="#F2F2F2"
               color="#4F4F4F"
+              disabled={loading}
               onClick={() => setIsEdit(false)}
             >
               ยกเลิก
@@ -185,14 +225,15 @@ const Category = () => {
               width="95px"
               bgColor="#044700"
               color="#fff"
-              onClick={() => setIsEdit(false)}
+              loading={loading}
+              onClick={onSave}
             >
               บันทึก
             </BaseButton>
           </Space>
         </Footer>
       ),
-    [isEdit]
+    [isEdit, loading, onSave]
   );
 
   const isLoading = useMemo(() => {
