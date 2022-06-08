@@ -56,3 +56,26 @@ a {
 .row-dragging td:last-child {
   display: none;
 }
+
+.ant-modal-confirm-body .ant-modal-confirm-title {
+  font-size: 20px;
+  color: #4F4F4F;
+}
+
+.ant-modal-confirm-btns > button.ant-btn {
+  border-color: transparent;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 5px;
+  height: 38px;
+}
+
+.ant-modal-confirm-btns > .ant-btn.ant-btn-default {
+  color: #4f4f4f;
+  background: #f2f2f2;
+}
+
+.ant-modal-confirm-btns > .ant-btn.ant-btn-primary {
+  color: #fff;
+  background: #044700;
+}
