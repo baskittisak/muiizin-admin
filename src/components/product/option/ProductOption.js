@@ -1,5 +1,6 @@
 import { memo, useMemo } from "react";
 import { SpaceContainer } from "../../../style/common";
+import { useQuery } from "../../../utils/useQuery";
 import Options from "./Options";
 import OptionType from "./OptionType";
 import OptionImage from "./OptionImage";
@@ -19,11 +20,14 @@ const ProductOption = ({
   onSetColorImage,
   onSetImage,
 }) => {
+  const productId = useQuery("productId");
+
   const displayOption = useMemo(() => {
     if (optionEnable) {
       return (
         <SpaceContainer direction="vertical" size={20}>
           <OptionDropdown
+            productId={productId}
             typeOption={typeOption}
             setTypeOption={setTypeOption}
             onSetEnable={onSetEnable}
@@ -41,7 +45,10 @@ const ProductOption = ({
             />
           )}
           {isSizeOnly && (
-            <OptionImage images={productOption?.images} onSetImage={onSetImage} />
+            <OptionImage
+              images={productOption?.images}
+              onSetImage={onSetImage}
+            />
           )}
         </SpaceContainer>
       );
@@ -51,6 +58,7 @@ const ProductOption = ({
       }
     }
   }, [
+    productId,
     optionEnable,
     typeOption,
     setTypeOption,
@@ -67,10 +75,12 @@ const ProductOption = ({
 
   return (
     <SpaceContainer direction="vertical" size={30}>
-      <Options
-        option={optionEnable}
-        setOption={(value) => onSetEnable("enable", value)}
-      />
+      {!productId && (
+        <Options
+          option={optionEnable}
+          setOption={(value) => onSetEnable("enable", value)}
+        />
+      )}
       {optionEnable !== null && displayOption}
     </SpaceContainer>
   );

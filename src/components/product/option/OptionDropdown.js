@@ -1,7 +1,14 @@
+import { Space } from "antd";
 import { memo, useCallback, useMemo } from "react";
 import Dropdown from "../../../center_components/form/Dropdown";
+import Typography from "../../../center_components/Typography";
 
-const OptionDropdown = ({ typeOption, setTypeOption, onSetEnable }) => {
+const OptionDropdown = ({
+  productId,
+  typeOption,
+  setTypeOption,
+  onSetEnable,
+}) => {
   const menuItems = useMemo(
     () => [
       {
@@ -43,7 +50,16 @@ const OptionDropdown = ({ typeOption, setTypeOption, onSetEnable }) => {
     [setTypeOption, onSetEnable]
   );
 
-  return (
+  return productId ? (
+    <Space size={0}>
+      <Typography fontSize={18} lineHeight={20} color="#828282">
+        ประเภทตัวเลือก
+      </Typography>
+      <Typography fontSize={18} lineHeight={20} color="#F9414C">
+        *
+      </Typography>
+    </Space>
+  ) : (
     <Dropdown
       label="ประเภทตัวเลือก"
       placeholder="ระบุประเภทตัวเลือก"
