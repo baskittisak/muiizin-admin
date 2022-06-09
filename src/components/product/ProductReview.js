@@ -257,7 +257,11 @@ const ProductReview = ({
                         {color.name[language]}
                       </Typography>
                     </Space>
-                    <Space width="initial" size={10}>
+                    <Space
+                      width="initial"
+                      size={10}
+                      style={{ flexWrap: "wrap" }}
+                    >
                       {color.images.map((image, index) => (
                         <ImageWrapper
                           key={image?.id || index}

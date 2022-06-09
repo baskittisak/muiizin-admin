@@ -237,21 +237,51 @@ const Product = () => {
     });
   }, []);
 
-  const onSetColorImage = useCallback((type, index, value, indexDel) => {
-    const isAdd = type === "add";
-    setProductOption((prevState) => {
-      const newColor = [...prevState?.color];
-      if (isAdd) {
-        newColor[index].images = value;
-        return { ...prevState, color: [...newColor] };
-      } else {
-        const imageDeleted = newColor[index].images.filter(
-          (_, prevIndex) => prevIndex !== indexDel
-        );
-        newColor[index].images = [...imageDeleted];
-        return { ...prevState, color: [...newColor] };
-      }
-    });
+  const onDeleteColorImage = useCallback(async (colorImageId) => {
+    const { default: axios } = await import("axios");
+    try {
+      await axios.put("/delete/image/color", { colorImageId });
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const onSetColorImage = useCallback(
+    (type, index, value, indexDel) => {
+      const isAdd = type === "add";
+      setProductOption((prevState) => {
+        const newColor = [...prevState?.color];
+        if (isAdd) {
+          if (productId) {
+            const newImage = value.pop();
+            newColor[index].images.push({ image: newImage });
+          } else {
+            newColor[index].images = value;
+          }
+          return { ...prevState, color: [...newColor] };
+        } else {
+          const imageDeleted = newColor[index].images.filter(
+            (_, prevIndex) => prevIndex !== indexDel
+          );
+          const colorImageId = newColor[index].images[indexDel]?.id;
+          if (productId && colorImageId) {
+            onDeleteColorImage(colorImageId);
+          }
+          newColor[index].images = [...imageDeleted];
+          return { ...prevState, color: [...newColor] };
+        }
+      });
+    },
+    [productId, onDeleteColorImage]
+  );
+
+  const onDeleteImage = useCallback(async (productImageId) => {
+    const { default: axios } = await import("axios");
+    try {
+      await axios.put("/delete/image/product", { productImageId });
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
 
   const onSetImage = useCallback(
@@ -259,31 +289,57 @@ const Product = () => {
       const isAdd = type === "add";
       if (isAdd) {
         if (isSizeOnly) {
-          setProductOption((prevState) => ({
-            ...prevState,
-            images: value,
-          }));
+          if (productId) {
+            const newImage = value.pop();
+            setProductOption((prevState) => {
+              const newImages = [...prevState?.images];
+              newImages.push({ image: newImage });
+              return { ...prevState, images: newImages };
+            });
+          } else {
+            setProductOption((prevState) => ({
+              ...prevState,
+              images: value,
+            }));
+          }
         } else {
-          setProductOption(value);
+          if (productId) {
+            const newImage = value.pop();
+            setProductOption((prevState) => {
+              const newOptions = [...prevState];
+              newOptions.push({ image: newImage });
+              return newOptions;
+            });
+          } else {
+            setProductOption(value);
+          }
         }
       } else {
         if (isSizeOnly) {
           setProductOption((prevState) => {
-            const newImage = [...prevState?.images];
-            const imagesDeleted = newImage.filter(
+            const newImages = [...prevState?.images];
+            const productImageId = newImages[index]?.id;
+            if (productId && productImageId) {
+              onDeleteImage(productImageId);
+            }
+            const imagesDeleted = newImages.filter(
               (_, prevIndex) => prevIndex !== index
             );
             return { ...prevState, images: imagesDeleted };
           });
         } else {
           setProductOption((prevState) => {
-            const newImage = [...prevState];
-            return newImage.filter((_, prevIndex) => prevIndex !== index);
+            const newImages = [...prevState];
+            const productImageId = newImages[index]?.id;
+            if (productId && productImageId) {
+              onDeleteImage(productImageId);
+            }
+            return newImages.filter((_, prevIndex) => prevIndex !== index);
           });
         }
       }
     },
-    [isSizeOnly]
+    [isSizeOnly, productId, onDeleteImage]
   );
 
   const onSetDetailTH = useCallback((value) => {
