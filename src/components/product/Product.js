@@ -36,6 +36,7 @@ const Footer = styled(Box)`
 const Product = () => {
   const navigate = useNavigate();
   const productId = useQuery("productId");
+  const isEdit = useQuery("edit") === "true";
   const [current, setCurrent] = useState(0);
   const [productInfo, setProductInfo] = useState(defaultProductInfo);
   const [option, setOption] = useState(defaultOption);
@@ -177,6 +178,15 @@ const Product = () => {
   const onPrev = useCallback(() => {
     setCurrent((prev) => prev - 1);
   }, []);
+
+  const onEdit = useCallback(() => {
+    setCurrent(0);
+    navigate(
+      productId
+        ? `/product?productId=${productId}&edit=true`
+        : `/product?edit=true`
+    );
+  }, [productId, navigate]);
 
   const onSetEnable = useCallback((type, value) => {
     setOption((prevState) => ({
@@ -456,9 +466,9 @@ const Product = () => {
       setLoading(false);
       getNotification({
         type: "success",
-        message: "สร้างสินค้าสำเร็จ",
+        message: productId ? "แก้ไขสินค้าสำเร็จ" : "สร้างสินค้าสำเร็จ",
       });
-      navigate(`/product?productId=${newProductId}`);
+      navigate(`/product?productId=${newProductId}&edit=false`);
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -662,25 +672,36 @@ const Product = () => {
               bgColor="#D9E3D9"
               color="#044700"
               disabled={loading}
-              onClick={() => setCurrent(0)}
+              onClick={onEdit}
             >
               แก้ไข
             </BaseButton>
-            <BaseButton
-              width="90px"
-              bgColor="#044700"
-              color="#fff"
-              loading={loading}
-              onClick={onSave}
-            >
-              ยืนยัน
-            </BaseButton>
+            {(isEdit || !productId) && (
+              <BaseButton
+                width="90px"
+                bgColor="#044700"
+                color="#fff"
+                loading={loading}
+                onClick={onSave}
+              >
+                ยืนยัน
+              </BaseButton>
+            )}
           </>
         );
       default:
         return null;
     }
-  }, [current, nextButton, prevButton, loading, onSave]);
+  }, [
+    current,
+    nextButton,
+    prevButton,
+    loading,
+    productId,
+    isEdit,
+    onEdit,
+    onSave,
+  ]);
 
   const isLoading = useMemo(() => {
     return (

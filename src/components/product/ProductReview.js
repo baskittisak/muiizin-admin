@@ -1,9 +1,11 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 import Typography from "../../center_components/Typography";
 import IconSvg from "../../center_components/IconSvg";
 import BaseImage from "../../center_components/BaseImage";
 import Info from "../../center_components/Info";
+import { useQuery } from "../../utils/useQuery";
+import { useNavigate } from "react-router-dom";
 import { Box, SpaceContainer } from "../../style/common";
 import { Empty, Tabs } from "antd";
 import { ReactComponent as checked_icon } from "../../assets/icons/checked.svg";
@@ -116,6 +118,8 @@ const ProductReview = ({
   detailEN,
   setCurrent,
 }) => {
+  const navigate = useNavigate();
+  const productId = useQuery("productId");
   const [language, setLanguage] = useState("th");
 
   const apiCategory = useMemo(() => {
@@ -125,6 +129,18 @@ const ProductReview = ({
   }, [productInfo?.category]);
 
   const { data: categoryData, error } = useSWR(apiCategory);
+
+  const onEdit = useCallback(
+    (current) => {
+      setCurrent(current);
+      navigate(
+        productId
+          ? `/product?productId=${productId}&edit=true`
+          : `/product?edit=true`
+      );
+    },
+    [productId, setCurrent, navigate]
+  );
 
   const category = useMemo(() => {
     if (!categoryData) return <>Loading...</>;
@@ -180,7 +196,7 @@ const ProductReview = ({
       {tabs}
       <SpaceContainer direction="vertical" size={50}>
         <Space direction="vertical" size={26}>
-          <Title label="ข้อมูลสินค้า" onEdit={() => setCurrent(0)} />
+          <Title label="ข้อมูลสินค้า" onEdit={() => onEdit(0)} />
           <Space direction="vertical" size={16}>
             <Info label="ชื่อสินค้า" value={productInfo.name[language]} />
             <Info label="ผู้ผลิต" value={productInfo.owner[language]} />
@@ -190,7 +206,7 @@ const ProductReview = ({
           </Space>
         </Space>
         <Space direction="vertical" size={26}>
-          <Title label="ตัวเลือกและรูปภาพสินค้า" onEdit={() => setCurrent(1)} />
+          <Title label="ตัวเลือกและรูปภาพสินค้า" onEdit={() => onEdit(1)} />
           {isImage && (
             <Space direction="vertical" size={16}>
               <Info label="รูปภาพ" value={productOption?.length + " รูป"} />
@@ -302,7 +318,7 @@ const ProductReview = ({
           )}
         </Space>
         <Space direction="vertical" size={0}>
-          <Title label="รายละเอียดสินค้า" onEdit={() => setCurrent(2)} />
+          <Title label="รายละเอียดสินค้า" onEdit={() => onEdit(2)} />
           <HTMLReader
             dangerouslySetInnerHTML={{
               __html: language === "th" ? detailTH : detailEN,
