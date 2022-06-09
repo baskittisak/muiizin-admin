@@ -147,6 +147,18 @@ const ProductReview = ({
     return !optionSize && !optionColor;
   }, [optionColor, optionSize]);
 
+  const tabs = useMemo(
+    () => (
+      <TabsContaier>
+        <Tabs defaultActiveKey={language} onChange={setLanguage}>
+          <TabPane tab="ภาษาไทย" key="th" />
+          <TabPane tab="ภาษาอังกฤษ" key="en" />
+        </Tabs>
+      </TabsContaier>
+    ),
+    [language]
+  );
+
   if (error) return <Empty />;
 
   return (
@@ -161,12 +173,7 @@ const ProductReview = ({
           ตัวอย่างข้อมูลสินค้า
         </Typography>
       </Box>
-      <TabsContaier>
-        <Tabs defaultActiveKey={language} onChange={setLanguage}>
-          <TabPane tab="ภาษาไทย" key="th" />
-          <TabPane tab="ภาษาอังกฤษ" key="en" />
-        </Tabs>
-      </TabsContaier>
+      {tabs}
       <SpaceContainer direction="vertical" size={50}>
         <Space direction="vertical" size={26}>
           <Title label="ข้อมูลสินค้า" onEdit={() => setCurrent(0)} />
@@ -185,8 +192,16 @@ const ProductReview = ({
               <Info label="รูปภาพ" value={productOption?.length + " รูป"} />
               <Space width="initial" size={10}>
                 {productOption?.map((image, index) => (
-                  <ImageWrapper key={image?.id || index} justify="center" align="center">
-                    <BaseImage src={image?.image || image} width={65} height={65} />
+                  <ImageWrapper
+                    key={image?.id || index}
+                    justify="center"
+                    align="center"
+                  >
+                    <BaseImage
+                      src={image?.image || image}
+                      width={65}
+                      height={65}
+                    />
                   </ImageWrapper>
                 ))}
               </Space>
@@ -270,7 +285,11 @@ const ProductReview = ({
                       justify="center"
                       align="center"
                     >
-                      <BaseImage src={image?.image || image} width={65} height={65} />
+                      <BaseImage
+                        src={image?.image || image}
+                        width={65}
+                        height={65}
+                      />
                     </ImageWrapper>
                   ))}
                 </Space>
