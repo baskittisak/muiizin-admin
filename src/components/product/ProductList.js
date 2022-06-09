@@ -14,6 +14,8 @@ import { Action } from "../../style/common";
 import { useNavigate } from "react-router-dom";
 import { getFormatDate } from "../../utils/utils";
 import { useDebounce } from "use-debounce";
+import { getNotification } from "../../center_components/Notification";
+import { getModalConfirm } from "../../center_components/ModalConfirm";
 import useSWR from "swr";
 
 const Name = styled(Space)`
@@ -28,6 +30,7 @@ const ProductList = () => {
     category: "0",
     status: "1",
   });
+  const [loading, setLoading] = useState(false);
 
   const [search] = useDebounce(filters.search, 500);
   const apiProductList = useMemo(() => {
@@ -45,7 +48,7 @@ const ProductList = () => {
     return `/data/list/product?page=${page}${searchQuery}${category}${statusQuery}`;
   }, [filters.category, filters.status, page, search]);
 
-  const { data: productList, error } = useSWR(apiProductList);
+  const { data: productList, error, mutate } = useSWR(apiProductList);
 
   useEffect(() => {
     if (filters.search || filters.category !== "0" || filters.status !== "1") {
@@ -59,6 +62,28 @@ const ProductList = () => {
       [type]: value,
     }));
   }, []);
+
+  const onDelete = useCallback(async (productId) => {
+    setLoading(true);
+    const { default: axios } = await import("axios");
+    try {
+      await axios.put("/delete/product", { productId });
+      setPage(1);
+      await mutate();
+      setLoading(false);
+      getNotification({
+        type: "success",
+        message: "ลบสินค้าสำเร็จ",
+      });
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      getNotification({
+        type: "error",
+        message: "เกิดข้อผิดพลาด",
+      });
+    }
+  }, [mutate]);
 
   const columns = useMemo(() => {
     return [
@@ -110,7 +135,12 @@ const ProductList = () => {
             <Action
               justify="center"
               align="center"
-              onClick={() => console.log(record?.key)}
+              onClick={() =>
+                getModalConfirm({
+                  message: "คุณต้องการจะลบสินค้านี้ใช่หรือไม่?",
+                  onConfirm: () => onDelete(record?.key),
+                })
+              }
             >
               <IconSvg src={delete_icon} fontSize={18} />
             </Action>
@@ -118,14 +148,14 @@ const ProductList = () => {
         ),
       },
     ];
-  }, [navigate]);
+  }, [navigate, onDelete]);
 
   if (error) return <ErrorPage message={error?.response?.data} />;
 
   return (
     <Frame
       label="รายการสินค้า"
-      loading={!productList}
+      loading={!productList || loading}
       extra={
         <BaseButton
           bgColor="#044700"
