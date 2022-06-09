@@ -186,25 +186,39 @@ const Product = () => {
     !value && setTypeOption("");
   }, []);
 
-  const onSetSize = useCallback((type, index, value) => {
-    const isAdd = type === "add";
-    const isDelete = type === "delete";
-    setProductOption((prevState) => {
-      const newSize = [...prevState?.size];
-      if (isAdd) {
-        newSize.push({ name: "" });
-        return { ...prevState, size: [...newSize] };
-      } else if (isDelete) {
-        const sizeDeleted = newSize.filter(
-          (_, prevIndex) => prevIndex !== index
-        );
-        return { ...prevState, size: [...sizeDeleted] };
-      } else {
-        newSize[index].name = value;
-        return { ...prevState, size: [...newSize] };
-      }
-    });
+  const onDeleteSize = useCallback(async (sizeId) => {
+    const { default: axios } = await import("axios");
+    try {
+      await axios.put("/delete/size", { sizeId });
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
+
+  const onSetSize = useCallback(
+    (type, index, value) => {
+      const isAdd = type === "add";
+      const isDelete = type === "delete";
+      setProductOption((prevState) => {
+        const newSize = [...prevState?.size];
+        if (isAdd) {
+          newSize.push({ name: "" });
+          return { ...prevState, size: [...newSize] };
+        } else if (isDelete) {
+          const sizeDeleted = newSize.filter(
+            (_, prevIndex) => prevIndex !== index
+          );
+          const sizeId = newSize[index]?.id;
+          productId && sizeId && onDeleteSize(sizeId);
+          return { ...prevState, size: [...sizeDeleted] };
+        } else {
+          newSize[index].name = value;
+          return { ...prevState, size: [...newSize] };
+        }
+      });
+    },
+    [productId, onDeleteSize]
+  );
 
   const onSetColor = useCallback((type, index, value, language) => {
     const isAdd = type === "add";
@@ -264,9 +278,7 @@ const Product = () => {
             (_, prevIndex) => prevIndex !== indexDel
           );
           const colorImageId = newColor[index].images[indexDel]?.id;
-          if (productId && colorImageId) {
-            onDeleteColorImage(colorImageId);
-          }
+          productId && colorImageId && onDeleteColorImage(colorImageId);
           newColor[index].images = [...imageDeleted];
           return { ...prevState, color: [...newColor] };
         }
@@ -319,9 +331,7 @@ const Product = () => {
           setProductOption((prevState) => {
             const newImages = [...prevState?.images];
             const productImageId = newImages[index]?.id;
-            if (productId && productImageId) {
-              onDeleteImage(productImageId);
-            }
+            productId && productImageId && onDeleteImage(productImageId);
             const imagesDeleted = newImages.filter(
               (_, prevIndex) => prevIndex !== index
             );
@@ -331,9 +341,7 @@ const Product = () => {
           setProductOption((prevState) => {
             const newImages = [...prevState];
             const productImageId = newImages[index]?.id;
-            if (productId && productImageId) {
-              onDeleteImage(productImageId);
-            }
+            productId && productImageId && onDeleteImage(productImageId);
             return newImages.filter((_, prevIndex) => prevIndex !== index);
           });
         }
