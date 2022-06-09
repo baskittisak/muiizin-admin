@@ -97,7 +97,7 @@ const Banner = () => {
 
   return (
     <Frame
-      loading={!bannerData}
+      loading={bannerId && !bannerData}
       label="เพิ่มแบนเนอร์"
       onBack={() => navigate("/banner-list")}
     >
