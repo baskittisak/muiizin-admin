@@ -93,6 +93,10 @@ const HTMLReader = styled.div`
   font-size: 18px;
 `;
 
+const SpaceWrap = styled(Space)`
+  flex-wrap: wrap;
+`;
+
 const Title = memo(({ label, onEdit }) => (
   <Box justify="space-between">
     <Typography fontSize={24} lineHeight={26} fontWeight={700} color="#333333">
@@ -190,7 +194,7 @@ const ProductReview = ({
           {isImage && (
             <Space direction="vertical" size={16}>
               <Info label="รูปภาพ" value={productOption?.length + " รูป"} />
-              <Space width="initial" size={10}>
+              <SpaceWrap width="initial" size={10}>
                 {productOption?.map((image, index) => (
                   <ImageWrapper
                     key={image?.id || index}
@@ -204,7 +208,7 @@ const ProductReview = ({
                     />
                   </ImageWrapper>
                 ))}
-              </Space>
+              </SpaceWrap>
             </Space>
           )}
           {!isImage && (
@@ -257,11 +261,7 @@ const ProductReview = ({
                         {color.name[language]}
                       </Typography>
                     </Space>
-                    <Space
-                      width="initial"
-                      size={10}
-                      style={{ flexWrap: "wrap" }}
-                    >
+                    <SpaceWrap width="initial" size={10}>
                       {color.images.map((image, index) => (
                         <ImageWrapper
                           key={image?.id || index}
@@ -275,14 +275,14 @@ const ProductReview = ({
                           />
                         </ImageWrapper>
                       ))}
-                    </Space>
+                    </SpaceWrap>
                   </Space>
                 ))}
               {optionImage && (
                 <Info label="รูปภาพ" value={optionImage?.length + " รูป"} />
               )}
               {optionImage && (
-                <Space width="initial" size={10}>
+                <SpaceWrap width="initial" size={10}>
                   {optionImage?.map((image, index) => (
                     <ImageWrapper
                       key={image?.id || index}
@@ -296,7 +296,7 @@ const ProductReview = ({
                       />
                     </ImageWrapper>
                   ))}
-                </Space>
+                </SpaceWrap>
               )}
             </Space>
           )}

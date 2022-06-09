@@ -379,39 +379,45 @@ const Product = () => {
   }, []);
 
   const onSaveImage = useCallback(
-    async (productId) => {
+    async (newProductId) => {
       const { default: axios } = await import("axios");
       const payload = {
         images: isSizeOnly ? productOption?.images : productOption,
-        productId,
+        productId: newProductId,
       };
-      await axios.post("/create/product/image", payload);
+      productId
+        ? await axios.put("/edit/product/image", payload)
+        : await axios.post("/create/product/image", payload);
     },
-    [isSizeOnly, productOption]
+    [productId, isSizeOnly, productOption]
   );
 
   const onSaveSize = useCallback(
-    async (productId) => {
+    async (newProductId) => {
       const { default: axios } = await import("axios");
       const payload = {
         sizes: productOption?.size,
-        productId,
+        productId: newProductId,
       };
-      await axios.post("/create/product/size", payload);
+      productId
+        ? await axios.put("/edit/product/size", payload)
+        : await axios.post("/create/product/size", payload);
     },
-    [productOption]
+    [productId, productOption]
   );
 
   const onSaveColor = useCallback(
-    async (productId) => {
+    async (newProductId) => {
       const { default: axios } = await import("axios");
       const payload = {
         colors: productOption?.color,
-        productId,
+        productId: newProductId,
       };
-      await axios.post("/create/product/color", payload);
+      productId
+        ? await axios.put("/edit/product/color", payload)
+        : await axios.post("/create/product/color", payload);
     },
-    [productOption]
+    [productId,productOption]
   );
 
   const onSave = useCallback(async () => {
@@ -422,6 +428,7 @@ const Product = () => {
       const status =
         key === "1" ? "พร้อมส่ง" : key === "2" ? "พรีออเดอร์" : "หมดอายุ";
       const payload = {
+        productId,
         name: productInfo.name,
         owner: productInfo.owner,
         price: productInfo.price,
@@ -431,8 +438,10 @@ const Product = () => {
         updatedTime: Date.now(),
         categoryId: productInfo.category,
       };
-      const { data } = await axios.post("/create/product", payload);
-      const newProductId = data?.productId;
+      const { data } = productId
+        ? await axios.put("/edit/product", payload)
+        : await axios.post("/create/product", payload);
+      const newProductId = productId ? productId : data?.productId;
       if (option.enable) {
         if (isSizeOnly) {
           await onSaveSize(newProductId);
@@ -468,8 +477,9 @@ const Product = () => {
     option.size,
     option.color,
     productDetail,
-    navigate,
     isSizeOnly,
+    productId,
+    navigate,
     onSaveSize,
     onSaveImage,
     onSaveColor,
