@@ -417,7 +417,7 @@ const Product = () => {
         ? await axios.put("/edit/product/color", payload)
         : await axios.post("/create/product/color", payload);
     },
-    [productId,productOption]
+    [productId, productOption]
   );
 
   const onSave = useCallback(async () => {
