@@ -220,36 +220,50 @@ const Product = () => {
     [productId, onDeleteSize]
   );
 
-  const onSetColor = useCallback((type, index, value, language) => {
-    const isAdd = type === "add";
-    const isDelete = type === "delete";
-    setProductOption((prevState) => {
-      const newColor = [...prevState?.color];
-      if (isAdd) {
-        newColor.push({
-          name: {
-            th: "",
-            en: "",
-          },
-          code: "",
-          images: [],
-        });
-        return { ...prevState, color: [...newColor] };
-      } else if (isDelete) {
-        const colorDeleted = newColor.filter(
-          (_, prevIndex) => prevIndex !== index
-        );
-        return { ...prevState, color: [...colorDeleted] };
-      } else {
-        if (language) {
-          newColor[index].name[language] = value;
-        } else {
-          newColor[index].code = value;
-        }
-        return { ...prevState, color: [...newColor] };
-      }
-    });
+  const onDeleteColor = useCallback(async (colorId) => {
+    const { default: axios } = await import("axios");
+    try {
+      await axios.put("/delete/color", { colorId });
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
+
+  const onSetColor = useCallback(
+    (type, index, value, language) => {
+      const isAdd = type === "add";
+      const isDelete = type === "delete";
+      setProductOption((prevState) => {
+        const newColor = [...prevState?.color];
+        if (isAdd) {
+          newColor.push({
+            name: {
+              th: "",
+              en: "",
+            },
+            code: "",
+            images: [],
+          });
+          return { ...prevState, color: [...newColor] };
+        } else if (isDelete) {
+          const colorDeleted = newColor.filter(
+            (_, prevIndex) => prevIndex !== index
+          );
+          const colorId = newColor[index]?.id;
+          productId && colorId && onDeleteColor(colorId);
+          return { ...prevState, color: [...colorDeleted] };
+        } else {
+          if (language) {
+            newColor[index].name[language] = value;
+          } else {
+            newColor[index].code = value;
+          }
+          return { ...prevState, color: [...newColor] };
+        }
+      });
+    },
+    [productId, onDeleteColor]
+  );
 
   const onDeleteColorImage = useCallback(async (colorImageId) => {
     const { default: axios } = await import("axios");
