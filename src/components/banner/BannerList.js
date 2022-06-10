@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import { getFormatDate } from "../../utils/utils";
 import useSWR from "swr";
+import { getModalConfirm } from "../../center_components/ModalConfirm";
+import { getNotification } from "../../center_components/Notification";
 
 const DragHandle = SortableHandle(() => (
   <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />
@@ -62,6 +64,7 @@ const Categories = () => {
   });
   const [sortable, setSortable] = useState(false);
   const [dataSource, setDataSource] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [search] = useDebounce(filters.search, 500);
   const apiBannerList = useMemo(() => {
@@ -76,7 +79,7 @@ const Categories = () => {
     return `/data/list/banner?search=${search}${statusQuery}`;
   }, [search, filters.status]);
 
-  const { data: bannerList, error } = useSWR(apiBannerList);
+  const { data: bannerList, error, mutate } = useSWR(apiBannerList);
 
   useEffect(() => {
     bannerList && setDataSource([...bannerList]);
@@ -88,6 +91,30 @@ const Categories = () => {
       [type]: value,
     }));
   }, []);
+
+  const onDelete = useCallback(
+    async (bannerId) => {
+      setLoading(true);
+      const { default: axios } = await import("axios");
+      try {
+        await axios.put("/delete/banner", { bannerId });
+        await mutate();
+        setLoading(false);
+        getNotification({
+          type: "success",
+          message: "ลบหมวดหมู่สินค้าสำเร็จ",
+        });
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+        getNotification({
+          type: "error",
+          message: "เกิดข้อผิดพลาด",
+        });
+      }
+    },
+    [mutate]
+  );
 
   const columns = useMemo(() => {
     return [
@@ -156,7 +183,12 @@ const Categories = () => {
               <Action
                 justify="center"
                 align="center"
-                onClick={() => console.log(record?.key)}
+                onClick={() =>
+                  getModalConfirm({
+                    message: "คุณต้องการจะแบนเนอร์นี้ใช่หรือไม่?",
+                    onConfirm: () => onDelete(record?.key),
+                  })
+                }
               >
                 <IconSvg src={delete_icon} fontSize={18} />
               </Action>
@@ -164,13 +196,13 @@ const Categories = () => {
           ),
       },
     ];
-  }, [sortable, navigate]);
+  }, [sortable, navigate, onDelete]);
 
   const displayProductList = useMemo(
     () => (
       <Frame
         label={sortable ? "จัดเรียงแบนเนอร์" : "แบนเนอร์"}
-        loading={!bannerList}
+        loading={!bannerList || loading}
         extra={
           !sortable && (
             <Space size={20}>
@@ -225,6 +257,7 @@ const Categories = () => {
       filters.search,
       filters.status,
       sortable,
+      loading,
       navigate,
       onFilters,
     ]
