@@ -19,13 +19,6 @@ import { useDebounce } from "use-debounce";
 import { getNotification } from "../../center_components/Notification";
 import useSWR from "swr";
 
-const Footer = styled(Box)`
-  height: 80px;
-  margin-top: 50px;
-  padding-top: 24px;
-  border-top: 1px solid #d9e3d9;
-`;
-
 const SearchWrapper = styled.div`
   margin-top: -20px;
 `;
@@ -201,28 +194,26 @@ const Category = () => {
   const displayButton = useMemo(
     () =>
       isEdit && (
-        <Footer justify="center" align="center">
-          <Space size={50}>
-            <BaseButton
-              width="95px"
-              bgColor="#F2F2F2"
-              color="#4F4F4F"
-              disabled={loading}
-              onClick={() => setIsEdit(false)}
-            >
-              ยกเลิก
-            </BaseButton>
-            <BaseButton
-              width="95px"
-              bgColor="#044700"
-              color="#fff"
-              loading={loading}
-              onClick={onSave}
-            >
-              บันทึก
-            </BaseButton>
-          </Space>
-        </Footer>
+        <Space size={50}>
+          <BaseButton
+            width="95px"
+            bgColor="#F2F2F2"
+            color="#4F4F4F"
+            disabled={loading}
+            onClick={() => setIsEdit(false)}
+          >
+            ยกเลิก
+          </BaseButton>
+          <BaseButton
+            width="95px"
+            bgColor="#044700"
+            color="#fff"
+            loading={loading}
+            onClick={onSave}
+          >
+            บันทึก
+          </BaseButton>
+        </Space>
       ),
     [isEdit, loading, onSave]
   );
@@ -243,7 +234,6 @@ const Category = () => {
     <Frame
       label={categoryName}
       loading={isLoading}
-      onBack={!isEdit ? () => navigate("/categories") : undefined}
       extra={
         !isEdit && (
           <BaseButton
@@ -256,11 +246,12 @@ const Category = () => {
           </BaseButton>
         )
       }
+      footer={displayButton}
+      onBack={!isEdit ? () => navigate("/categories") : undefined}
     >
       <FormWrapper>
         <FormWrapper>{displayCategory}</FormWrapper>
       </FormWrapper>
-      {displayButton}
     </Frame>
   );
 };

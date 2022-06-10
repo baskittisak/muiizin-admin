@@ -1,5 +1,4 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
 import Frame from "../../center_components/Frame";
 import BaseButton from "../../center_components/BaseButton";
 import FilterCategories from "./FilterCategories";
@@ -11,7 +10,7 @@ import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { ReactComponent as drag_icon } from "../../assets/icons/drag.svg";
 import { Space } from "antd";
-import { Action, Box } from "../../style/common";
+import { Action } from "../../style/common";
 import { SortableHandle } from "react-sortable-hoc";
 import { useNavigate } from "react-router-dom";
 import { getFormatDate } from "../../utils/utils";
@@ -23,11 +22,6 @@ import useSWR from "swr";
 const DragHandle = SortableHandle(() => (
   <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />
 ));
-
-const Footer = styled(Box)`
-  height: 80px;
-  padding-top: 24px;
-`;
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -233,9 +227,18 @@ const Categories = () => {
             </Space>
           )
         }
+        footer={
+          sortable && (
+            <BaseButton bgColor="#044700" color="#fff" onClick={onSaveSequence}>
+              บันทึก
+            </BaseButton>
+          )
+        }
         onBack={sortable ? () => setSortable(false) : undefined}
       >
-        <FilterCategories search={search} setSearch={setSearch} />
+        {!sortable && (
+          <FilterCategories search={search} setSearch={setSearch} />
+        )}
         <Table
           columns={columns}
           dataSource={dataSource}
@@ -243,13 +246,6 @@ const Categories = () => {
           sortable={sortable}
           setDataSource={setDataSource}
         />
-        {sortable && (
-          <Footer justify="center" align="center">
-            <BaseButton bgColor="#044700" color="#fff" onClick={onSaveSequence}>
-              บันทึก
-            </BaseButton>
-          </Footer>
-        )}
       </Frame>
     ),
     [categories, columns, dataSource, search, sortable, loading, onSaveSequence]

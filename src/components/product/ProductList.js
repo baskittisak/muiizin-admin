@@ -6,6 +6,7 @@ import IconSvg from "../../center_components/IconSvg";
 import Table from "../../center_components/Table";
 import ErrorPage from "../../center_components/ErrorPage";
 import BaseImage from "../../center_components/BaseImage";
+import Pagination from "../../center_components/Pagination";
 import FilterProduct from "./FilterProduct";
 import { ReactComponent as eye_icon } from "../../assets/icons/eye.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
@@ -63,27 +64,30 @@ const ProductList = () => {
     }));
   }, []);
 
-  const onDelete = useCallback(async (productId) => {
-    setLoading(true);
-    const { default: axios } = await import("axios");
-    try {
-      await axios.put("/delete/product", { productId });
-      setPage(1);
-      await mutate();
-      setLoading(false);
-      getNotification({
-        type: "success",
-        message: "ลบสินค้าสำเร็จ",
-      });
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-      getNotification({
-        type: "error",
-        message: "เกิดข้อผิดพลาด",
-      });
-    }
-  }, [mutate]);
+  const onDelete = useCallback(
+    async (productId) => {
+      setLoading(true);
+      const { default: axios } = await import("axios");
+      try {
+        await axios.put("/delete/product", { productId });
+        setPage(1);
+        await mutate();
+        setLoading(false);
+        getNotification({
+          type: "success",
+          message: "ลบสินค้าสำเร็จ",
+        });
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+        getNotification({
+          type: "error",
+          message: "เกิดข้อผิดพลาด",
+        });
+      }
+    },
+    [mutate]
+  );
 
   const columns = useMemo(() => {
     return [
@@ -166,6 +170,14 @@ const ProductList = () => {
           เพิ่มสินค้าใหม่
         </BaseButton>
       }
+      footer={
+        <Pagination
+          current={page}
+          total={productList?.total}
+          onChange={setPage}
+        />
+      }
+      footerAlign="flex-start"
     >
       <FilterProduct
         search={filters.search}
@@ -176,9 +188,7 @@ const ProductList = () => {
       <Table
         columns={columns}
         dataSource={productList?.data}
-        page={page}
-        totalData={productList?.total}
-        onChange={(e) => setPage(e.current)}
+        pagination={false}
       />
     </Frame>
   );

@@ -24,11 +24,6 @@ const DragHandle = SortableHandle(() => (
   <IconSvg src={drag_icon} fontSize={18} onClick={() => null} />
 ));
 
-const Footer = styled(Box)`
-  height: 80px;
-  padding-top: 24px;
-`;
-
 const Status = styled(Box)`
   height: 30px;
   width: 80px;
@@ -104,7 +99,7 @@ const Categories = () => {
           sequence: index + 1,
         }));
         await axios.put("/edit/sequence/banner", { banners });
-        await mutate()
+        await mutate();
         setLoading(false);
         getNotification({
           type: "success",
@@ -255,13 +250,22 @@ const Categories = () => {
             </Space>
           )
         }
+        footer={
+          sortable && (
+            <BaseButton bgColor="#044700" color="#fff" onClick={onSaveSequence}>
+              บันทึก
+            </BaseButton>
+          )
+        }
         onBack={sortable ? () => setSortable(false) : undefined}
       >
-        <FilterBanner
-          search={filters.search}
-          status={filters.status}
-          onFilters={onFilters}
-        />
+        {!sortable && (
+          <FilterBanner
+            search={filters.search}
+            status={filters.status}
+            onFilters={onFilters}
+          />
+        )}
         <Table
           columns={columns}
           dataSource={dataSource}
@@ -269,13 +273,6 @@ const Categories = () => {
           sortable={sortable}
           setDataSource={setDataSource}
         />
-        {sortable && (
-          <Footer justify="center" align="center">
-            <BaseButton bgColor="#044700" color="#fff" onClick={onSaveSequence}>
-              บันทึก
-            </BaseButton>
-          </Footer>
-        )}
       </Frame>
     ),
     [

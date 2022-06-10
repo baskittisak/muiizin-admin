@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Box } from "../../style/common";
 import { Space } from "antd";
 import { objValuesArr } from "../../utils/utils";
 import {
@@ -25,12 +24,6 @@ import useSWR from "swr";
 
 const Body = styled.div`
   margin-bottom: 24px;
-`;
-
-const Footer = styled(Box)`
-  height: 80px;
-  padding-top: 24px;
-  border-top: 1px solid #d9e3d9;
 `;
 
 const Product = () => {
@@ -729,16 +722,18 @@ const Product = () => {
   }
 
   return (
-    <Frame loading={isLoading} label={label} onBack={() => navigate("/")}>
+    <Frame
+      loading={isLoading}
+      label={label}
+      onBack={() => navigate("/")}
+      footer={<Space size={50}>{displayButton}</Space>}
+    >
       <FormWrapper>
         {current < 3 && <StepsProduct current={current} />}
         <FormWrapper>
           <Body>{displayStep}</Body>
         </FormWrapper>
       </FormWrapper>
-      <Footer justify="center" align="center">
-        <Space size={50}>{displayButton}</Space>
-      </Footer>
     </Frame>
   );
 };

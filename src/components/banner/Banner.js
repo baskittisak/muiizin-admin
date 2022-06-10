@@ -22,6 +22,10 @@ import { useQuery } from "../../utils/useQuery";
 import { getNotification } from "../../center_components/Notification";
 import useSWR from "swr";
 
+const BannerContainer = styled(SpaceContainer)`
+  margin-bottom: 32px;
+`;
+
 const CheckboxContainer = styled(Space)`
   cursor: pointer;
 `;
@@ -37,13 +41,6 @@ const Checkbox = styled(Box)`
     css`
       background-color: #044700;
     `};
-`;
-
-const Footer = styled(Box)`
-  height: 80px;
-  padding-top: 24px;
-  margin-top: 24px;
-  border-top: 1px solid #d9e3d9;
 `;
 
 const Banner = () => {
@@ -224,11 +221,22 @@ const Banner = () => {
     <Frame
       loading={isLoading}
       label="เพิ่มแบนเนอร์"
+      footer={
+        <BaseButton
+          width="90px"
+          bgColor="#044700"
+          color="#fff"
+          disabled={isDisabled}
+          onClick={onSave}
+        >
+          ยืนยัน
+        </BaseButton>
+      }
       onBack={() => navigate("/banner-list")}
     >
       <FormWrapper>
         <FormWrapper>
-          <SpaceContainer direction="vertical" size={30}>
+          <BannerContainer direction="vertical" size={30}>
             <Input
               label="ชื่อแบนเนอร์"
               maxLength={50}
@@ -325,20 +333,9 @@ const Banner = () => {
                   </Space>
                 </Box>
               ))}
-          </SpaceContainer>
+          </BannerContainer>
         </FormWrapper>
       </FormWrapper>
-      <Footer justify="center" align="center">
-        <BaseButton
-          width="90px"
-          bgColor="#044700"
-          color="#fff"
-          disabled={isDisabled}
-          onClick={onSave}
-        >
-          ยืนยัน
-        </BaseButton>
-      </Footer>
       <ModalProductList
         visible={visible}
         products={banner.products}

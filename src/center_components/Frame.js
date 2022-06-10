@@ -1,5 +1,5 @@
 import { memo } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Typography from "./Typography";
 import IconSvg from "./IconSvg";
 import { ReactComponent as arrow_icon } from "../assets/icons/arrow_left.svg";
@@ -12,12 +12,30 @@ const Container = styled.div`
   background: #ffffff;
   box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
+  height: calc(100vh - 52px);
 `;
 
 const Header = styled(Box)`
   padding-bottom: 20px;
   margin-bottom: 40px;
   border-bottom: 1px solid #d9e3d9;
+`;
+
+const Body = styled.div`
+  height: calc(90% - 32px);
+  overflow-y: scroll;
+
+  ${({ footer }) =>
+    footer &&
+    css`
+      height: calc(90% - 112px);
+    `};
+`;
+
+const Footer = styled(Box)`
+  height: 80px;
+  padding-top: 24px;
+  border-top: 1px solid #d9e3d9;
 `;
 
 const BackButton = styled(Box)`
@@ -29,7 +47,15 @@ const BackButton = styled(Box)`
   border-radius: 5px;
 `;
 
-const Frame = ({ label, extra, loading = false, children, onBack }) => {
+const Frame = ({
+  label,
+  extra,
+  loading = false,
+  children,
+  footer = null,
+  footerAlign = "center",
+  onBack,
+}) => {
   return (
     <Loading spinning={loading} indicator={<LoadingOutlined spin />}>
       <Container>
@@ -51,7 +77,12 @@ const Frame = ({ label, extra, loading = false, children, onBack }) => {
           </Space>
           {extra && extra}
         </Header>
-        {children}
+        <Body footer={footer}>{children}</Body>
+        {footer && (
+          <Footer justify={footerAlign} align="center">
+            {footer}
+          </Footer>
+        )}
       </Container>
     </Loading>
   );
