@@ -98,7 +98,13 @@ const Categories = () => {
       const { default: axios } = await import("axios");
       try {
         await axios.put("/delete/banner", { bannerId });
-        await mutate();
+        const response = await mutate();
+        const banners = response.map((banner, index) => ({
+          bannerId: banner?.id,
+          sequence: index + 1,
+        }));
+        await axios.put("/edit/sequence/banner", { banners });
+        await mutate()
         setLoading(false);
         getNotification({
           type: "success",
@@ -265,11 +271,7 @@ const Categories = () => {
         />
         {sortable && (
           <Footer justify="center" align="center">
-            <BaseButton
-              bgColor="#044700"
-              color="#fff"
-              onClick={onSaveSequence}
-            >
+            <BaseButton bgColor="#044700" color="#fff" onClick={onSaveSequence}>
               บันทึก
             </BaseButton>
           </Footer>

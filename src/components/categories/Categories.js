@@ -96,6 +96,12 @@ const Categories = () => {
         };
         await axios.put("/change/category", payload);
         await axios.put("/delete/category", payload);
+        const response = await mutate();
+        const categories = response.map((category, index) => ({
+          categoryId: category?.id,
+          sequence: index + 1,
+        }));
+        await axios.put("/edit/sequence/category", { categories });
         await mutate();
         setLoading(false);
         getNotification({
