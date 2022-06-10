@@ -116,6 +116,32 @@ const Categories = () => {
     [mutate]
   );
 
+  const onSaveSequence = useCallback(async () => {
+    setLoading(true);
+    const { default: axios } = await import("axios");
+    try {
+      const banners = dataSource.map((banner) => ({
+        bannerId: banner?.id,
+        sequence: banner?.sequence,
+      }));
+      await axios.put("/edit/sequence/banner", { banners });
+      await mutate();
+      setLoading(false);
+      setSortable(false);
+      getNotification({
+        type: "success",
+        message: "แก้ไขลำดับแบนเนอร์สำเร็จ",
+      });
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      getNotification({
+        type: "error",
+        message: "เกิดข้อผิดพลาด",
+      });
+    }
+  }, [dataSource, mutate]);
+
   const columns = useMemo(() => {
     return [
       {
@@ -242,7 +268,7 @@ const Categories = () => {
             <BaseButton
               bgColor="#044700"
               color="#fff"
-              onClick={() => setSortable(false)}
+              onClick={onSaveSequence}
             >
               บันทึก
             </BaseButton>
@@ -260,6 +286,7 @@ const Categories = () => {
       loading,
       navigate,
       onFilters,
+      onSaveSequence,
     ]
   );
 
