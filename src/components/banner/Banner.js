@@ -102,26 +102,46 @@ const Banner = () => {
     });
   }, []);
 
+  const onSaveProduct = useCallback(
+    async (newBannerId) => {
+      const { default: axios } = await import("axios");
+      const productIds = banner.products.map(
+        (product) => product?.productId || product
+      );
+      const formatProductIds = productIds.map((productId) => {
+        const bannerProductId = bannerData?.products?.find(
+          (product) => product?.productId === productId
+        )?.bannerProductId;
+        return {
+          productId,
+          bannerProductId,
+        };
+      });
+      const payloadProduct = {
+        bannerId: newBannerId,
+        productIds: formatProductIds,
+      };
+      bannerId
+        ? await axios.put("/edit/banner/product", payloadProduct)
+        : await axios.post("/create/banner/product", payloadProduct);
+    },
+    [bannerId, banner.products, bannerData?.products]
+  );
+
   const onSave = useCallback(async () => {
     setLoading(true);
     const { default: axios } = await import("axios");
     try {
       const payload = {
+        bannerId,
         ...banner,
         updatedTime: Date.now(),
       };
-      const { data } = await axios.post("/create/banner", payload);
-      const newBannerId = data?.bannerId;
-      if (banner.isProduct) {
-        const productIds = banner.products.map(
-          (product) => product?.productId || product
-        );
-        const payloadProduct = {
-          bannerId: newBannerId,
-          productIds,
-        };
-        await axios.post("/create/banner/product", payloadProduct);
-      }
+      const { data } = bannerId
+        ? await axios.put("/edit/banner", payload)
+        : await axios.post("/create/banner", payload);
+      const newBannerId = bannerId ? bannerId : data?.bannerId;
+      banner.isProduct && (await onSaveProduct(newBannerId));
       setLoading(false);
       getNotification({
         type: "success",
@@ -137,7 +157,7 @@ const Banner = () => {
         message: "เกิดข้อผิดพลาด",
       });
     }
-  }, [banner, navigate]);
+  }, [banner, bannerId, navigate, onSaveProduct]);
 
   const onDeleteProduct = useCallback(async (bannerProductId) => {
     const { default: axios } = await import("axios");
