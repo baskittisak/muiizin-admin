@@ -128,6 +128,15 @@ const Banner = () => {
     [bannerId, banner.products, bannerData?.products]
   );
 
+  const onDeleteProduct = useCallback(async (bannerProductId, type) => {
+    const { default: axios } = await import("axios");
+    try {
+      await axios.put("/delete/product/banner", { bannerProductId, type });
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
   const onSave = useCallback(async () => {
     setLoading(true);
     const { default: axios } = await import("axios");
@@ -141,7 +150,11 @@ const Banner = () => {
         ? await axios.put("/edit/banner", payload)
         : await axios.post("/create/banner", payload);
       const newBannerId = bannerId ? bannerId : data?.bannerId;
-      banner.isProduct && (await onSaveProduct(newBannerId));
+      if (banner.isProduct) {
+        await onSaveProduct(newBannerId);
+      } else {
+        await onDeleteProduct(newBannerId, "banner");
+      }
       setLoading(false);
       getNotification({
         type: "success",
@@ -157,16 +170,7 @@ const Banner = () => {
         message: "เกิดข้อผิดพลาด",
       });
     }
-  }, [banner, bannerId, navigate, onSaveProduct]);
-
-  const onDeleteProduct = useCallback(async (bannerProductId) => {
-    const { default: axios } = await import("axios");
-    try {
-      await axios.put("/delete/product/banner", { bannerProductId });
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  }, [banner, bannerId, navigate, onSaveProduct, onDeleteProduct]);
 
   const onDelete = useCallback(
     (productId) => {
