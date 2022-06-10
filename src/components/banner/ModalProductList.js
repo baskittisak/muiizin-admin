@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import IconSvg from "../../center_components/IconSvg";
 import BaseButton from "../../center_components/BaseButton";
@@ -10,6 +10,7 @@ import { Empty, Modal, Space } from "antd";
 import { Loading } from "../../style/common";
 import { useDebounce } from "use-debounce";
 import { LoadingOutlined } from "@ant-design/icons";
+import { getFormatDate } from "../../utils/utils";
 import useSWR from "swr";
 
 const ModalContainer = styled(Modal)`
@@ -46,7 +47,7 @@ const Name = styled(Space)`
   text-align: left;
 `;
 
-const ModalProductList = ({ visible, onCancel, onOk }) => {
+const ModalProductList = ({ visible, products, onCancel, onOk }) => {
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
     search: "",
@@ -54,6 +55,16 @@ const ModalProductList = ({ visible, onCancel, onOk }) => {
     status: "1",
   });
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  useEffect(() => {
+    if (products?.length !== 0) {
+      const productIds = products?.map(
+        (product) => product?.productId || product
+      );
+      const productKey = productIds?.map((id) => id + "");
+      setSelectedRowKeys(productKey);
+    }
+  }, [products]);
 
   const [search] = useDebounce(filters.search, 500);
   const apiProductList = useMemo(() => {
@@ -129,6 +140,7 @@ const ModalProductList = ({ visible, onCancel, onOk }) => {
         title: "วันที่อัปเดต",
         dataIndex: "updatedTime",
         width: "15%",
+        render: (date) => getFormatDate(date),
       },
     ];
   }, []);

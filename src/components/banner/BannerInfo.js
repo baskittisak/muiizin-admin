@@ -55,7 +55,7 @@ const BannerInfo = () => {
   return (
     <Frame
       label="ข้อมูลแบนเนอร์"
-      loading={!banner}
+      loading={bannerId && !banner}
       onBack={() => navigate("/banner-list")}
       extra={
         <BaseButton
@@ -115,7 +115,7 @@ const BannerInfo = () => {
                 }
               />
               <ImageWrapper>
-                <BaseImage src={bannerImage} height={180} />
+                <BaseImage src={bannerImage} height={180} objectFit="contain" />
               </ImageWrapper>
             </SpaceContainer>
             <Info

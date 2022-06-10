@@ -101,7 +101,7 @@ const Categories = () => {
         dataIndex: "image",
         width: "25%",
         render: (image) => (
-          <BaseImage src={image} width={200} height={80} objectFit="cover" />
+          <BaseImage src={image} width={200} height={80} objectFit="contain" />
         ),
       },
       {

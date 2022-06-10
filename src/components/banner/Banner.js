@@ -19,6 +19,7 @@ import { ReactComponent as check_icon } from "../../assets/icons/check.svg";
 import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { defaultBannerData } from "./data/defaultData";
 import { useQuery } from "../../utils/useQuery";
+import { getNotification } from "../../center_components/Notification";
 import useSWR from "swr";
 
 const CheckboxContainer = styled(Space)`
@@ -51,16 +52,43 @@ const Banner = () => {
   const [language, setLanguage] = useState("th");
   const [banner, setBanner] = useState(defaultBannerData);
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const apiBanner = useMemo(() => {
     return bannerId && `/data/banner/${bannerId}`;
   }, [bannerId]);
 
+  const isProduct = useMemo(() => {
+    return banner.isProduct && banner.products.length !== 0;
+  }, [banner.isProduct, banner.products]);
+
+  const apiProducts = useMemo(() => {
+    const productIds = banner.products.map(
+      (product) => product?.productId || product
+    );
+    return isProduct && `/data/list/product?productIds=${productIds}`;
+  }, [isProduct, banner.products]);
+
   const { data: bannerData, error } = useSWR(apiBanner);
+  const { data: products, error: productsError } = useSWR(apiProducts);
 
   useEffect(() => {
     bannerData && setBanner({ ...bannerData });
   }, [bannerData]);
+
+  useEffect(() => {
+    if (isProduct && products) {
+      const productList = products?.data?.map((product) => ({
+        productId: +product?.key,
+        name: product?.name,
+        image: product?.image,
+      }));
+      setBanner((prevState) => ({
+        ...prevState,
+        products: productList,
+      }));
+    }
+  }, [bannerId, isProduct, products]);
 
   const onSetBanner = useCallback((type, value, subType) => {
     setBanner((prevState) => {
@@ -73,6 +101,69 @@ const Banner = () => {
       return newData;
     });
   }, []);
+
+  const onSave = useCallback(async () => {
+    setLoading(true);
+    const { default: axios } = await import("axios");
+    try {
+      const payload = {
+        ...banner,
+        updatedTime: Date.now(),
+      };
+      const { data } = await axios.post("/create/banner", payload);
+      const newBannerId = data?.bannerId;
+      if (banner.isProduct) {
+        const productIds = banner.products.map(
+          (product) => product?.productId || product
+        );
+        const payloadProduct = {
+          bannerId: newBannerId,
+          productIds,
+        };
+        await axios.post("/create/banner/product", payloadProduct);
+      }
+      setLoading(false);
+      getNotification({
+        type: "success",
+        message: "สร้างแบนเนอร์สำเร็จ",
+      });
+      setBanner({ ...defaultBannerData });
+      navigate(`/banner-info?bannerId=${newBannerId}`);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      getNotification({
+        type: "error",
+        message: "เกิดข้อผิดพลาด",
+      });
+    }
+  }, [banner, navigate]);
+
+  const onDeleteProduct = useCallback(async (bannerProductId) => {
+    const { default: axios } = await import("axios");
+    try {
+      await axios.put("/delete/product/banner", { bannerProductId });
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  const onDelete = useCallback(
+    (productId) => {
+      setBanner((prevState) => {
+        const newProduct = [...prevState.products];
+        const bannerProductId = bannerData?.products?.find(
+          (product) => product?.productId === productId
+        )?.bannerProductId;
+        bannerId && bannerProductId && onDeleteProduct(bannerProductId);
+        const productDeleted = newProduct.filter(
+          (product) => product?.productId !== productId
+        );
+        return { ...prevState, products: productDeleted };
+      });
+    },
+    [bannerId, bannerData?.products, onDeleteProduct]
+  );
 
   const isDisabled = useMemo(() => {
     return (
@@ -93,11 +184,21 @@ const Banner = () => {
     banner.products.length,
   ]);
 
-  if (error) return <ErrorPage message={error?.response?.data} />;
+  const isLoading = useMemo(() => {
+    return (bannerId && !bannerData) || (isProduct && !products) || loading;
+  }, [isProduct, bannerData, bannerId, loading, products]);
+
+  if (error || productsError) {
+    return (
+      <ErrorPage
+        message={error?.response?.data || productsError?.response?.data}
+      />
+    );
+  }
 
   return (
     <Frame
-      loading={bannerId && !bannerData}
+      loading={isLoading}
       label="เพิ่มแบนเนอร์"
       onBack={() => navigate("/banner-list")}
     >
@@ -174,11 +275,10 @@ const Banner = () => {
                 เลือกสินค้า
               </BaseButton>
             )}
-            {banner.isProduct &&
-              banner.products.length !== 0 &&
-              banner.products.map((product, index) => (
+            {isProduct &&
+              banner.products?.map((product, index) => (
                 <Box
-                  key={product?.bannerProductId}
+                  key={product?.bannerProductId || index}
                   justify="space-between"
                   align="center"
                 >
@@ -187,7 +287,11 @@ const Banner = () => {
                   </Typography>
                   <Space size={25}>
                     <BaseImage src={product?.image} width={45} height={45} />
-                    <Action justify="center" align="center">
+                    <Action
+                      justify="center"
+                      align="center"
+                      onClick={() => onDelete(product?.productId)}
+                    >
                       <IconSvg
                         src={delete_icon}
                         fontSize={19}
@@ -206,13 +310,14 @@ const Banner = () => {
           bgColor="#044700"
           color="#fff"
           disabled={isDisabled}
-          onClick={() => navigate("/banner-info")}
+          onClick={onSave}
         >
           ยืนยัน
         </BaseButton>
       </Footer>
       <ModalProductList
         visible={visible}
+        products={banner.products}
         onCancel={() => setVisible(false)}
         onOk={(products) => onSetBanner("products", products)}
       />
