@@ -73,7 +73,7 @@ const Footer = styled(Box)`
 `;
 
 const Login = () => {
-  const { setToken, setEmail } = useAuthContext();
+  const { setToken, setUser } = useAuthContext();
   const [authData, setAuthData] = useState({
     email: "",
     password: "",
@@ -98,12 +98,10 @@ const Login = () => {
     try {
       const { data } = await axios.post("/login", authData);
       const token = data?.token;
-      const email = data?.email;
       axios.defaults.headers.common["Authorization"] = token;
-      localStorage.setItem("muiizinToken", token);
-      localStorage.setItem("muiizinEmail", email);
+      localStorage.setItem("muiizin",  JSON.stringify(data));
       setToken(token);
-      setEmail(email);
+      setUser(data);
       onSetData("email", "");
       onSetData("password", "");
       getNotification({ type: "success", message: "เข้าสู่ระบบสำเร็จ" });
@@ -120,7 +118,7 @@ const Login = () => {
       getNotification({ type: "error", message });
       setLoading(false);
     }
-  }, [authData, setToken, setEmail, onSetData]);
+  }, [authData, setToken, setUser, onSetData]);
 
   const inputPassword = useMemo(
     () => (

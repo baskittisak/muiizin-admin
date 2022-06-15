@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 function AuthContextProvider({ children }) {
   const [token, setToken] = useState();
-  const [email, setEmail] = useState("");
+  const [user, setUser] = useState({ adminId: 0, adminType: "", email: "" });
 
   const pageLoading = useMemo(() => {
     return token === undefined;
@@ -15,19 +15,21 @@ function AuthContextProvider({ children }) {
   }, [token]);
 
   useEffect(() => {
-    const token = localStorage.getItem("muiizinToken");
-    const email = localStorage.getItem("muiizinEmail");
-    setToken((prevToken) => prevToken || token);
-    setEmail(email);
+    const muiizin = localStorage.getItem("muiizin");
+    const muiizinData = JSON.parse(muiizin);
+    setToken(() => muiizinData?.token || null);
+    setUser(() => ({
+      ...muiizinData,
+    }));
   }, []);
 
   const userData = {
     pageLoading,
     isLogin,
     token,
-    email,
+    user,
     setToken,
-    setEmail,
+    setUser,
   };
 
   return (

@@ -141,7 +141,7 @@ const Body = styled.div`
 `;
 
 const Layout = ({ children }) => {
-  const { email, setToken } = useAuthContext();
+  const { user, setToken } = useAuthContext();
   const [collapsed, setCollapsed] = useState(false);
   const [activeKey, setActiveKey] = useState("1");
   const [loading, setLoading] = useState(false);
@@ -184,8 +184,7 @@ const Layout = ({ children }) => {
 
   const onLogOut = useCallback(() => {
     setLoading(true);
-    localStorage.removeItem("muiizinToken");
-    localStorage.removeItem("muiizinEmail");
+    localStorage.removeItem("muiizin");
     setToken("");
     setTimeout(() => {
       setLoading(false);
@@ -262,10 +261,10 @@ const Layout = ({ children }) => {
                   fontWeight={700}
                   color="#FFF4D6"
                 >
-                  {email}
+                  {user?.email}
                 </Typography>
                 <Typography fontSize={14} lineHeight={15} color="#E0E0E0">
-                  Admin
+                  {user?.adminType}
                 </Typography>
               </Space>
             </Space>
@@ -284,7 +283,15 @@ const Layout = ({ children }) => {
         </Footer>
       </LayoutContainer>
     ),
-    [activeKey, collapsed, menuItems, email, onLinkTo, onLogOut]
+    [
+      activeKey,
+      collapsed,
+      menuItems,
+      user?.adminType,
+      user?.email,
+      onLinkTo,
+      onLogOut,
+    ]
   );
 
   const body = useMemo(
