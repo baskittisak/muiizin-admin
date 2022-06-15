@@ -97,10 +97,11 @@ const Login = () => {
     const { default: axios } = await import("../utils/axios");
     try {
       const { data } = await axios.post("/login", authData);
-      axios.defaults.headers.common["Authorization"] = data?.token;
-      localStorage.setItem("muiizinToken", data?.token);
+      const token = data?.token;
+      axios.defaults.headers.common["Authorization"] = token;
+      localStorage.setItem("muiizinToken", token);
       localStorage.setItem("muiizinEmail", data?.email);
-      setToken(data?.token);
+      setToken(token);
       onSetData("email", "");
       onSetData("password", "");
       getNotification({ type: "success", message: "เข้าสู่ระบบสำเร็จ" });
