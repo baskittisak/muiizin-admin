@@ -53,7 +53,7 @@ const Categories = () => {
 
   const onSave = useCallback(async () => {
     setLoading(true);
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../../utils/axios");
     try {
       const payload = {
         nameEN: name.en,
@@ -83,7 +83,7 @@ const Categories = () => {
   const onDelete = useCallback(
     async (categoryId) => {
       setLoading(true);
-      const { default: axios } = await import("axios");
+      const { default: axios } = await import("../../utils/axios");
       try {
         const payload = {
           categoryId,
@@ -116,7 +116,7 @@ const Categories = () => {
 
   const onSaveSequence = useCallback(async () => {
     setLoading(true);
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../../utils/axios");
     try {
       const categories = dataSource.map((category) => ({
         categoryId: category?.id,

@@ -90,7 +90,7 @@ const Categories = () => {
   const onDelete = useCallback(
     async (bannerId) => {
       setLoading(true);
-      const { default: axios } = await import("axios");
+      const { default: axios } = await import("../../utils/axios");
       try {
         await axios.put("/delete/banner", { bannerId });
         const response = await mutate();
@@ -119,7 +119,7 @@ const Categories = () => {
 
   const onSaveSequence = useCallback(async () => {
     setLoading(true);
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../../utils/axios");
     try {
       const banners = dataSource.map((banner) => ({
         bannerId: banner?.id,

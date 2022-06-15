@@ -115,7 +115,7 @@ const UploadImage = ({
 
   const handleChange = useCallback(
     async (e) => {
-      const { default: axios } = await import("axios");
+      const { default: axios } = await import("../utils/axios");
       setLoading(true);
       const file = await e.target.files[0];
       const payload = new FormData();

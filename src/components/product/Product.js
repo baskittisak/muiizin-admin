@@ -190,7 +190,7 @@ const Product = () => {
   }, []);
 
   const onDeleteSize = useCallback(async (sizeId) => {
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../../utils/axios");
     try {
       await axios.put("/delete/size", { sizeId });
     } catch (error) {
@@ -224,7 +224,7 @@ const Product = () => {
   );
 
   const onDeleteColor = useCallback(async (colorId) => {
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../../utils/axios");
     try {
       await axios.put("/delete/color", { colorId });
     } catch (error) {
@@ -269,7 +269,7 @@ const Product = () => {
   );
 
   const onDeleteColorImage = useCallback(async (colorImageId) => {
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../../utils/axios");
     try {
       await axios.put("/delete/image/color", { colorImageId });
     } catch (error) {
@@ -305,7 +305,7 @@ const Product = () => {
   );
 
   const onDeleteImage = useCallback(async (productImageId) => {
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../../utils/axios");
     try {
       await axios.put("/delete/image/product", { productImageId });
     } catch (error) {
@@ -383,7 +383,7 @@ const Product = () => {
 
   const onSaveImage = useCallback(
     async (newProductId) => {
-      const { default: axios } = await import("axios");
+      const { default: axios } = await import("../../utils/axios");
       const payload = {
         images: isSizeOnly ? productOption?.images : productOption,
         productId: newProductId,
@@ -397,7 +397,7 @@ const Product = () => {
 
   const onSaveSize = useCallback(
     async (newProductId) => {
-      const { default: axios } = await import("axios");
+      const { default: axios } = await import("../../utils/axios");
       const payload = {
         sizes: productOption?.size,
         productId: newProductId,
@@ -411,7 +411,7 @@ const Product = () => {
 
   const onSaveColor = useCallback(
     async (newProductId) => {
-      const { default: axios } = await import("axios");
+      const { default: axios } = await import("../../utils/axios");
       const payload = {
         colors: productOption?.color,
         productId: newProductId,
@@ -425,7 +425,7 @@ const Product = () => {
 
   const onSave = useCallback(async () => {
     setLoading(true);
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../../utils/axios");
     try {
       const { key } = productInfo.status;
       const status =

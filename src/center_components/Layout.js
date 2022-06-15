@@ -14,6 +14,7 @@ import { ReactComponent as logout_icon } from "../assets/icons/logout.svg";
 import muiizin_logo from "../assets/image/muiizin_logo.svg";
 import { Box } from "../style/common";
 import { Space } from "antd";
+import { useAuthContext } from "../store/AuthContext";
 
 const { Sider } = LayoutAntd;
 
@@ -139,6 +140,7 @@ const Body = styled.div`
 `;
 
 const Layout = ({ children }) => {
+  const { email } = useAuthContext();
   const [collapsed, setCollapsed] = useState(false);
   const [activeKey, setActiveKey] = useState("1");
 
@@ -238,7 +240,7 @@ const Layout = ({ children }) => {
           collapsed={collapsed}
         >
           {!collapsed && (
-            <Space size={16}>
+            <Space size={8} style={{ marginRight: "8px" }}>
               <IconSvg src={user_icon} fontSize={40} />
               <Space direction="vertical" size={0}>
                 <Typography
@@ -247,7 +249,7 @@ const Layout = ({ children }) => {
                   fontWeight={700}
                   color="#FFF4D6"
                 >
-                  สมศักดิ์ มุ่งมานะ
+                  {email}
                 </Typography>
                 <Typography fontSize={14} lineHeight={15} color="#E0E0E0">
                   Admin
@@ -263,7 +265,7 @@ const Layout = ({ children }) => {
         </Footer>
       </LayoutContainer>
     ),
-    [activeKey, collapsed, menuItems, onLinkTo]
+    [activeKey, collapsed, menuItems, email, onLinkTo]
   );
 
   const body = useMemo(

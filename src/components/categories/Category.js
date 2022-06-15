@@ -65,7 +65,7 @@ const Category = () => {
 
   const onSave = useCallback(async () => {
     setLoading(true);
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../../utils/axios");
     try {
       const payload = {
         categoryId,

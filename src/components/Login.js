@@ -10,8 +10,8 @@ import { ReactComponent as email_icon } from "../assets/icons/email.svg";
 import { ReactComponent as key_icon } from "../assets/icons/key.svg";
 import { Input, Space } from "antd";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
-import { useAuthContext } from "../store/AuthContext";
 import { getNotification } from "../center_components/Notification";
+import { useAuthContext } from "../store/AuthContext";
 
 const Container = styled(Box)`
   width: 100%;
@@ -73,7 +73,7 @@ const Footer = styled(Box)`
 `;
 
 const Login = () => {
-  const { setToken, setUser } = useAuthContext();
+  const { setToken } = useAuthContext();
   const [authData, setAuthData] = useState({
     email: "",
     password: "",
@@ -94,20 +94,30 @@ const Login = () => {
 
   const onLogIn = useCallback(async () => {
     setLoading(true);
-    const { default: axios } = await import("axios");
+    const { default: axios } = await import("../utils/axios");
     try {
       const { data } = await axios.post("/login", authData);
-      setToken(data?.token);
-      setUser({ email: data?.email, adminType: data?.adminType });
+      axios.defaults.headers.common["Authorization"] = data?.token;
       localStorage.setItem("muiizinToken", data?.token);
+      localStorage.setItem("muiizinEmail", data?.email);
+      setToken(data?.token);
+      onSetData("email", "");
+      onSetData("password", "");
       getNotification({ type: "success", message: "เข้าสู่ระบบสำเร็จ" });
       setLoading(false);
     } catch (error) {
-      console.error(error);
+      const errorMsg = error?.response?.data;
+      const isNotfound = errorMsg === "User not found";
+      const isInCorrect = errorMsg === "Incorrect password";
+      const message = isNotfound
+        ? "ไม่พบข้อมูลผู้ใช้งาน"
+        : isInCorrect
+        ? "รหัสผ่านไม่ถูกต้อง"
+        : "เกิดข้อผิดพลาด";
+      getNotification({ type: "error", message });
       setLoading(false);
-      getNotification({ type: "error", message: "เกิดข้อผิดพลาด" });
     }
-  }, [authData, setToken, setUser]);
+  }, [authData, setToken, onSetData]);
 
   const inputPassword = useMemo(
     () => (

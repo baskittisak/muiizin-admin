@@ -67,7 +67,7 @@ const ProductList = () => {
   const onDelete = useCallback(
     async (productId) => {
       setLoading(true);
-      const { default: axios } = await import("axios");
+      const { default: axios } = await import("../../utils/axios");
       try {
         await axios.put("/delete/product", { productId });
         setPage(1);
