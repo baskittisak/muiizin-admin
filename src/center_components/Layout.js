@@ -12,9 +12,10 @@ import { ReactComponent as arrow_collapse_icon } from "../assets/icons/arrow_col
 import { ReactComponent as user_icon } from "../assets/icons/user.svg";
 import { ReactComponent as logout_icon } from "../assets/icons/logout.svg";
 import muiizin_logo from "../assets/image/muiizin_logo.svg";
-import { Box } from "../style/common";
+import { Box, Loading } from "../style/common";
 import { Space } from "antd";
 import { useAuthContext } from "../store/AuthContext";
+import { getModalConfirm } from "./ModalConfirm";
 
 const { Sider } = LayoutAntd;
 
@@ -140,9 +141,10 @@ const Body = styled.div`
 `;
 
 const Layout = ({ children }) => {
-  const { email } = useAuthContext();
+  const { email, setToken } = useAuthContext();
   const [collapsed, setCollapsed] = useState(false);
   const [activeKey, setActiveKey] = useState("1");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     switch (window.location.pathname) {
@@ -179,6 +181,17 @@ const Layout = ({ children }) => {
     window.location.replace(link);
     setActiveKey(key);
   }, []);
+
+  const onLogOut = useCallback(() => {
+    setLoading(true);
+    localStorage.removeItem("muiizinToken");
+    localStorage.removeItem("muiizinEmail");
+    setToken("");
+    setTimeout(() => {
+      setLoading(false);
+      window.location.reload();
+    }, 500);
+  }, [setToken]);
 
   const menuItems = useMemo(
     () => [
@@ -261,11 +274,17 @@ const Layout = ({ children }) => {
             src={logout_icon}
             fontSize={collapsed ? 20 : 18}
             heightable={false}
+            onClick={() =>
+              getModalConfirm({
+                message: "คุณต้องการจะออกจากระบบใช่หรือไม่?",
+                onConfirm: () => onLogOut(),
+              })
+            }
           />
         </Footer>
       </LayoutContainer>
     ),
-    [activeKey, collapsed, menuItems, email, onLinkTo]
+    [activeKey, collapsed, menuItems, email, onLinkTo, onLogOut]
   );
 
   const body = useMemo(
@@ -274,10 +293,12 @@ const Layout = ({ children }) => {
   );
 
   return (
-    <Box>
-      {menuSider}
-      {body}
-    </Box>
+    <Loading spinning={loading}>
+      <Box>
+        {menuSider}
+        {body}
+      </Box>
+    </Loading>
   );
 };
 

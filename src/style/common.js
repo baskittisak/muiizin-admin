@@ -29,6 +29,10 @@ export const Loading = styled(Spin)`
     font-size: 24px;
     color: #044700;
   }
+  
+  .ant-spin-dot-item {
+    background-color: #044700;
+  }
 `;
 
 export const LoadingIcon = styled(LoadingOutlined)`
