@@ -10,6 +10,8 @@ import { ReactComponent as email_icon } from "../assets/icons/email.svg";
 import { ReactComponent as key_icon } from "../assets/icons/key.svg";
 import { Input, Space } from "antd";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import { useAuthContext } from "../store/AuthContext";
+import { getNotification } from "../center_components/Notification";
 
 const Container = styled(Box)`
   width: 100%;
@@ -71,11 +73,41 @@ const Footer = styled(Box)`
 `;
 
 const Login = () => {
+  const { setToken, setUser } = useAuthContext();
+  const [authData, setAuthData] = useState({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const onSetData = useCallback((type, value) => {
+    setAuthData((prevState) => ({
+      ...prevState,
+      [type]: value,
+    }));
+  }, []);
 
   const onSetShowPassword = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
+
+  const onLogIn = useCallback(async () => {
+    setLoading(true);
+    const { default: axios } = await import("axios");
+    try {
+      const { data } = await axios.post("/login", authData);
+      setToken(data?.token);
+      setUser({ email: data?.email, adminType: data?.adminType });
+      localStorage.setItem("muiizinToken", data?.token);
+      getNotification({ type: "success", message: "เข้าสู่ระบบสำเร็จ" });
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      getNotification({ type: "error", message: "เกิดข้อผิดพลาด" });
+    }
+  }, [authData, setToken, setUser]);
 
   const inputPassword = useMemo(
     () => (
@@ -83,14 +115,16 @@ const Login = () => {
         type={showPassword ? "text" : "password"}
         addonAfter={
           showPassword ? (
-            <EyeInvisibleOutlined onClick={onSetShowPassword} />
-          ) : (
             <EyeOutlined onClick={onSetShowPassword} />
+          ) : (
+            <EyeInvisibleOutlined onClick={onSetShowPassword} />
           )
         }
+        value={authData.password}
+        onChange={(e) => onSetData("password", e.target.value)}
       />
     ),
-    [showPassword, onSetShowPassword]
+    [showPassword, authData.password, onSetShowPassword, onSetData]
   );
 
   return (
@@ -105,7 +139,11 @@ const Login = () => {
                 อีเมล์
               </Typography>
             </Box>
-            <InputContainer type="email" />
+            <InputContainer
+              type="email"
+              value={authData.email}
+              onChange={(e) => onSetData("email", e.target.value)}
+            />
           </div>
           <div>
             <Box align="baseline">
@@ -127,6 +165,9 @@ const Login = () => {
             fontSize={20}
             bgColor="#044700"
             color="#FFF"
+            disabled={!authData.email || !authData.password}
+            loading={loading}
+            onClick={onLogIn}
           >
             เข้าสู่ระบบ
           </BaseButton>
