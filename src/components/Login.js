@@ -96,10 +96,11 @@ const Login = () => {
     setLoading(true);
     const { default: axios } = await import("axios");
     try {
+      delete axios.defaults.headers.common["Authorization"];
       const { data } = await axios.post("/login", authData);
       const token = data?.token;
       axios.defaults.headers.common["Authorization"] = token;
-      localStorage.setItem("muiizin",  JSON.stringify(data));
+      localStorage.setItem("muiizin", JSON.stringify(data));
       setToken(token);
       setUser(data);
       onSetData("email", "");
