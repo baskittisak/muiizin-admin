@@ -89,6 +89,10 @@ const ProductList = () => {
     [mutate]
   );
 
+  const isEmpty = useMemo(() => {
+    return productList?.total === 0;
+  }, [productList?.total]);
+
   const columns = useMemo(() => {
     return [
       {
@@ -171,11 +175,13 @@ const ProductList = () => {
         </BaseButton>
       }
       footer={
-        <Pagination
-          current={page}
-          total={productList?.total}
-          onChange={setPage}
-        />
+        !isEmpty && (
+          <Pagination
+            current={page}
+            total={productList?.total}
+            onChange={setPage}
+          />
+        )
       }
       footerAlign="flex-start"
     >
@@ -189,6 +195,7 @@ const ProductList = () => {
         columns={columns}
         dataSource={productList?.data}
         pagination={false}
+        emptyText="ไม่พบสินค้า"
       />
     </Frame>
   );

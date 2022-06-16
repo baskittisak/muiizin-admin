@@ -4,6 +4,7 @@ import TableAntd from "antd/lib/table";
 import Typography from "./Typography";
 import { arrayMoveImmutable } from "array-move";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import { Empty } from "antd";
 
 const Container = styled.div`
   margin-top: 40px;
@@ -86,6 +87,7 @@ const Table = ({
   columns,
   pagination = true,
   page,
+  emptyText,
   rowSelection,
   totalData,
   sortable,
@@ -168,6 +170,11 @@ const Table = ({
             },
           }
         }
+        locale={{
+          emptyText: (
+            <Empty description={emptyText} />
+          ),
+        }}
         rowSelection={rowSelection && rowSelection}
         onChange={onChange && onChange}
       />

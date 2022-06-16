@@ -210,13 +210,15 @@ const Categories = () => {
         extra={
           !sortable && (
             <Space size={20}>
-              <BaseButton
-                bgColor="#D9E3D9"
-                color="#044700"
-                onClick={() => setSortable(true)}
-              >
-                จัดเรียงหมวดหมู่
-              </BaseButton>
+              {categories?.length > 0 && (
+                <BaseButton
+                  bgColor="#D9E3D9"
+                  color="#044700"
+                  onClick={() => setSortable(true)}
+                >
+                  จัดเรียงหมวดหมู่
+                </BaseButton>
+              )}
               <BaseButton
                 bgColor="#044700"
                 color="#fff"
@@ -243,6 +245,7 @@ const Categories = () => {
           columns={columns}
           dataSource={dataSource}
           pagination={false}
+          emptyText="ไม่พบหมวดหมู่สินค้า"
           sortable={sortable}
           setDataSource={setDataSource}
         />

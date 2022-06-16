@@ -233,13 +233,15 @@ const Categories = () => {
         extra={
           !sortable && (
             <Space size={20}>
-              <BaseButton
-                bgColor="#D9E3D9"
-                color="#044700"
-                onClick={() => setSortable(true)}
-              >
-                จัดเรียงแบนเนอร์
-              </BaseButton>
+              {bannerList?.length > 0 && (
+                <BaseButton
+                  bgColor="#D9E3D9"
+                  color="#044700"
+                  onClick={() => setSortable(true)}
+                >
+                  จัดเรียงแบนเนอร์
+                </BaseButton>
+              )}
               <BaseButton
                 bgColor="#044700"
                 color="#fff"
@@ -270,6 +272,7 @@ const Categories = () => {
           columns={columns}
           dataSource={dataSource}
           pagination={false}
+          emptyText="ไม่พบแแบนเนอร์"
           sortable={sortable}
           setDataSource={setDataSource}
         />
