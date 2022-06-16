@@ -60,9 +60,9 @@ const InputContainer = styled(Input)`
   }
 `;
 
-const ForgetPassword = styled(Box)`
-  margin-top: 10px;
-`;
+// const ForgetPassword = styled(Box)`
+//   margin-top: 10px;
+// `;
 
 const Footer = styled(Box)`
   width: 100%;
@@ -164,11 +164,11 @@ const Login = () => {
               </Typography>
             </Box>
             {inputPassword}
-            <ForgetPassword direction="column" align="flex-end">
+            {/* <ForgetPassword direction="column" align="flex-end">
               <Typography color="#828282" underline>
                 ลืมรหัสผ่าน?
               </Typography>
-            </ForgetPassword>
+            </ForgetPassword> */}
           </div>
           <BaseButton
             width="100%"
