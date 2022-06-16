@@ -20,6 +20,7 @@ import { ReactComponent as delete_icon } from "../../assets/icons/delete.svg";
 import { defaultBannerData } from "./data/defaultData";
 import { useQuery } from "../../utils/useQuery";
 import { getNotification } from "../../center_components/Notification";
+import { useAuthContext } from "../../store/AuthContext";
 import useSWR from "swr";
 
 const BannerContainer = styled(SpaceContainer)`
@@ -46,6 +47,7 @@ const Checkbox = styled(Box)`
 const Banner = () => {
   const navigate = useNavigate();
   const bannerId = useQuery("bannerId");
+  const { user } = useAuthContext();
   const [language, setLanguage] = useState("th");
   const [banner, setBanner] = useState(defaultBannerData);
   const [visible, setVisible] = useState(false);
@@ -142,6 +144,7 @@ const Banner = () => {
         bannerId,
         ...banner,
         updatedTime: Date.now(),
+        adminId: user?.adminId,
       };
       const { data } = bannerId
         ? await axios.put("/edit/banner", payload)
@@ -167,7 +170,14 @@ const Banner = () => {
         message: "เกิดข้อผิดพลาด",
       });
     }
-  }, [banner, bannerId, navigate, onSaveProduct, onDeleteProduct]);
+  }, [
+    banner,
+    bannerId,
+    user?.adminId,
+    navigate,
+    onSaveProduct,
+    onDeleteProduct,
+  ]);
 
   const onDelete = useCallback(
     (productId) => {

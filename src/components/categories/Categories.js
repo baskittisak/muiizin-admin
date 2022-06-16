@@ -17,6 +17,7 @@ import { getFormatDate } from "../../utils/utils";
 import { useDebounce } from "use-debounce";
 import { getNotification } from "../../center_components/Notification";
 import { getModalConfirm } from "../../center_components/ModalConfirm";
+import { useAuthContext } from "../../store/AuthContext";
 import useSWR from "swr";
 
 const DragHandle = SortableHandle(() => (
@@ -25,6 +26,7 @@ const DragHandle = SortableHandle(() => (
 
 const Categories = () => {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
   const [sortable, setSortable] = useState(false);
@@ -59,6 +61,7 @@ const Categories = () => {
         nameEN: name.en,
         nameTH: name.th,
         updatedTime: Date.now(),
+        adminId: user?.adminId,
       };
       await axios.post("/create/category", payload);
       await mutate();
@@ -78,7 +81,7 @@ const Categories = () => {
         message: "เกิดข้อผิดพลาด",
       });
     }
-  }, [name.en, name.th, onSetName, mutate]);
+  }, [name.en, name.th, user?.adminId, onSetName, mutate]);
 
   const onDelete = useCallback(
     async (categoryId) => {
