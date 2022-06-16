@@ -103,7 +103,7 @@ const Categories = () => {
         setLoading(false);
         getNotification({
           type: "success",
-          message: "ลบหมวดหมู่สินค้าสำเร็จ",
+          message: "ลบแบนเนอร์สำเร็จ",
         });
       } catch (error) {
         console.error(error);
