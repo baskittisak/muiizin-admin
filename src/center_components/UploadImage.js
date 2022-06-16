@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Box } from "../style/common";
 import Typography from "./Typography";
+import { useAuthContext } from "../store/AuthContext";
 
 const Upload = styled(Box)`
   position: relative;
@@ -109,6 +110,7 @@ const UploadImage = ({
   onDeleteImage,
 }) => {
   const inputRef = createRef();
+  const { token } = useAuthContext();
   const [visiblePreview, setVisiblePreview] = useState(false);
   const [activePreview, setActivePreview] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -116,6 +118,7 @@ const UploadImage = ({
   const handleChange = useCallback(
     async (e) => {
       const { default: axios } = await import("axios");
+      delete axios.defaults.headers.common["Authorization"];
       setLoading(true);
       const file = await e.target.files[0];
       const payload = new FormData();
@@ -133,12 +136,13 @@ const UploadImage = ({
         newImageList.push(url);
         setImageList(newImageList);
         setLoading(false);
+        axios.defaults.headers.common["Authorization"] = token;
       } catch (error) {
         setLoading(false);
         console.error(error);
       }
     },
-    [type, imageList, setImageList]
+    [type, imageList, token, setImageList]
   );
 
   const onBrowseFile = useCallback(() => {
