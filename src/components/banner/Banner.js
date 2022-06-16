@@ -101,7 +101,7 @@ const Banner = () => {
 
   const onSaveProduct = useCallback(
     async (newBannerId) => {
-      const { default: axios } = await import("../../utils/axios");
+      const { default: axios } = await import("axios");
       const productIds = banner.products.map(
         (product) => product?.productId || product
       );
@@ -126,7 +126,7 @@ const Banner = () => {
   );
 
   const onDeleteProduct = useCallback(async (bannerProductId, type) => {
-    const { default: axios } = await import("../../utils/axios");
+    const { default: axios } = await import("axios");
     try {
       await axios.put("/delete/product/banner", { bannerProductId, type });
     } catch (error) {
@@ -136,7 +136,7 @@ const Banner = () => {
 
   const onSave = useCallback(async () => {
     setLoading(true);
-    const { default: axios } = await import("../../utils/axios");
+    const { default: axios } = await import("axios");
     try {
       const payload = {
         bannerId,

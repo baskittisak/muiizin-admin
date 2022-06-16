@@ -94,7 +94,7 @@ const Login = () => {
 
   const onLogIn = useCallback(async () => {
     setLoading(true);
-    const { default: axios } = await import("../utils/axios");
+    const { default: axios } = await import("axios");
     try {
       const { data } = await axios.post("/login", authData);
       const token = data?.token;
