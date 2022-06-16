@@ -80,7 +80,7 @@ const Category = () => {
       setIsEdit(false);
       getNotification({
         type: "success",
-        message: "สร้างหมวดหมู่สินค้าสำเร็จ",
+        message: "แก้ไขหมวดหมู่สินค้าสำเร็จ",
       });
     } catch (error) {
       console.error(error);

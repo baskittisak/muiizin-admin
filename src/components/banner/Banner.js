@@ -158,7 +158,7 @@ const Banner = () => {
       setLoading(false);
       getNotification({
         type: "success",
-        message: "สร้างแบนเนอร์สำเร็จ",
+        message: bannerId ? "แก้ไขแบนเนอร์สำเร็จ" : "สร้างแบนเนอร์สำเร็จ",
       });
       setBanner({ ...defaultBannerData });
       navigate(`/banner-info?bannerId=${newBannerId}`);
