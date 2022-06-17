@@ -26,6 +26,8 @@ bin-release/
 
 # testing
 /coverage
+.firebaserc
+.firebase
 
 # production
 /build
